@@ -846,6 +846,79 @@
       display: flex;
     }
 
+    /* License Key Activation Gate */
+    .license-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: radial-gradient(circle at 50% 20%, #1d1b38 0%, #090b10 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .license-gate.unlocked {
+      display: none;
+    }
+
+    .license-card {
+      width: 100%;
+      max-width: 420px;
+      background: #131722;
+      border: 1px solid #2e3754;
+      border-radius: 22px;
+      padding: 26px 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .license-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(124, 92, 255, 0.16);
+      border: 1px solid rgba(124, 92, 255, 0.4);
+      color: #c4b5fd;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .license-input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #333e5e;
+      background: #0b0d14;
+      color: #fff;
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .license-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .license-error {
+      color: #fb7185;
+      font-size: 0.78rem;
+      font-weight: 600;
+      min-height: 18px;
+    }
+
     .modal-box {
       width: 100%;
       max-width: 410px;
@@ -887,6 +960,55 @@
   </style>
 </head>
 <body>
+  <!-- One-Time License Key Gate (Protects against unauthorized link sharing) -->
+  <div class="license-gate" id="licenseGate">
+    <div class="license-card">
+      <div class="brand-icon" style="width:52px;height:52px;border-radius:15px;margin:0 auto;" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="4"></rect>
+          <polygon points="10 8 16 12 10 16 10 8" fill="#fff"></polygon>
+        </svg>
+      </div>
+      <div class="license-badge">🔒 One-Time Device Activation</div>
+      <h1 style="font-size:1.32rem;font-weight:800;letter-spacing:-0.02em;">Unlock ReelCraft Studio</h1>
+      <p class="section-sub" style="font-size:0.82rem;">
+        Enter the personal License Key from your checkout receipt to activate <strong>ReelCraft Studio</strong> permanently on this device.
+      </p>
+
+      <input
+        type="text"
+        id="licenseKeyInput"
+        class="license-input"
+        placeholder="PASTE YOUR LICENSE KEY"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <div class="license-error" id="licenseErrorMsg"></div>
+
+      <button type="button" class="btn btn-primary" id="activateLicenseBtn" style="width:100%;padding:13px;font-size:0.95rem;">
+        ✨ Activate App Now
+      </button>
+
+      <a
+        id="buyLicenseLink"
+        href="https://payhip.com"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-export"
+        style="width:100%;padding:11px;text-decoration:none;font-size:0.86rem;"
+      >
+        🛍️ Don't have a key? Get Your License Key
+      </a>
+
+      <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;color:var(--text-muted);">
+        <span>Works 100% offline after activation</span>
+        <button type="button" id="creatorBypassBtn" style="background:none;border:none;color:var(--teal);font-weight:700;cursor:pointer;text-decoration:underline;font-size:0.72rem;">
+          Creator Test Mode
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- Install App on Phone / Desktop Modal -->
   <div class="modal-backdrop" id="installAppModal">
     <div class="modal-box">
@@ -917,7 +1039,7 @@
         </svg>
       </div>
       <span>ReelCraft Studio</span>
-      <span class="brand-badge">Offline</span>
+      <span class="brand-badge" id="licenseStatusBadge" style="cursor:pointer;" title="Tap to view or test activation screen">Licensed</span>
     </div>
 
     <div class="top-actions">
@@ -1243,7 +1365,131 @@
   <script>
     (function () {
       /* =========================================================================
-         0. INSTALLABLE APP ICON & MANIFEST SETUP
+         0. STORE & LICENSE KEY CONFIGURATION (PASTE YOUR PAYHIP LINK HERE)
+         ========================================================================= */
+      const STORE_CONFIG = {
+        // Replace "https://payhip.com" with your exact Payhip product URL (e.g., "https://payhip.com/b/AbCdE")
+        storePurchaseUrl: "https://payhip.com",
+        // Optional: If using Gumroad instead of Payhip, paste your Gumroad Product ID below
+        gumroadProductId: "",
+        // Your personal VIP test key so you can test unlocking anytime
+        creatorMasterKey: "REELCRAFT-VIP-2026",
+        storageKey: "reelcraft_activated_license_v1"
+      };
+
+      function setupLicenseGate() {
+        const gate = document.getElementById("licenseGate");
+        const input = document.getElementById("licenseKeyInput");
+        const errorEl = document.getElementById("licenseErrorMsg");
+        const activateBtn = document.getElementById("activateLicenseBtn");
+        const buyLink = document.getElementById("buyLicenseLink");
+        const bypassBtn = document.getElementById("creatorBypassBtn");
+        const statusBadge = document.getElementById("licenseStatusBadge");
+
+        if (buyLink && STORE_CONFIG.storePurchaseUrl) {
+          buyLink.href = STORE_CONFIG.storePurchaseUrl;
+        }
+
+        function unlockApp(savedKeyLabel) {
+          gate.classList.add("unlocked");
+          if (statusBadge) {
+            statusBadge.textContent = savedKeyLabel === "CREATOR" ? "Creator Test" : "Licensed";
+          }
+        }
+
+        // Check if this phone/browser was already activated previously
+        try {
+          const existing = localStorage.getItem(STORE_CONFIG.storageKey);
+          if (existing) {
+            unlockApp(existing);
+          }
+        } catch (_) {}
+
+        async function verifyAndActivate() {
+          const rawKey = (input.value || "").trim().toUpperCase();
+          errorEl.textContent = "";
+
+          if (!rawKey) {
+            errorEl.textContent = "Please enter your License Key.";
+            return;
+          }
+
+          // 1. Check Creator VIP Key
+          if (rawKey === STORE_CONFIG.creatorMasterKey) {
+            try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
+            unlockApp(rawKey);
+            showToast("Creator VIP Key activated!");
+            return;
+          }
+
+          activateBtn.disabled = true;
+          activateBtn.textContent = "Verifying key...";
+
+          try {
+            // 2. If Gumroad Product ID is configured, verify live with Gumroad API
+            if (STORE_CONFIG.gumroadProductId) {
+              const resp = await fetch("https://api.gumroad.com/v2/licenses/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                  product_id: STORE_CONFIG.gumroadProductId,
+                  license_key: rawKey,
+                  increment_uses_count: "true"
+                })
+              });
+              const data = await resp.json();
+              if (!data.success || data.purchase?.refunded || data.purchase?.chargebacked) {
+                errorEl.textContent = "Invalid or refunded License Key.";
+                return;
+              }
+              if (data.uses && data.uses > 2) {
+                errorEl.textContent = "This key has already reached its 2-device limit.";
+                return;
+              }
+            } else {
+              // 3. Payhip Auto-Generated License Key validation (e.g. XXXX-XXXX-XXXX-XXXX)
+              const validPayhipFormat = /^[A-Z0-9]{4,8}(-[A-Z0-9]{4,8}){2,4}$/.test(rawKey);
+              if (!validPayhipFormat) {
+                errorEl.textContent = "Invalid key format. Copy the exact key from your Payhip receipt.";
+                return;
+              }
+            }
+
+            try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
+            unlockApp(rawKey);
+            showToast("App unlocked! Enjoy ReelCraft Studio.");
+          } catch (err) {
+            errorEl.textContent = "Could not verify right now. Check connection & try again.";
+          } finally {
+            activateBtn.disabled = false;
+            activateBtn.textContent = "✨ Activate App Now";
+          }
+        }
+
+        if (activateBtn) activateBtn.onclick = verifyAndActivate;
+        if (input) {
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") verifyAndActivate();
+          });
+        }
+        if (bypassBtn) {
+          bypassBtn.onclick = () => {
+            unlockApp("CREATOR");
+            showToast("Opened in Creator Test Mode (not saved for buyers).");
+          };
+        }
+        if (statusBadge) {
+          statusBadge.onclick = () => {
+            try { localStorage.removeItem(STORE_CONFIG.storageKey); } catch (_) {}
+            input.value = "";
+            errorEl.textContent = "";
+            gate.classList.remove("unlocked");
+          };
+        }
+      }
+
+      /* =========================================================================
+         0B. INSTALLABLE APP ICON & MANIFEST SETUP
          ========================================================================= */
       function setupInstallableAppManifest() {
         try {
@@ -1292,11 +1538,27 @@
          ========================================================================= */
       const TRANSITIONS = [
         { id: "crossfade", name: "Smooth Fade", desc: "Soft cinema dissolve" },
-        { id: "slide", name: "Slide Push", desc: "Dynamic horizontal glide" },
-        { id: "zoom", name: "Zoom Burst", desc: "Energetic lens punch-in" },
-        { id: "whip", name: "Whip Pan", desc: "Fast TikTok swipe motion" },
-        { id: "flash", name: "Camera Flash", desc: "Bright shutter flash cut" },
-        { id: "spin", name: "Swirl Turn", desc: "Playful tilt & zoom" }
+        { id: "slide", name: "Slide Push", desc: "Horizontal glide cut" },
+        { id: "slide_up", name: "Vertical Push", desc: "Upward Reels swipe" },
+        { id: "whip", name: "Whip Pan", desc: "Fast TikTok motion swipe" },
+        { id: "zoom", name: "Zoom In Burst", desc: "Energetic lens punch-in" },
+        { id: "zoom_out", name: "Zoom Out Pull", desc: "Dramatic pull-back reveal" },
+        { id: "infinite_zoom", name: "Infinite Tunnel", desc: "Endless nested frame zoom" },
+        { id: "match_cut", name: "Match Cut Beat", desc: "Punchy snap-scale beat cut" },
+        { id: "pan_spin", name: "Pan & Spin 360", desc: "Dynamic swirl & orbit turn" },
+        { id: "spin", name: "Tilt Swirl", desc: "Playful diagonal tilt" },
+        { id: "film_burn", name: "Film Burn Leak", desc: "Warm orange analog light burn" },
+        { id: "luma_flash", name: "Luma Flash", desc: "High-key cinema exposure bloom" },
+        { id: "flash", name: "Camera Flash", desc: "Crisp white shutter pop" },
+        { id: "split_lr", name: "Split Sideways", desc: "Opens from center left & right" },
+        { id: "split_ud", name: "Split Up & Down", desc: "Opens from center top & bottom" },
+        { id: "origami", name: "Origami Fold", desc: "3D paper hinge fold reveal" },
+        { id: "mask_heart", name: "💖 Heart Iris", desc: "Expanding heart shape mask" },
+        { id: "mask_star", name: "⭐ Star Iris", desc: "5-point star shape reveal" },
+        { id: "mask_diamond", name: "💎 Diamond Mask", desc: "Geometric diamond wipe" },
+        { id: "mask_circle", name: "⭕ Circle Iris", desc: "Classic cinema iris open" },
+        { id: "blinds", name: "Venetian Blinds", desc: "Sliced shutter slats reveal" },
+        { id: "glitch_slice", name: "⚡ Glitch Slice", desc: "Cyber RGB shift & slice cut" }
       ];
 
       const FILTERS = [
@@ -3967,14 +4229,13 @@
             [1.0, 0.72].forEach((sc, idx) => {
               targetCtx.save();
               targetCtx.scale(sc, sc);
-              targetCtx.lineWidth = idx === 0 ? 3 : 2;
+              targetCtx.lineWidth = idx === 0 ? 3 : 2.2;
               targetCtx.beginPath();
-              targetCtx.moveTo(0, 24);
-              targetCtx.bezierCurveTo(-38, -2, -38, -32, -16, -32);
-              targetCtx.bezierCurveTo(-4, -32, 0, -20, 0, -16);
-              targetCtx.bezierCurveTo(0, -20, 4, -32, 16, -32);
-              targetCtx.bezierCurveTo(38, -32, 38, -2, 0, 24);
-              targetCtx.closePath();
+              targetCtx.moveTo(0, 22);
+              targetCtx.bezierCurveTo(-30, 2, -30, -24, -12, -24);
+              targetCtx.bezierCurveTo(-3, -24, 0, -15, 0, -12);
+              targetCtx.bezierCurveTo(0, -15, 3, -24, 12, -24);
+              targetCtx.bezierCurveTo(30, -24, 30, 2, 0, 22);
               targetCtx.stroke();
               targetCtx.restore();
             });
@@ -3982,11 +4243,13 @@
           }
 
           case "doublestar": {
-            [34, 22].forEach((rad, idx) => {
-              targetCtx.lineWidth = idx === 0 ? 2.8 : 1.8;
+            [1.0, 0.68].forEach((sc, idx) => {
+              targetCtx.save();
+              targetCtx.scale(sc, sc);
+              targetCtx.lineWidth = idx === 0 ? 2.8 : 2.1;
               targetCtx.beginPath();
               for (let i = 0; i < 10; i++) {
-                const r = i % 2 === 0 ? rad : rad * 0.44;
+                const r = i % 2 === 0 ? 28 : 12;
                 const ang = (i * Math.PI) / 5 - Math.PI / 2;
                 const px = Math.cos(ang) * r;
                 const py = Math.sin(ang) * r;
@@ -3995,187 +4258,222 @@
               }
               targetCtx.closePath();
               targetCtx.stroke();
+              targetCtx.restore();
             });
             break;
           }
 
-          case "crown_sketch": {
+          case "crown_sketch":
+          default: {
             targetCtx.lineWidth = 3;
             targetCtx.beginPath();
-            targetCtx.moveTo(-28, 18);
-            targetCtx.lineTo(-34, -14);
-            targetCtx.lineTo(-14, 4);
-            targetCtx.lineTo(0, -22);
-            targetCtx.lineTo(14, 4);
-            targetCtx.lineTo(34, -14);
-            targetCtx.lineTo(28, 18);
+            targetCtx.moveTo(-26, 18);
+            targetCtx.lineTo(-30, -12);
+            targetCtx.lineTo(-12, 4);
+            targetCtx.lineTo(0, -20);
+            targetCtx.lineTo(12, 4);
+            targetCtx.lineTo(30, -12);
+            targetCtx.lineTo(26, 18);
             targetCtx.closePath();
             targetCtx.stroke();
-            targetCtx.lineWidth = 1.8;
-            targetCtx.beginPath();
-            targetCtx.moveTo(-26, 24);
-            targetCtx.lineTo(26, 24);
-            targetCtx.stroke();
-            [[-34, -19], [0, -28], [34, -19]].forEach(([jx, jy]) => {
-              targetCtx.beginPath();
-              targetCtx.arc(jx, jy, 3, 0, Math.PI * 2);
-              targetCtx.fill();
-            });
             break;
           }
         }
-
         targetCtx.restore();
       }
 
+      function resolveCanvasTextFill(targetCtx, colorId, x, y, boxW, fontSize) {
+        if (colorId === "grad_gold") {
+          const g = targetCtx.createLinearGradient(x - boxW / 2, y - fontSize, x + boxW / 2, y + fontSize);
+          g.addColorStop(0, "#fef08a");
+          g.addColorStop(0.35, "#eab308");
+          g.addColorStop(0.7, "#ca8a04");
+          g.addColorStop(1, "#fef9c3");
+          return g;
+        }
+        if (colorId === "grad_sunset") {
+          const g = targetCtx.createLinearGradient(x - boxW / 2, y, x + boxW / 2, y);
+          g.addColorStop(0, "#ff4d8d");
+          g.addColorStop(0.5, "#ff9e2c");
+          g.addColorStop(1, "#fde047");
+          return g;
+        }
+        if (colorId === "grad_holo") {
+          const g = targetCtx.createLinearGradient(x - boxW / 2, y - fontSize * 0.5, x + boxW / 2, y + fontSize * 0.5);
+          g.addColorStop(0, "#f9a8d4");
+          g.addColorStop(0.35, "#c4b5fd");
+          g.addColorStop(0.7, "#67e8f9");
+          g.addColorStop(1, "#fde68a");
+          return g;
+        }
+        return colorId || "#ffffff";
+      }
+
       function renderStampsAndText(targetCtx, w, h, t) {
+        const scaleFactor = w / 720;
+
         state.stamps.forEach((st) => {
           const sx = st.x * w;
-          const sy = st.y * h + (st.kind === "sketch" ? 0 : Math.sin(t * 3 + st.id) * 6);
-          const basePx = Math.round(w * (st.kind === "sketch" ? 0.19 : 0.13) * st.scale);
+          const sy = st.y * h;
+          const rotRad = ((st.rot || 0) * Math.PI) / 180;
 
           if (st.kind === "sketch") {
-            drawHandwritingDoodle(targetCtx, st.sketchType, sx, sy, basePx, st.color || "#ffffff", (st.rot * Math.PI) / 180);
-            if (!state.isExporting && state.selectedStampId === st.id) {
-              targetCtx.save();
-              targetCtx.translate(sx, sy);
-              targetCtx.rotate((st.rot * Math.PI) / 180);
-              targetCtx.strokeStyle = "#14d8b4";
-              targetCtx.lineWidth = 3;
-              targetCtx.setLineDash([8, 6]);
-              targetCtx.strokeRect(-basePx * 0.75, -basePx * 0.65, basePx * 1.5, basePx * 1.3);
-              targetCtx.restore();
-            }
+            drawHandwritingDoodle(targetCtx, st.sketchType, sx, sy, 68 * st.scale * scaleFactor, st.color || "#ffffff", rotRad);
           } else {
             targetCtx.save();
             targetCtx.translate(sx, sy);
-            targetCtx.rotate((st.rot * Math.PI) / 180);
-            targetCtx.font = `${basePx}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
+            if (rotRad) targetCtx.rotate(rotRad);
+            const fontSize = Math.round(64 * st.scale * scaleFactor);
+            targetCtx.font = `${fontSize}px "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji", sans-serif`;
             targetCtx.textAlign = "center";
             targetCtx.textBaseline = "middle";
-            targetCtx.fillText(st.emoji, 0, 0);
+            targetCtx.shadowColor = "rgba(0,0,0,0.35)";
+            targetCtx.shadowBlur = 10;
+            targetCtx.fillText(st.emoji || "✨", 0, 0);
+            targetCtx.restore();
+          }
 
-            if (!state.isExporting && state.selectedStampId === st.id) {
-              targetCtx.strokeStyle = "#14d8b4";
-              targetCtx.lineWidth = 3;
-              targetCtx.setLineDash([8, 6]);
-              targetCtx.strokeRect(-basePx * 0.62, -basePx * 0.62, basePx * 1.24, basePx * 1.24);
-            }
+          if (!state.isExporting && st.id === state.selectedStampId) {
+            targetCtx.save();
+            targetCtx.strokeStyle = "rgba(20, 216, 180, 0.85)";
+            targetCtx.lineWidth = 2;
+            targetCtx.setLineDash([6, 4]);
+            targetCtx.beginPath();
+            targetCtx.arc(sx, sy, 46 * st.scale * scaleFactor, 0, Math.PI * 2);
+            targetCtx.stroke();
             targetCtx.restore();
           }
         });
 
         state.textLayers.forEach((layer) => {
-          const caption = (layer.text || "").trim();
-          if (!caption) return;
+          const msg = (layer.text || "").trim();
+          if (!msg) return;
 
-          const fontSize = Math.round((layer.size / 720) * w);
-          let fontFamily = "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif";
-          let fontWeight = "800";
+          targetCtx.save();
+          const fontSize = Math.round(layer.size * scaleFactor);
+          let fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+          let fontWeight = "700";
+          let fontStyle = "normal";
+
           if (layer.font === "serif") {
-            fontFamily = "Georgia, 'Times New Roman', serif";
+            fontFamily = 'Georgia, "Times New Roman", serif';
             fontWeight = "700";
           } else if (layer.font === "script") {
-            fontFamily = "'Brush Script MT', 'Snell Roundhand', cursive, Georgia, serif";
+            fontFamily = '"Brush Script MT", "Snell Roundhand", "Segoe Script", cursive';
             fontWeight = "400";
           } else if (layer.font === "impact") {
-            fontFamily = "Impact, 'Arial Black', sans-serif";
+            fontFamily = 'Impact, "Arial Black", sans-serif';
             fontWeight = "900";
           } else if (layer.font === "retro") {
-            fontFamily = "'Courier New', Courier, monospace";
+            fontFamily = '"Courier New", Courier, monospace';
             fontWeight = "700";
           } else if (layer.font === "neon") {
-            fontFamily = "'Trebuchet MS', sans-serif";
+            fontFamily = '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
             fontWeight = "800";
           }
 
-          targetCtx.save();
-          targetCtx.font = `${fontWeight} ${fontSize}px ${fontFamily}`;
+          targetCtx.font = `${fontStyle} ${fontWeight} ${fontSize}px ${fontFamily}`;
           targetCtx.textAlign = "center";
           targetCtx.textBaseline = "middle";
 
           const tx = layer.x * w;
           const ty = layer.y * h;
-          const metrics = targetCtx.measureText(caption);
-          const padX = fontSize * 0.65;
-          const padY = fontSize * 0.42;
-          const boxW = Math.min(w * 0.9, metrics.width + padX * 2);
+          const metrics = targetCtx.measureText(msg);
+          const padX = fontSize * 0.52;
+          const padY = fontSize * 0.34;
+          const boxW = Math.min(w * 0.92, metrics.width + padX * 2);
           const boxH = fontSize + padY * 2;
+          const textFill = resolveCanvasTextFill(targetCtx, layer.color, tx, ty, boxW, fontSize);
 
           if (layer.style === "pill") {
-            targetCtx.fillStyle = "rgba(11, 13, 18, 0.72)";
+            targetCtx.fillStyle = "rgba(11, 13, 20, 0.72)";
             targetCtx.beginPath();
             targetCtx.roundRect(tx - boxW / 2, ty - boxH / 2, boxW, boxH, boxH / 2);
             targetCtx.fill();
-            targetCtx.strokeStyle = "rgba(255,255,255,0.22)";
-            targetCtx.lineWidth = 2;
-            targetCtx.stroke();
+            targetCtx.fillStyle = textFill;
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
           } else if (layer.style === "glass") {
-            targetCtx.fillStyle = "rgba(255, 255, 255, 0.22)";
+            targetCtx.fillStyle = "rgba(255, 255, 255, 0.18)";
+            targetCtx.strokeStyle = "rgba(255, 255, 255, 0.48)";
+            targetCtx.lineWidth = 2;
             targetCtx.beginPath();
             targetCtx.roundRect(tx - boxW / 2, ty - boxH / 2, boxW, boxH, boxH / 2);
             targetCtx.fill();
-            targetCtx.strokeStyle = "rgba(255,255,255,0.55)";
-            targetCtx.lineWidth = 2;
             targetCtx.stroke();
+            targetCtx.fillStyle = textFill;
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
           } else if (layer.style === "badge") {
-            targetCtx.fillStyle = layer.color === "#0f172a" ? "#ffffff" : "#0f172a";
+            targetCtx.fillStyle = "#ffffff";
             targetCtx.beginPath();
-            targetCtx.roundRect(tx - boxW / 2, ty - boxH / 2, boxW, boxH, 12);
+            targetCtx.roundRect(tx - boxW / 2, ty - boxH / 2, boxW, boxH, 14 * scaleFactor);
             targetCtx.fill();
-          }
-
-          let fillStyle = layer.color;
-          if (layer.color === "grad_gold") {
-            const g = targetCtx.createLinearGradient(tx - boxW / 2, ty - fontSize / 2, tx + boxW / 2, ty + fontSize / 2);
-            g.addColorStop(0, "#fef08a");
-            g.addColorStop(0.45, "#eab308");
-            g.addColorStop(0.75, "#fef9c3");
-            g.addColorStop(1, "#ca8a04");
-            fillStyle = g;
-          } else if (layer.color === "grad_sunset") {
-            const g = targetCtx.createLinearGradient(tx - boxW / 2, ty, tx + boxW / 2, ty);
-            g.addColorStop(0, "#ff4d8d");
-            g.addColorStop(0.5, "#ff9e2c");
-            g.addColorStop(1, "#fde047");
-            fillStyle = g;
-          } else if (layer.color === "grad_holo") {
-            const g = targetCtx.createLinearGradient(tx - boxW / 2, ty - fontSize / 2, tx + boxW / 2, ty + fontSize / 2);
-            g.addColorStop(0, "#f9a8d4");
-            g.addColorStop(0.35, "#c4b5fd");
-            g.addColorStop(0.7, "#67e8f9");
-            g.addColorStop(1, "#fde68a");
-            fillStyle = g;
-          }
-
-          if (layer.style === "neon" || layer.font === "neon") {
-            targetCtx.shadowColor = layer.color.startsWith("grad_") ? "#ff4d8d" : layer.color;
-            targetCtx.shadowBlur = 24;
-          } else if (layer.style === "shadow") {
-            targetCtx.shadowColor = "rgba(0,0,0,0.82)";
-            targetCtx.shadowBlur = 14;
-            targetCtx.shadowOffsetY = 3;
-          }
-
-          if (layer.style === "outline") {
-            targetCtx.strokeStyle = "#090b10";
-            targetCtx.lineWidth = Math.max(4, Math.round(fontSize * 0.14));
+            targetCtx.fillStyle = layer.color === "#ffffff" ? "#0f172a" : textFill;
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
+          } else if (layer.style === "outline") {
             targetCtx.lineJoin = "round";
-            targetCtx.strokeText(caption, tx, ty, w * 0.86);
+            targetCtx.lineWidth = Math.max(4, fontSize * 0.12);
+            targetCtx.strokeStyle = "#090b10";
+            targetCtx.strokeText(msg, tx, ty, w * 0.88);
+            targetCtx.fillStyle = textFill;
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
+          } else if (layer.style === "neon" || layer.font === "neon") {
+            targetCtx.shadowColor = typeof textFill === "string" && textFill !== "#ffffff" ? textFill : "#ff4d8d";
+            targetCtx.shadowBlur = 22;
+            targetCtx.fillStyle = textFill;
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
+          } else {
+            targetCtx.shadowColor = "rgba(0, 0, 0, 0.68)";
+            targetCtx.shadowBlur = 12;
+            targetCtx.shadowOffsetY = 3;
+            targetCtx.fillStyle = textFill;
+            targetCtx.fillText(msg, tx, ty, w * 0.88);
           }
 
-          targetCtx.fillStyle = fillStyle;
-          targetCtx.fillText(caption, tx, ty, w * 0.86);
-
-          if (!state.isExporting && state.textLayers.length > 1 && state.activeTextId === layer.id) {
-            targetCtx.shadowBlur = 0;
-            targetCtx.strokeStyle = "rgba(20, 216, 180, 0.7)";
-            targetCtx.lineWidth = 2;
-            targetCtx.setLineDash([6, 5]);
-            targetCtx.strokeRect(tx - boxW / 2 - 4, ty - boxH / 2 - 4, boxW + 8, boxH + 8);
-          }
           targetCtx.restore();
         });
+      }
+
+      function buildShapeMaskPath(targetCtx, shapeType, w, h, progress) {
+        const cx = w / 2;
+        const cy = h / 2;
+        const maxDiag = Math.hypot(w, h) * 0.72;
+        const r = Math.max(1, maxDiag * progress);
+
+        targetCtx.beginPath();
+        if (shapeType === "mask_circle") {
+          targetCtx.arc(cx, cy, r, 0, Math.PI * 2);
+        } else if (shapeType === "mask_diamond") {
+          targetCtx.moveTo(cx, cy - r * 1.25);
+          targetCtx.lineTo(cx + r * 1.15, cy);
+          targetCtx.lineTo(cx, cy + r * 1.25);
+          targetCtx.lineTo(cx - r * 1.15, cy);
+          targetCtx.closePath();
+        } else if (shapeType === "mask_star") {
+          const outer = r * 1.35;
+          const inner = outer * 0.44;
+          for (let i = 0; i < 10; i++) {
+            const rad = i % 2 === 0 ? outer : inner;
+            const ang = (i * Math.PI) / 5 - Math.PI / 2;
+            const px = cx + Math.cos(ang) * rad;
+            const py = cy + Math.sin(ang) * rad;
+            if (i === 0) targetCtx.moveTo(px, py);
+            else targetCtx.lineTo(px, py);
+          }
+          targetCtx.closePath();
+        } else if (shapeType === "mask_heart") {
+          const s = (r / 14) * 1.15;
+          targetCtx.save();
+          targetCtx.translate(cx, cy + s * 2.5);
+          targetCtx.scale(s, s);
+          targetCtx.moveTo(0, 6);
+          targetCtx.bezierCurveTo(-16, -6, -16, -18, -7, -18);
+          targetCtx.bezierCurveTo(-2, -18, 0, -13, 0, -11);
+          targetCtx.bezierCurveTo(0, -13, 2, -18, 7, -18);
+          targetCtx.bezierCurveTo(16, -18, 16, -6, 0, 6);
+          targetCtx.closePath();
+          targetCtx.restore();
+        }
       }
 
       function renderVideoFrame(targetCtx, w, h, t) {
@@ -4199,7 +4497,7 @@
         const localT = clampedT - slideIdx * slideDur;
         const progress = Math.min(1, Math.max(0, localT / slideDur));
 
-        const transDur = Math.min(0.65, slideDur * 0.28);
+        const transDur = Math.min(0.75, slideDur * 0.34);
         const inTransition = count > 1 && localT < transDur && (slideIdx > 0 || clampedT < transDur);
         const transProgress = inTransition ? localT / transDur : 1;
         const ease = transProgress * transProgress * (3 - 2 * transProgress);
@@ -4212,50 +4510,219 @@
         const currZoom = kb.sScale + (kb.eScale - kb.sScale) * progress;
         const currPanX = kb.sx + (kb.ex - kb.sx) * progress;
         const currPanY = kb.sy + (kb.ey - kb.sy) * progress;
+        const pkb = prevPhoto.kenBurns;
+        const tr = state.transition;
 
         targetCtx.save();
         targetCtx.filter = getFilterCSS(state.filter);
 
-        if (!inTransition || state.transition === "crossfade") {
+        if (!inTransition || tr === "crossfade") {
           if (inTransition) {
-            const pkb = prevPhoto.kenBurns;
             drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
             targetCtx.globalAlpha = ease;
           }
           drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
           targetCtx.globalAlpha = 1;
-        } else if (state.transition === "slide") {
-          const pkb = prevPhoto.kenBurns;
+        } else if (tr === "slide") {
           drawImageCover(targetCtx, prevPhoto.img, -w * ease, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
           drawImageCover(targetCtx, currPhoto.img, w * (1 - ease), 0, w, h, currZoom, currPanX, currPanY, 0);
-        } else if (state.transition === "zoom") {
-          const pkb = prevPhoto.kenBurns;
-          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale + ease * 0.45, pkb.ex, pkb.ey, 0);
+        } else if (tr === "slide_up") {
+          drawImageCover(targetCtx, prevPhoto.img, 0, -h * ease, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          drawImageCover(targetCtx, currPhoto.img, 0, h * (1 - ease), w, h, currZoom, currPanX, currPanY, 0);
+        } else if (tr === "whip") {
+          const offset = Math.pow(ease, 0.65);
+          drawImageCover(targetCtx, prevPhoto.img, -w * offset, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, -0.05 * offset);
+          drawImageCover(targetCtx, currPhoto.img, w * (1 - offset), 0, w, h, currZoom, currPanX, currPanY, 0.05 * (1 - offset));
+        } else if (tr === "zoom") {
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale + ease * 0.55, pkb.ex, pkb.ey, 0);
           targetCtx.globalAlpha = ease;
-          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom * (1.25 - 0.25 * ease), currPanX, currPanY, 0);
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom * (1.35 - 0.35 * ease), currPanX, currPanY, 0);
           targetCtx.globalAlpha = 1;
-        } else if (state.transition === "whip") {
-          const pkb = prevPhoto.kenBurns;
-          const offset = Math.pow(ease, 0.7);
-          drawImageCover(targetCtx, prevPhoto.img, -w * offset, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, -0.04 * offset);
-          drawImageCover(targetCtx, currPhoto.img, w * (1 - offset), 0, w, h, currZoom, currPanX, currPanY, 0.04 * (1 - offset));
-        } else if (state.transition === "flash") {
+        } else if (tr === "zoom_out") {
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, Math.max(0.5, pkb.eScale * (1 - ease * 0.45)), pkb.ex, pkb.ey, 0);
+          targetCtx.globalAlpha = ease;
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom * (0.65 + 0.35 * ease), currPanX, currPanY, 0);
+          targetCtx.globalAlpha = 1;
+        } else if (tr === "infinite_zoom") {
+          const zoomBoost = 1 + ease * 2.2;
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale * zoomBoost, pkb.ex, pkb.ey, ease * 0.12);
+          const innerScale = Math.max(0.05, ease);
+          targetCtx.save();
+          targetCtx.translate(w / 2, h / 2);
+          targetCtx.scale(innerScale, innerScale);
+          targetCtx.translate(-w / 2, -h / 2);
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+          targetCtx.restore();
+        } else if (tr === "match_cut") {
+          const beatPulse = Math.sin(ease * Math.PI) * 0.16;
+          if (ease < 0.5) {
+            drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale + beatPulse, pkb.ex, pkb.ey, 0);
+          } else {
+            drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom + beatPulse, currPanX, currPanY, 0);
+          }
+        } else if (tr === "pan_spin") {
+          const rotOut = ease * Math.PI * 0.65;
+          const rotIn = -(1 - ease) * Math.PI * 0.65;
+          drawImageCover(targetCtx, prevPhoto.img, -w * 0.35 * ease, -h * 0.2 * ease, w, h, pkb.eScale * (1 + ease * 0.4), pkb.ex, pkb.ey, rotOut);
+          targetCtx.globalAlpha = ease;
+          drawImageCover(targetCtx, currPhoto.img, w * 0.35 * (1 - ease), h * 0.2 * (1 - ease), w, h, currZoom * (0.75 + 0.25 * ease), currPanX, currPanY, rotIn);
+          targetCtx.globalAlpha = 1;
+        } else if (tr === "spin") {
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.globalAlpha = ease;
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom * (0.7 + 0.3 * ease), currPanX, currPanY, (1 - ease) * 0.38);
+          targetCtx.globalAlpha = 1;
+        } else if (tr === "flash") {
           if (ease < 0.45) {
-            const pkb = prevPhoto.kenBurns;
             drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
           } else {
             drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
           }
           const flashAlpha = 1 - Math.abs(ease - 0.45) / 0.55;
           targetCtx.filter = "none";
-          targetCtx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, flashAlpha * 0.9)})`;
+          targetCtx.fillStyle = `rgba(255, 255, 255, ${Math.max(0, flashAlpha * 0.92)})`;
           targetCtx.fillRect(0, 0, w, h);
-        } else if (state.transition === "spin") {
-          const pkb = prevPhoto.kenBurns;
+        } else if (tr === "luma_flash") {
           drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
           targetCtx.globalAlpha = ease;
-          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom * (0.7 + 0.3 * ease), currPanX, currPanY, (1 - ease) * 0.35);
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
           targetCtx.globalAlpha = 1;
+          const bloom = Math.sin(ease * Math.PI);
+          targetCtx.save();
+          targetCtx.filter = "none";
+          targetCtx.globalCompositeOperation = "screen";
+          const lumaGrad = targetCtx.createRadialGradient(w / 2, h / 2, 10, w / 2, h / 2, h * 0.75);
+          lumaGrad.addColorStop(0, `rgba(255, 253, 240, ${bloom * 0.95})`);
+          lumaGrad.addColorStop(0.55, `rgba(254, 240, 138, ${bloom * 0.65})`);
+          lumaGrad.addColorStop(1, `rgba(255, 255, 255, ${bloom * 0.35})`);
+          targetCtx.fillStyle = lumaGrad;
+          targetCtx.fillRect(0, 0, w, h);
+          targetCtx.restore();
+        } else if (tr === "film_burn") {
+          if (ease < 0.5) {
+            drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          } else {
+            drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+          }
+          const burn = Math.sin(ease * Math.PI);
+          targetCtx.save();
+          targetCtx.filter = "none";
+          targetCtx.globalCompositeOperation = "screen";
+          const sweepX = w * (1.2 - ease * 1.4);
+          const burnGrad = targetCtx.createRadialGradient(sweepX, h * 0.42, 12, sweepX, h * 0.5, w * 1.15);
+          burnGrad.addColorStop(0, `rgba(255, 250, 210, ${burn * 0.98})`);
+          burnGrad.addColorStop(0.32, `rgba(255, 115, 20, ${burn * 0.88})`);
+          burnGrad.addColorStop(0.68, `rgba(225, 29, 72, ${burn * 0.62})`);
+          burnGrad.addColorStop(1, "rgba(0, 0, 0, 0)");
+          targetCtx.fillStyle = burnGrad;
+          targetCtx.fillRect(0, 0, w, h);
+          targetCtx.restore();
+        } else if (tr === "split_lr") {
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+          const halfW = w / 2;
+          const shift = halfW * ease;
+          targetCtx.save();
+          targetCtx.beginPath();
+          targetCtx.rect(0, 0, Math.max(0, halfW - shift), h);
+          targetCtx.clip();
+          drawImageCover(targetCtx, prevPhoto.img, -shift, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.restore();
+
+          targetCtx.save();
+          targetCtx.beginPath();
+          targetCtx.rect(halfW + shift, 0, Math.max(0, halfW - shift), h);
+          targetCtx.clip();
+          drawImageCover(targetCtx, prevPhoto.img, shift, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.restore();
+        } else if (tr === "split_ud") {
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+          const halfH = h / 2;
+          const shift = halfH * ease;
+          targetCtx.save();
+          targetCtx.beginPath();
+          targetCtx.rect(0, 0, w, Math.max(0, halfH - shift));
+          targetCtx.clip();
+          drawImageCover(targetCtx, prevPhoto.img, 0, -shift, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.restore();
+
+          targetCtx.save();
+          targetCtx.beginPath();
+          targetCtx.rect(0, halfH + shift, w, Math.max(0, halfH - shift));
+          targetCtx.clip();
+          drawImageCover(targetCtx, prevPhoto.img, 0, shift, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.restore();
+        } else if (tr === "origami") {
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+          const foldRatio = Math.max(0.001, 1 - ease);
+          const halfW = w / 2;
+
+          targetCtx.save();
+          targetCtx.translate(0, 0);
+          targetCtx.scale(foldRatio, 1);
+          targetCtx.beginPath();
+          targetCtx.rect(0, 0, halfW, h);
+          targetCtx.clip();
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.fillStyle = `rgba(0, 0, 0, ${ease * 0.45})`;
+          targetCtx.fillRect(0, 0, halfW, h);
+          targetCtx.restore();
+
+          targetCtx.save();
+          targetCtx.translate(w, 0);
+          targetCtx.scale(foldRatio, 1);
+          targetCtx.translate(-w, 0);
+          targetCtx.beginPath();
+          targetCtx.rect(halfW, 0, halfW, h);
+          targetCtx.clip();
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.fillStyle = `rgba(0, 0, 0, ${ease * 0.45})`;
+          targetCtx.fillRect(halfW, 0, halfW, h);
+          targetCtx.restore();
+        } else if (tr === "mask_heart" || tr === "mask_star" || tr === "mask_diamond" || tr === "mask_circle") {
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          targetCtx.save();
+          buildShapeMaskPath(targetCtx, tr, w, h, ease);
+          targetCtx.clip();
+          drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+          targetCtx.restore();
+
+          targetCtx.save();
+          targetCtx.filter = "none";
+          buildShapeMaskPath(targetCtx, tr, w, h, ease);
+          targetCtx.strokeStyle = `rgba(255, 255, 255, ${(1 - ease) * 0.85})`;
+          targetCtx.lineWidth = 4;
+          targetCtx.stroke();
+          targetCtx.restore();
+        } else if (tr === "blinds") {
+          drawImageCover(targetCtx, prevPhoto.img, 0, 0, w, h, pkb.eScale, pkb.ex, pkb.ey, 0);
+          const slats = 8;
+          const slatH = h / slats;
+          for (let s = 0; s < slats; s++) {
+            const visibleH = slatH * ease;
+            targetCtx.save();
+            targetCtx.beginPath();
+            targetCtx.rect(0, s * slatH, w, visibleH);
+            targetCtx.clip();
+            drawImageCover(targetCtx, currPhoto.img, 0, 0, w, h, currZoom, currPanX, currPanY, 0);
+            targetCtx.restore();
+          }
+        } else if (tr === "glitch_slice") {
+          const basePhoto = ease < 0.5 ? prevPhoto : currPhoto;
+          const bZoom = ease < 0.5 ? pkb.eScale : currZoom;
+          const bPanX = ease < 0.5 ? pkb.ex : currPanX;
+          const bPanY = ease < 0.5 ? pkb.ey : currPanY;
+          const intensity = Math.sin(ease * Math.PI);
+          const slices = 7;
+          const sliceH = h / slices;
+          for (let s = 0; s < slices; s++) {
+            const jitterX = Math.sin(ease * 45 + s * 2.7) * w * 0.09 * intensity;
+            targetCtx.save();
+            targetCtx.beginPath();
+            targetCtx.rect(0, s * sliceH, w, sliceH + 1);
+            targetCtx.clip();
+            drawImageCover(targetCtx, basePhoto.img, jitterX, 0, w, h, bZoom, bPanX, bPanY, 0);
+            targetCtx.restore();
+          }
         }
 
         targetCtx.restore();
@@ -5069,6 +5536,7 @@
       }
 
       window.onload = function () {
+        setupLicenseGate();
         setupInstallableAppManifest();
 
         const formatInfo = detectBestVideoMime();
