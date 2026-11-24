@@ -1000,11 +1000,8 @@
         🛍️ Don't have a key? Get Your License Key
       </a>
 
-      <div style="border-top:1px solid var(--border);padding-top:10px;display:flex;justify-content:space-between;align-items:center;font-size:0.72rem;color:var(--text-muted);">
-        <span>Works 100% offline after activation</span>
-        <button type="button" id="creatorBypassBtn" style="background:none;border:none;color:var(--teal);font-weight:700;cursor:pointer;text-decoration:underline;font-size:0.72rem;">
-          Creator Test Mode
-        </button>
+      <div style="border-top:1px solid var(--border);padding-top:10px;text-align:center;font-size:0.72rem;color:var(--text-muted);">
+        <span>🔒 One-time activation • Works 100% offline afterward</span>
       </div>
     </div>
   </div>
@@ -1383,7 +1380,6 @@
         const errorEl = document.getElementById("licenseErrorMsg");
         const activateBtn = document.getElementById("activateLicenseBtn");
         const buyLink = document.getElementById("buyLicenseLink");
-        const bypassBtn = document.getElementById("creatorBypassBtn");
         const statusBadge = document.getElementById("licenseStatusBadge");
 
         if (buyLink && STORE_CONFIG.storePurchaseUrl) {
@@ -1393,7 +1389,7 @@
         function unlockApp(savedKeyLabel) {
           gate.classList.add("unlocked");
           if (statusBadge) {
-            statusBadge.textContent = savedKeyLabel === "CREATOR" ? "Creator Test" : "Licensed";
+            statusBadge.textContent = "Licensed";
           }
         }
 
@@ -1471,12 +1467,6 @@
           input.addEventListener("keydown", (e) => {
             if (e.key === "Enter") verifyAndActivate();
           });
-        }
-        if (bypassBtn) {
-          bypassBtn.onclick = () => {
-            unlockApp("CREATOR");
-            showToast("Opened in Creator Test Mode (not saved for buyers).");
-          };
         }
         if (statusBadge) {
           statusBadge.onclick = () => {
