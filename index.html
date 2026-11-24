@@ -163,13 +163,16 @@
     .workspace {
       display: grid;
       grid-template-columns: minmax(310px, 430px) 1fr;
-      min-height: calc(100vh - 56px);
+      height: calc(100dvh - 56px);
+      overflow: hidden;
     }
 
     @media (max-width: 900px) {
       .workspace {
-        grid-template-columns: 1fr;
-        min-height: auto;
+        display: flex;
+        flex-direction: column;
+        height: calc(100dvh - 54px);
+        overflow: hidden;
       }
     }
 
@@ -184,13 +187,16 @@
       padding: 16px;
       gap: 12px;
       position: relative;
+      flex-shrink: 0;
     }
 
     @media (max-width: 900px) {
       .preview-stage {
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 12px;
+        padding: 8px 12px 10px;
+        gap: 8px;
+        z-index: 25;
       }
     }
 
@@ -332,6 +338,9 @@
       flex-direction: column;
       background: var(--bg-panel);
       min-width: 0;
+      min-height: 0;
+      flex: 1;
+      overflow: hidden;
     }
 
     .tabs-nav {
@@ -342,6 +351,7 @@
       padding: 6px 10px 0;
       gap: 4px;
       scrollbar-width: none;
+      flex-shrink: 0;
     }
 
     .tabs-nav::-webkit-scrollbar {
@@ -376,10 +386,13 @@
     .tab-body {
       padding: 18px;
       overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
       flex: 1;
+      min-height: 0;
       display: flex;
       flex-direction: column;
       gap: 18px;
+      padding-bottom: 44px;
     }
 
     .tab-panel {
@@ -2306,9 +2319,9 @@
         canvas.height = dims.h;
 
         const isMobile = window.innerWidth <= 900;
-        const maxH = isMobile ? Math.min(390, window.innerHeight * 0.46) : Math.min(590, window.innerHeight - 175);
+        const maxH = isMobile ? Math.min(285, window.innerHeight * 0.34) : Math.min(590, window.innerHeight - 175);
         const aspect = dims.w / dims.h;
-        const displayH = Math.max(250, maxH);
+        const displayH = Math.max(200, maxH);
         const displayW = Math.round(displayH * aspect);
 
         canvasShell.style.width = displayW + "px";
