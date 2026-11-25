@@ -1,1322 +1,2473 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>Minimal Ripple Screen</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Tone.js for synthesized sound bowl, soft raindrop water & bar chimes -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
-    <!-- English & Decorative Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Inter:wght@400;600;800;900&family=M+PLUS+Rounded+1c:wght@700;800&family=Orbitron:wght@700;900&family=Patrick+Hand&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            -webkit-tap-highlight-color: transparent;
-            user-select: none;
-        }
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="ReelCraft" />
+  <meta name="theme-color" content="#0b0d12" />
+  <title>ReelCraft Studio — Auto Photo-to-Reel & Short Maker</title>
+  <link id="appManifestLink" rel="manifest" />
+  <link id="appleTouchIcon" rel="apple-touch-icon" />
+  <style>
+    :root {
+      --bg-app: #0b0d12;
+      --bg-panel: #131722;
+      --bg-card: #1b2030;
+      --bg-card-hover: #242b40;
+      --border: #2a324a;
+      --text-main: #f3f5fa;
+      --text-muted: #949eb8;
+      --accent: #7c5cff;
+      --accent-hover: #6a48f5;
+      --accent-glow: rgba(124, 92, 255, 0.35);
+      --pink: #ff4d8d;
+      --teal: #14d8b4;
+      --amber: #ffb020;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+    }
 
-        html, body {
-            margin: 0;
-            padding: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-            background-color: #090d16;
-            touch-action: none;
-        }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-        #waterCanvas {
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            display: block;
-            z-index: 0;
-        }
+    html, body {
+      height: 100%;
+      background-color: var(--bg-app);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      overflow-x: hidden;
+    }
 
-        /* English Font Style Classes */
-        .font-style-clean { font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
-        .font-style-round { font-family: 'M PLUS Rounded 1c', 'Fredoka', sans-serif; }
-        .font-style-fluffy { font-family: 'Fredoka', cursive, sans-serif; letter-spacing: 0.02em; }
-        .font-style-sharp { font-family: 'Orbitron', sans-serif; letter-spacing: 0.05em; }
-        .font-style-handwritten { font-family: 'Patrick Hand', cursive, sans-serif; letter-spacing: 0.03em; }
-        .font-style-classic { font-family: 'Playfair Display', Georgia, serif; }
+    /* Header */
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 8px 12px;
+      background: var(--bg-panel);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      gap: 8px;
+    }
 
-        /* Frosted Glass Panel */
-        .glass-sheet {
-            background: rgba(15, 23, 42, 0.56);
-            backdrop-filter: blur(18px);
-            -webkit-backdrop-filter: blur(18px);
-            border: 1px solid rgba(255, 255, 255, 0.24);
-        }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: -0.02em;
+      min-width: 0;
+    }
 
-        .glass-pill {
-            background: rgba(255, 255, 255, 0.14);
-            border: 1px solid rgba(255, 255, 255, 0.24);
-            color: #ffffff;
-            transition: all 0.18s ease;
-        }
+    .brand-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent), var(--pink));
+      display: grid;
+      place-items: center;
+      box-shadow: 0 4px 14px var(--accent-glow);
+      flex-shrink: 0;
+    }
 
-        .glass-pill:active {
-            transform: scale(0.95);
-        }
+    .brand-text-stack {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      line-height: 1.1;
+      white-space: nowrap;
+    }
 
-        .glass-pill-active {
-            background: rgba(255, 255, 255, 0.34);
-            border-color: rgba(255, 255, 255, 0.8);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-        }
+    .brand-title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: var(--text-main);
+    }
 
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .brand-badge {
+      font-size: 8px !important;
+      font-weight: 700;
+      padding: 1px 5px !important;
+      line-height: 1.1 !important;
+      margin-top: 2px;
+      border-radius: 999px;
+      background: rgba(20, 216, 180, 0.14);
+      color: var(--teal);
+      border: 1px solid rgba(20, 216, 180, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      display: inline-block;
+      cursor: pointer;
+    }
 
-        input[type="range"] {
-            -webkit-appearance: none;
-            appearance: none;
-            background: rgba(255, 255, 255, 0.25);
-            height: 5px;
-            border-radius: 999px;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            background: #ffffff;
-            cursor: pointer;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.35);
-        }
+    .top-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
 
-        @keyframes cornerBreath {
-            0%, 100% { opacity: 0.35; }
-            50% { opacity: 0.72; }
-        }
-        .corner-trigger {
-            animation: cornerBreath 3.5s ease-in-out infinite;
-        }
-    </style>
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border);
+      background: var(--bg-card);
+      color: var(--text-main);
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.16s ease;
+      user-select: none;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn:hover {
+      background: var(--bg-card-hover);
+      border-color: #3d4869;
+    }
+
+    .btn:active {
+      transform: scale(0.98);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), #9b4dff);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 14px var(--accent-glow);
+    }
+
+    .btn-primary:hover {
+      filter: brightness(1.08);
+      background: linear-gradient(135deg, var(--accent), #9b4dff);
+    }
+
+    .btn-export {
+      background: linear-gradient(135deg, #ff4d8d, #ff7b39);
+      border-color: transparent;
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(255, 77, 141, 0.35);
+    }
+
+    .btn-export:hover {
+      filter: brightness(1.08);
+    }
+
+    .btn-sm {
+      padding: 6px 9px;
+      font-size: 0.74rem;
+    }
+
+    .btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Main Workspace Grid */
+    .workspace {
+      display: grid;
+      grid-template-columns: minmax(310px, 430px) 1fr;
+      height: calc(100dvh - 52px);
+      overflow: hidden;
+    }
+
+    @media (max-width: 900px) {
+      .workspace {
+        display: flex;
+        flex-direction: column;
+        height: calc(100dvh - 50px);
+        overflow: hidden;
+      }
+    }
+
+    /* Left Preview Column */
+    .preview-stage {
+      background: radial-gradient(circle at 50% 25%, #191f33 0%, #0b0d12 75%);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      gap: 12px;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    @media (max-width: 900px) {
+      .preview-stage {
+        border-right: none;
+        border-bottom: 1px solid var(--border);
+        padding: 8px 12px 10px;
+        gap: 8px;
+        z-index: 25;
+      }
+    }
+
+    .canvas-shell {
+      position: relative;
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: none;
+      max-width: 100%;
+    }
+
+    canvas#previewCanvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      cursor: grab;
+    }
+
+    canvas#previewCanvas:active {
+      cursor: grabbing;
+    }
+
+    .canvas-hint {
+      position: absolute;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(11, 13, 18, 0.72);
+      backdrop-filter: blur(6px);
+      color: #e2e8f0;
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      pointer-events: none;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      white-space: nowrap;
+    }
+
+    /* Transport / Scrubber */
+    .transport {
+      width: 100%;
+      max-width: 340px;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .transport-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .play-btn {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      box-shadow: 0 3px 10px var(--accent-glow);
+    }
+
+    .play-btn:hover {
+      background: var(--accent-hover);
+    }
+
+    .scrubber {
+      flex: 1;
+      -webkit-appearance: none;
+      appearance: none;
+      height: 6px;
+      border-radius: 999px;
+      background: #272f47;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .scrubber::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 15px;
+      height: 15px;
+      border-radius: 50%;
+      background: #fff;
+      border: 3px solid var(--accent);
+      cursor: pointer;
+    }
+
+    .time-readout {
+      font-variant-numeric: tabular-nums;
+      font-size: 0.76rem;
+      color: var(--text-muted);
+      min-width: 72px;
+      text-align: right;
+    }
+
+    .ratio-pills {
+      display: flex;
+      gap: 6px;
+      justify-content: center;
+    }
+
+    .ratio-pill {
+      flex: 1;
+      padding: 5px 8px;
+      border-radius: 7px;
+      font-size: 0.73rem;
+      font-weight: 600;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      cursor: pointer;
+      text-align: center;
+    }
+
+    .ratio-pill.active {
+      background: rgba(124, 92, 255, 0.18);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Right Editor Controls */
+    .editor-pane {
+      display: flex;
+      flex-direction: column;
+      background: var(--bg-panel);
+      min-width: 0;
+      min-height: 0;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .tabs-nav {
+      display: flex;
+      overflow-x: auto;
+      border-bottom: 1px solid var(--border);
+      background: #0f131d;
+      padding: 6px 10px 0;
+      gap: 4px;
+      scrollbar-width: none;
+      flex-shrink: 0;
+    }
+
+    .tabs-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 10px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 600;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+      white-space: nowrap;
+      transition: color 0.15s;
+    }
+
+    .tab-btn:hover {
+      color: var(--text-main);
+    }
+
+    .tab-btn.active {
+      color: #fff;
+      border-bottom-color: var(--accent);
+    }
+
+    .tab-body {
+      padding: 18px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      padding-bottom: 44px;
+    }
+
+    .tab-panel {
+      display: none;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .tab-panel.active {
+      display: flex;
+    }
+
+    /* Section Cards & Controls */
+    .section-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .section-title {
+      font-size: 0.86rem;
+      font-weight: 700;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .section-sub {
+      font-size: 0.77rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    /* Dropzone */
+    .dropzone {
+      border: 2px dashed #394466;
+      border-radius: var(--radius-md);
+      padding: 20px 14px;
+      text-align: center;
+      background: rgba(124, 92, 255, 0.04);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dropzone:hover, .dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(124, 92, 255, 0.12);
+    }
+
+    .visually-hidden-file {
+      position: fixed;
+      top: -100px;
+      left: -100px;
+      width: 1px;
+      height: 1px;
+      opacity: 0.01;
+      overflow: hidden;
+      z-index: -1;
+    }
+
+    /* Photo Strip */
+    .photo-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
+      gap: 10px;
+    }
+
+    .photo-item {
+      position: relative;
+      aspect-ratio: 9 / 14;
+      border-radius: 10px;
+      overflow: hidden;
+      border: 2px solid var(--border);
+      background: #0d1018;
+    }
+
+    .photo-item.active-slide {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 2px rgba(20, 216, 180, 0.25);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-badge {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+      background: rgba(0, 0, 0, 0.72);
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .photo-controls {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
+      display: flex;
+      justify-content: space-between;
+      padding: 14px 4px 4px;
+      gap: 2px;
+    }
+
+    .mini-icon-btn {
+      background: rgba(255, 255, 255, 0.16);
+      border: none;
+      color: #fff;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      font-size: 0.72rem;
+      cursor: pointer;
+      display: grid;
+      place-items: center;
+    }
+
+    .mini-icon-btn:hover {
+      background: var(--accent);
+    }
+
+    .mini-icon-btn.del:hover {
+      background: #e11d48;
+    }
+
+    /* Option Grids */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+      gap: 10px;
+    }
+
+    .choice-card {
+      background: #141825;
+      border: 1.5px solid var(--border);
+      border-radius: 11px;
+      padding: 11px;
+      cursor: pointer;
+      text-align: left;
+      color: var(--text-main);
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .choice-card:hover {
+      border-color: #485680;
+      background: #191f30;
+    }
+
+    .choice-card.selected {
+      border-color: var(--accent);
+      background: rgba(124, 92, 255, 0.15);
+      box-shadow: 0 0 0 1px var(--accent);
+    }
+
+    .choice-title {
+      font-size: 0.83rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .choice-desc {
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      line-height: 1.3;
+    }
+
+    .swatch-bar {
+      height: 8px;
+      border-radius: 999px;
+      width: 100%;
+      margin-bottom: 3px;
+    }
+
+    /* Duration Controls */
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .pill-btn {
+      padding: 6px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: #141825;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .pill-btn.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--accent);
+      cursor: pointer;
+    }
+
+    /* Stamps Palette */
+    .stamp-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
+      gap: 8px;
+    }
+
+    .stamp-btn {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      background: #141825;
+      font-size: 1.65rem;
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      transition: transform 0.14s, border-color 0.14s;
+    }
+
+    .stamp-btn:hover {
+      transform: scale(1.08);
+      border-color: var(--accent);
+      background: #1e2438;
+    }
+
+    .sketch-stamp-btn {
+      aspect-ratio: 1;
+      border-radius: 12px;
+      border: 1.5px solid var(--border);
+      background: #141825;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 4px;
+      cursor: pointer;
+      transition: transform 0.14s, border-color 0.14s;
+    }
+
+    .sketch-stamp-btn:hover {
+      transform: scale(1.06);
+      border-color: var(--teal);
+      background: #1b2236;
+    }
+
+    .sketch-stamp-btn span {
+      font-size: 0.65rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      line-height: 1.1;
+      text-align: center;
+    }
+
+    /* Inputs */
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .field-label {
+      font-size: 0.76rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .text-input, .select-input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 9px;
+      border: 1px solid var(--border);
+      background: #111521;
+      color: var(--text-main);
+      font-size: 0.88rem;
+      outline: none;
+    }
+
+    .text-input:focus, .select-input:focus {
+      border-color: var(--accent);
+    }
+
+    .color-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .color-dot {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid rgba(255, 255, 255, 0.25);
+      cursor: pointer;
+      transition: transform 0.12s;
+    }
+
+    .color-dot.active {
+      transform: scale(1.16);
+      border-color: #fff;
+      box-shadow: 0 0 0 2px var(--accent);
+    }
+
+    .color-picker-wrap {
+      position: relative;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px dashed rgba(255, 255, 255, 0.45);
+      display: grid;
+      place-items: center;
+      cursor: pointer;
+      background: conic-gradient(from 0deg, #ff4d8d, #ffb020, #14d8b4, #38bdf8, #a855f7, #ff4d8d);
+    }
+
+    .color-picker-wrap input[type="color"] {
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
+      position: absolute;
+      inset: 0;
+    }
+
+    /* Phrase Preset Chips */
+    .phrase-scroll {
+      max-height: 185px;
+      overflow-y: auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      padding: 4px 2px;
+    }
+
+    .phrase-chip {
+      padding: 6px 10px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: #141825;
+      color: var(--text-main);
+      font-size: 0.77rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.14s;
+      text-align: left;
+    }
+
+    .phrase-chip:hover {
+      border-color: var(--accent);
+      background: rgba(124, 92, 255, 0.16);
+    }
+
+    .phrase-chip.date-chip {
+      border-color: rgba(20, 216, 180, 0.35);
+      color: #a7f3d0;
+    }
+
+    /* Multi-text layer pills */
+    .layer-strip {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .layer-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 10px;
+      border-radius: 999px;
+      background: #141825;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 600;
+      cursor: pointer;
+      max-width: 170px;
+    }
+
+    .layer-pill span {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .layer-pill.active {
+      background: rgba(124, 92, 255, 0.22);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    /* Export Progress */
+    .progress-wrap {
+      background: #111521;
+      border-radius: 999px;
+      height: 12px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), var(--pink), var(--teal));
+      transition: width 0.15s linear;
+    }
+
+    /* Install App Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 150;
+      background: rgba(5, 7, 12, 0.78);
+      backdrop-filter: blur(6px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    /* License Key Activation Gate */
+    .license-gate {
+      position: fixed;
+      inset: 0;
+      z-index: 200;
+      background: radial-gradient(circle at 50% 20%, #1d1b38 0%, #090b10 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .license-gate.unlocked {
+      display: none;
+    }
+
+    .license-card {
+      width: 100%;
+      max-width: 420px;
+      background: #131722;
+      border: 1px solid #2e3754;
+      border-radius: 22px;
+      padding: 26px 22px;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      text-align: center;
+    }
+
+    .license-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      align-self: center;
+      padding: 4px 12px;
+      border-radius: 999px;
+      background: rgba(124, 92, 255, 0.16);
+      border: 1px solid rgba(124, 92, 255, 0.4);
+      color: #c4b5fd;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    .license-input {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 12px;
+      border: 1.5px solid #333e5e;
+      background: #0b0d14;
+      color: #fff;
+      font-size: 0.96rem;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-align: center;
+      text-transform: uppercase;
+      outline: none;
+    }
+
+    .license-input:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px var(--accent-glow);
+    }
+
+    .license-error {
+      color: #fb7185;
+      font-size: 0.78rem;
+      font-weight: 600;
+      min-height: 18px;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 410px;
+      background: #131722;
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(90px);
+      background: #1e2538;
+      color: #fff;
+      border: 1px solid var(--accent);
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
+      z-index: 250;
+      opacity: 0;
+      transition: all 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      pointer-events: none;
+      max-width: 92vw;
+      text-align: center;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  </style>
 </head>
-<body class="font-style-clean">
+<body>
+  <!-- One-Time License Key Gate (Protects against unauthorized link sharing) -->
+  <div class="license-gate" id="licenseGate">
+    <div class="license-card">
+      <div class="brand-icon" style="width:52px;height:52px;border-radius:15px;margin:0 auto;" aria-hidden="true">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="4"></rect>
+          <polygon points="10 8 16 12 10 16 10 8" fill="#fff"></polygon>
+        </svg>
+      </div>
+      <div class="license-badge">🔒 One-Time Device Activation</div>
+      <h1 style="font-size:1.32rem;font-weight:800;letter-spacing:-0.02em;">Unlock ReelCraft Studio</h1>
+      <p class="section-sub" style="font-size:0.82rem;">
+        Enter the personal License Key from your checkout receipt to activate <strong>ReelCraft Studio</strong> permanently on this device.
+      </p>
 
-    <!-- FULLSCREEN PHOTO & WATER RIPPLE CANVAS -->
-    <canvas id="waterCanvas"></canvas>
+      <input
+        type="text"
+        id="licenseKeyInput"
+        class="license-input"
+        placeholder="PASTE YOUR LICENSE KEY"
+        autocomplete="off"
+        spellcheck="false"
+      />
+      <div class="license-error" id="licenseErrorMsg"></div>
 
-    <!-- DRAGGABLE & PINCH-RESIZABLE TIME & DATE -->
-    <div id="clockContainer" style="left: 50%; top: 18%; transform: translate(-50%, -50%) scale(1);" class="fixed z-10 text-center cursor-move touch-none px-4 py-2 rounded-3xl transition-shadow">
-        <div id="clockWrapper" style="color: #ffffff; opacity: 0.96;">
-            <h1 id="bigClockDisplay" class="text-7xl sm:text-8xl font-extrabold tracking-tight leading-none drop-shadow-[0_4px_20px_rgba(0,0,0,0.35)] whitespace-nowrap">
-                7:22
-            </h1>
-            <p id="bigDateDisplay" class="text-base sm:text-lg font-bold tracking-wide mt-2 drop-shadow-[0_2px_10px_rgba(0,0,0,0.4)] whitespace-nowrap">
-                Sunday, November 22
+      <button type="button" class="btn btn-primary" id="activateLicenseBtn" style="width:100%;padding:13px;font-size:0.95rem;">
+        ✨ Activate App Now
+      </button>
+
+      <a
+        id="buyLicenseLink"
+        href="https://payhip.com/b/5UWeH"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="btn btn-export"
+        style="width:100%;padding:11px;text-decoration:none;font-size:0.86rem;"
+      >
+        🛍️ Don't have a key? Get Your License Key
+      </a>
+
+      <div style="border-top:1px solid var(--border);padding-top:10px;text-align:center;font-size:0.72rem;color:var(--text-muted);">
+        <span>🔒 One-time activation • Works 100% offline afterward</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Install App on Phone / Desktop Modal -->
+  <div class="modal-backdrop" id="installAppModal">
+    <div class="modal-box">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <strong style="font-size:1rem;">📲 Install ReelCraft as an App</strong>
+        <button type="button" class="btn btn-sm" id="closeInstallModalBtn">✕</button>
+      </div>
+      <p class="section-sub">
+        Install <strong>ReelCraft Studio</strong> onto your home screen so it opens full-screen with its own app icon (no browser bar) and works 100% offline:
+      </p>
+      <div style="background:#0d1018;border:1px solid var(--border);border-radius:12px;padding:12px;font-size:0.8rem;line-height:1.5;color:#e2e8f0;">
+        <div style="margin-bottom:8px;"><strong>🍎 iPhone / iPad (Safari):</strong><br/>Tap the <strong>Share</strong> icon <span style="color:var(--teal);">[↑]</span> at the bottom → scroll down and tap <strong>"Add to Home Screen"</strong>.</div>
+        <div><strong>🤖 Android / 💻 Desktop (Chrome/Edge):</strong><br/>Tap the browser menu <strong>(⋮)</strong> → tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong>.</div>
+      </div>
+      <button type="button" class="btn btn-primary" id="triggerNativeInstallBtn" style="display:none;width:100%;">
+        ⚡ Install Now (1-Tap)
+      </button>
+    </div>
+  </div>
+
+  <!-- Top Navigation Bar -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-icon" aria-hidden="true">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="2" width="20" height="20" rx="4"></rect>
+          <polygon points="10 8 16 12 10 16 10 8" fill="#fff"></polygon>
+        </svg>
+      </div>
+      <div class="brand-text-stack">
+        <span class="brand-badge" id="licenseStatusBadge" title="Tap to view or test activation screen">Licensed</span>
+      </div>
+    </div>
+
+    <div class="top-actions">
+      <label for="photoInput" class="btn btn-sm" id="topAddPhotosBtn" title="Select photos from your album">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+        Add Photos
+      </label>
+      <button class="btn btn-export btn-sm" id="topExportJumpBtn">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Export Video
+      </button>
+    </div>
+  </header>
+
+  <!-- Native File Input (never display:none so iOS Safari & WebKit open photo picker reliably) -->
+  <input type="file" id="photoInput" class="visually-hidden-file" accept="image/*,.heic,.heif,.jpg,.jpeg,.png,.webp,.gif" multiple />
+
+  <!-- Main Workspace -->
+  <main class="workspace">
+    <!-- Left Column: Live Video Canvas Preview -->
+    <section class="preview-stage" id="previewStage">
+      <div class="canvas-shell" id="canvasShell">
+        <canvas id="previewCanvas"></canvas>
+        <div class="canvas-hint" id="canvasHint">Drag text or stamps directly on video</div>
+      </div>
+
+      <div class="transport">
+        <div class="transport-row">
+          <button class="play-btn" id="playPauseBtn" aria-label="Play or Pause">
+            <svg id="pauseIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            <svg id="playIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+          </button>
+          <input type="range" class="scrubber" id="timelineScrubber" min="0" max="1000" value="0" />
+          <div class="time-readout" id="timeReadout">00.0s / 15.0s</div>
+        </div>
+
+        <div class="ratio-pills" id="ratioPills">
+          <button class="ratio-pill active" data-ratio="9:16">9:16 Reel / TikTok</button>
+          <button class="ratio-pill" data-ratio="4:5">4:5 IG Post</button>
+          <button class="ratio-pill" data-ratio="1:1">1:1 Square</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Studio Controls -->
+    <section class="editor-pane">
+      <nav class="tabs-nav" id="tabsNav">
+        <button class="tab-btn active" data-tab="photos">📸 Album (<span id="photoCountBadge">0</span>)</button>
+        <button class="tab-btn" data-tab="templates">✨ Templates</button>
+        <button class="tab-btn" data-tab="filters">🎨 Colors</button>
+        <button class="tab-btn" data-tab="floating">🫧 Floating FX</button>
+        <button class="tab-btn" data-tab="frames">🖼️ Frames</button>
+        <button class="tab-btn" data-tab="stamps">🪩 Stamps</button>
+        <button class="tab-btn" data-tab="text">🔤 Letters</button>
+        <button class="tab-btn" data-tab="export">📲 Export</button>
+      </nav>
+
+      <div class="tab-body">
+        <!-- TAB 1: PHOTOS & DURATION -->
+        <div class="tab-panel active" id="tab-photos">
+          <div class="section-card">
+            <div class="section-title">
+              <span>1. Your Photo Album Sequence</span>
+              <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn btn-sm" id="clearPhotosBtn" title="Remove all slides">Clear</button>
+                <button class="btn btn-sm" id="loadDemoBtn">Demo Album</button>
+              </div>
+            </div>
+            <label for="photoInput" class="dropzone" id="dropzone">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9b4dff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div style="font-weight:700;font-size:0.9rem;">Tap to Choose Photos from Album</div>
+              <div class="section-sub">Supports iPhone/Android Camera Roll, JPG, PNG, WebP & HEIC. First upload automatically replaces demo slides.</div>
+            </label>
+            <div class="photo-strip" id="photoStrip"></div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">
+              <span>2. Video Length (10s – 60s)</span>
+              <span id="durationSummary" style="color:var(--teal);font-size:0.8rem;">15s total (3.0s / photo)</span>
+            </div>
+            <div class="preset-row" id="durationPresets">
+              <button class="pill-btn" data-sec="10">10s</button>
+              <button class="pill-btn active" data-sec="15">15s</button>
+              <button class="pill-btn" data-sec="20">20s</button>
+              <button class="pill-btn" data-sec="30">30s</button>
+              <button class="pill-btn" data-sec="45">45s</button>
+              <button class="pill-btn" data-sec="60">60s</button>
+            </div>
+            <div class="slider-row">
+              <span style="font-size:0.75rem;color:var(--text-muted)">10s</span>
+              <input type="range" id="durationSlider" min="10" max="60" step="1" value="15" />
+              <span style="font-size:0.75rem;color:var(--text-muted)">60s</span>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title"><span>3. Photo Transition Style</span></div>
+            <div class="grid-3" id="transitionGrid"></div>
+          </div>
+        </div>
+
+        <!-- TAB 2: ONE-CLICK VIBE TEMPLATES -->
+        <div class="tab-panel" id="tab-templates">
+          <div class="section-card">
+            <div class="section-title"><span>One-Click Short Video Templates</span></div>
+            <p class="section-sub">Instantly styles your album with matching color grading, frame, transition, floating particles, and typography.</p>
+            <div class="grid-2" id="templateGrid"></div>
+          </div>
+        </div>
+
+        <!-- TAB 3: COLOR FILTERS & MOODS -->
+        <div class="tab-panel" id="tab-filters">
+          <div class="section-card">
+            <div class="section-title"><span>Picture Colors & Atmosphere</span></div>
+            <p class="section-sub">Real-time shader-like canvas color grading and animated particle atmospheres.</p>
+            <div class="grid-2" id="filterGrid"></div>
+          </div>
+        </div>
+
+        <!-- TAB 3.5: FLOATING SHINY PARTICLES -->
+        <div class="tab-panel" id="tab-floating">
+          <div class="section-card">
+            <div class="section-title">
+              <span>Transparent Shiny Floating Overlays</span>
+              <button class="btn btn-sm" id="clearFloatingBtn">None</button>
+            </div>
+            <p class="section-sub">Toggle one or multiple translucent floating effects rendered directly into your video.</p>
+            <div class="grid-2" id="floatingFxGrid"></div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">
+              <span>Floating Density & Intensity</span>
+              <span id="densityLabel" style="color:var(--teal);font-size:0.8rem;">Medium</span>
+            </div>
+            <div class="preset-row" id="densityPresets">
+              <button class="pill-btn" data-density="subtle">Subtle</button>
+              <button class="pill-btn active" data-density="medium">Medium</button>
+              <button class="pill-btn" data-density="dreamy">Dreamy / Heavy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 4: DECORATIVE FRAMES -->
+        <div class="tab-panel" id="tab-frames">
+          <div class="section-card">
+            <div class="section-title"><span>Picture Frames & Line Borders (16 Styles)</span></div>
+            <p class="section-sub">Wrap your slideshow in crisp gallery lines, arches, instant film, camcorder HUD, or glowing borders.</p>
+            <div class="grid-2" id="frameGrid"></div>
+          </div>
+        </div>
+
+        <!-- TAB 5: STAMPS & STICKERS -->
+        <div class="tab-panel" id="tab-stamps">
+          <div class="section-card">
+            <div class="section-title" style="cursor:pointer;" id="toggleHwStampsHeader">
+              <span><span id="hwCollapseArrow">▼</span> Handwriting Sketch Stamps (Movable & Resizable)</span>
+              <div style="display:flex;gap:6px;align-items:center;">
+                <button class="btn btn-sm" id="clearStampsBtn">Clear All</button>
+              </div>
+            </div>
+            <div id="hwStampsBody" style="display:flex;flex-direction:column;gap:12px;">
+              <p class="section-sub">Tap to place hand-drawn chalk/neon doodles (Leaf Umbrellas, Angel Wings, Rabbit Ears, Cat Whiskers, Unicorn Horn, Yin & Yang, Sun & Moon). Drag on video to position!</p>
+              <div class="stamp-grid" style="grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));" id="handwritingStampPalette"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title" style="cursor:pointer;" id="toggleEmojiStampsHeader">
+              <span><span id="emojiCollapseArrow">▼</span> Emoji Stamps</span>
+              <span style="font-size:0.74rem;color:var(--text-muted);" id="emojiCollapseHint">Tap to hide</span>
+            </div>
+            <div id="emojiStampsBody">
+              <div class="stamp-grid" id="stampPalette"></div>
+            </div>
+          </div>
+
+          <div class="section-card" id="selectedStampCard" style="display:none;">
+            <div class="section-title">
+              <span>Selected Stamp: <strong id="selectedStampEmoji">✨</strong></span>
+              <button class="btn btn-sm" id="deleteSelectedStampBtn" style="color:#ff6b8b;">Remove</button>
+            </div>
+            <div class="field-group" id="sketchColorGroup" style="display:none;">
+              <span class="field-label">Handwriting Ink Color</span>
+              <div class="color-row" id="sketchInkColorRow"></div>
+            </div>
+            <div class="slider-row">
+              <span class="field-label" style="min-width:52px;">Size</span>
+              <input type="range" id="stampScaleSlider" min="0.4" max="3.0" step="0.05" value="1" />
+            </div>
+            <div class="slider-row">
+              <span class="field-label" style="min-width:52px;">Rotate</span>
+              <input type="range" id="stampRotateSlider" min="-180" max="180" step="1" value="0" />
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 6: LETTERS / TYPOGRAPHY -->
+        <div class="tab-panel" id="tab-text">
+          <div class="section-card">
+            <div class="section-title">
+              <span>Text Layers & Custom Letters</span>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-sm" id="addTextLayerBtn">+ Add Line</button>
+                <button class="btn btn-sm" id="delTextLayerBtn" style="color:#ff6b8b;">Delete</button>
+              </div>
+            </div>
+
+            <div class="layer-strip" id="textLayerStrip"></div>
+
+            <div class="field-group">
+              <label class="field-label" for="captionInput">Active Line Text (or pick from 150+ presets below)</label>
+              <input type="text" id="captionInput" class="text-input" placeholder="Type anything or tap a preset below..." maxlength="70" value="Golden Hour Memories ✨" />
+            </div>
+
+            <div class="grid-2">
+              <div class="field-group">
+                <label class="field-label" for="fontSelect">Letter Font</label>
+                <select id="fontSelect" class="select-input">
+                  <option value="sans">Modern Sans (Clean)</option>
+                  <option value="serif">Classic Editorial Serif</option>
+                  <option value="script">Handwritten Script</option>
+                  <option value="impact">Bold Reel Impact</option>
+                  <option value="retro">Retro Typewriter</option>
+                  <option value="neon">Cyber Neon Glow</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <label class="field-label" for="textStyleSelect">Backdrop / Letter Style</label>
+                <select id="textStyleSelect" class="select-input">
+                  <option value="pill">Frosted Dark Pill</option>
+                  <option value="glass">Clear Glass Pill</option>
+                  <option value="shadow">Clean Drop Shadow</option>
+                  <option value="badge">Solid Contrast Badge</option>
+                  <option value="outline">Crisp Outline Stroke</option>
+                  <option value="neon">Neon Aura Glow</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="slider-row">
+              <span class="field-label" style="min-width:58px;">Size</span>
+              <input type="range" id="textSizeSlider" min="24" max="88" value="48" />
+              <button class="btn btn-sm" id="centerTextBtn">Center</button>
+            </div>
+
+            <div class="field-group">
+              <span class="field-label">Letter Color & Metallic Gradients</span>
+              <div class="color-row" id="textColorRow"></div>
+            </div>
+          </div>
+
+          <div class="section-card">
+            <div class="section-title">
+              <span>150+ Instant Phrases & Auto Today's Date</span>
+              <span id="phraseCountBadge" style="color:var(--teal);font-size:0.76rem;">151 presets</span>
+            </div>
+            <input type="text" id="phraseSearchInput" class="text-input" placeholder="Search phrases (e.g. summer, love, friends, date)..." />
+            <div class="preset-row" id="phraseCategoryRow"></div>
+            <div class="phrase-scroll" id="phrasePresetList"></div>
+          </div>
+        </div>
+
+        <!-- TAB 7: EXPORT TO PHOTO ALBUM -->
+        <div class="tab-panel" id="tab-export">
+          <div class="section-card">
+            <div class="section-title"><span>Export & Save to Photo Album</span></div>
+            <p class="section-sub">
+              Renders a crisp 30fps video directly in your browser. On iPhone/iPad & Android, tap <strong>Share / Save to Photos</strong> after rendering to save straight into your Camera Roll / Photo Album for Reels, Stories, TikTok, or Shorts.
             </p>
+
+            <div class="grid-2">
+              <div class="field-group">
+                <label class="field-label" for="qualitySelect">Resolution Quality</label>
+                <select id="qualitySelect" class="select-input">
+                  <option value="720" selected>720p HD (Fast & Smooth)</option>
+                  <option value="1080">1080p Full HD (Crisp)</option>
+                </select>
+              </div>
+              <div class="field-group">
+                <span class="field-label">Format & Length</span>
+                <div class="text-input" style="display:flex;align-items:center;justify-content:space-between;background:#141825;">
+                  <span id="formatLabel" style="font-size:0.78rem;color:var(--text-muted);">MP4 / WebM</span>
+                  <strong id="exportDurTag" style="color:var(--teal);font-size:0.82rem;">15s</strong>
+                </div>
+              </div>
+            </div>
+
+            <button class="btn btn-export" id="renderVideoBtn" style="width:100%;padding:12px;font-size:0.95rem;">
+              🎬 Render Short Video
+            </button>
+
+            <div id="exportProgressBox" style="display:none;flex-direction:column;gap:8px;">
+              <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);">
+                <span id="exportStatusText">Rendering...</span>
+                <strong id="exportPercentText" style="color:#fff;">0%</strong>
+              </div>
+              <div class="progress-wrap">
+                <div class="progress-fill" id="exportProgressFill"></div>
+              </div>
+            </div>
+
+            <div id="exportResultBox" style="display:none;flex-direction:column;gap:8px;padding-top:4px;">
+              <button class="btn btn-primary" id="shareToAlbumBtn" style="width:100%;padding:12px;">
+                📲 Save to Photo Album / Share
+              </button>
+              <a id="downloadVideoLink" class="btn" style="width:100%;text-decoration:none;" download="ReelCraft_Short.mp4">
+                ⬇️ Download Video File
+              </a>
+            </div>
+          </div>
         </div>
-    </div>
+      </div>
+    </section>
+  </main>
 
-    <!-- SUBTLE CORNER BUTTON TO REOPEN CONTROLS -->
-    <button id="reopenCornerBtn" type="button" aria-label="Open settings" class="corner-trigger fixed bottom-5 right-5 z-20 w-10 h-10 rounded-full glass-pill flex items-center justify-center text-white text-xs font-extrabold tracking-widest shadow-lg">
-        •••
-    </button>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-    <!-- CUSTOMIZATION DRAWER (Auto-hides after choosing photos or tapping Done) -->
-    <div id="controlDrawer" class="fixed inset-x-0 bottom-0 z-30 p-3 sm:p-4 max-w-lg mx-auto transition-all duration-300 ease-out">
-        <div class="glass-sheet rounded-3xl p-4 shadow-2xl text-white space-y-3">
+  <script>
+    (function () {
+      /* =========================================================================
+         0. STORE & LICENSE KEY CONFIGURATION
+         ========================================================================= */
+      const STORE_CONFIG = {
+        storePurchaseUrl: "https://payhip.com/b/5UWeH",
+        gumroadProductId: "",
+        creatorMasterKey: "REELCRAFT-VIP-2026",
+        storageKey: "reelcraft_activated_license_v1"
+      };
 
-            <!-- Header & Done Button -->
-            <div class="flex items-center justify-between">
-                <span class="text-[11px] font-extrabold uppercase tracking-widest text-white/80">
-                    Drag clock • Pinch to resize • Double-tap screen
-                </span>
-                <button id="doneBtn" type="button" class="px-3.5 py-1 rounded-full bg-white text-slate-900 text-xs font-extrabold shadow active:scale-95 transition">
-                    Done
-                </button>
+      function setupLicenseGate() {
+        const gate = document.getElementById("licenseGate");
+        const input = document.getElementById("licenseKeyInput");
+        const errorEl = document.getElementById("licenseErrorMsg");
+        const activateBtn = document.getElementById("activateLicenseBtn");
+        const buyLink = document.getElementById("buyLicenseLink");
+        const statusBadge = document.getElementById("licenseStatusBadge");
+
+        if (buyLink && STORE_CONFIG.storePurchaseUrl) {
+          buyLink.href = STORE_CONFIG.storePurchaseUrl;
+        }
+
+        function unlockApp() {
+          gate.classList.add("unlocked");
+          if (statusBadge) {
+            statusBadge.textContent = "Licensed";
+          }
+        }
+
+        try {
+          const existing = localStorage.getItem(STORE_CONFIG.storageKey);
+          if (existing) {
+            unlockApp();
+          }
+        } catch (_) {}
+
+        async function verifyAndActivate() {
+          const rawKey = (input.value || "").trim().toUpperCase();
+          errorEl.textContent = "";
+
+          if (!rawKey) {
+            errorEl.textContent = "Please enter your License Key.";
+            return;
+          }
+
+          if (rawKey === STORE_CONFIG.creatorMasterKey) {
+            try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
+            unlockApp();
+            showToast("Creator VIP Key activated!");
+            return;
+          }
+
+          activateBtn.disabled = true;
+          activateBtn.textContent = "Verifying key...";
+
+          try {
+            if (STORE_CONFIG.gumroadProductId) {
+              const resp = await fetch("https://api.gumroad.com/v2/licenses/verify", {
+                method: "POST",
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: new URLSearchParams({
+                  product_id: STORE_CONFIG.gumroadProductId,
+                  license_key: rawKey,
+                  increment_uses_count: "true"
+                })
+              });
+              const data = await resp.json();
+              if (!data.success || data.purchase?.refunded || data.purchase?.chargebacked) {
+                errorEl.textContent = "Invalid or refunded License Key.";
+                return;
+              }
+              if (data.uses && data.uses > 2) {
+                errorEl.textContent = "This key has already reached its 2-device limit.";
+                return;
+              }
+            } else {
+              const validPayhipFormat = /^[A-Z0-9]{4,8}(-[A-Z0-9]{4,8}){2,4}$/.test(rawKey);
+              if (!validPayhipFormat) {
+                errorEl.textContent = "Invalid key format. Copy the exact key from your Payhip receipt.";
+                return;
+              }
+            }
+
+            try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
+            unlockApp();
+            showToast("App unlocked! Enjoy ReelCraft Studio.");
+          } catch (err) {
+            errorEl.textContent = "Could not verify right now. Check connection & try again.";
+          } finally {
+            activateBtn.disabled = false;
+            activateBtn.textContent = "✨ Activate App Now";
+          }
+        }
+
+        if (activateBtn) activateBtn.onclick = verifyAndActivate;
+        if (input) {
+          input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") verifyAndActivate();
+          });
+        }
+        if (statusBadge) {
+          statusBadge.onclick = () => {
+            try { localStorage.removeItem(STORE_CONFIG.storageKey); } catch (_) {}
+            input.value = "";
+            errorEl.textContent = "";
+            gate.classList.remove("unlocked");
+          };
+        }
+      }
+
+      /* =========================================================================
+         0B. INSTALLABLE APP ICON & MANIFEST SETUP
+         ========================================================================= */
+      function setupInstallableAppManifest() {
+        try {
+          const iconCanvas = document.createElement("canvas");
+          iconCanvas.width = 512;
+          iconCanvas.height = 512;
+          const ictx = iconCanvas.getContext("2d");
+          const grad = ictx.createLinearGradient(0, 0, 512, 512);
+          grad.addColorStop(0, "#7c5cff");
+          grad.addColorStop(1, "#ff4d8d");
+          ictx.fillStyle = grad;
+          ictx.beginPath();
+          ictx.roundRect(0, 0, 512, 512, 112);
+          ictx.fill();
+
+          ictx.fillStyle = "#ffffff";
+          ictx.beginPath();
+          ictx.moveTo(195, 150);
+          ictx.lineTo(365, 256);
+          ictx.lineTo(195, 362);
+          ictx.closePath();
+          ictx.fill();
+
+          const iconUrl = iconCanvas.toDataURL("image/png");
+          const appleIcon = document.getElementById("appleTouchIcon");
+          if (appleIcon) appleIcon.href = iconUrl;
+
+          const manifestObj = {
+            name: "ReelCraft Studio",
+            short_name: "ReelCraft",
+            description: "Auto Photo-to-Reel, TikTok & Short Video Maker",
+            start_url: "./",
+            display: "standalone",
+            background_color: "#0b0d12",
+            theme_color: "#0b0d12",
+            icons: [{ src: iconUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }]
+          };
+          const blob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
+          const manifestLink = document.getElementById("appManifestLink");
+          if (manifestLink) manifestLink.href = URL.createObjectURL(blob);
+        } catch (_) {}
+      }
+
+      /* =========================================================================
+         1. STUDIO PRESETS, FILTERS, FRAMES, STAMPS & PHRASE LIBRARIES
+         ========================================================================= */
+      const TRANSITIONS = [
+        { id: "crossfade", name: "Smooth Fade", desc: "Soft cinema dissolve" },
+        { id: "slide", name: "Slide Push", desc: "Horizontal glide cut" },
+        { id: "slide_up", name: "Vertical Push", desc: "Upward Reels swipe" },
+        { id: "whip", name: "Whip Pan", desc: "Fast TikTok motion swipe" },
+        { id: "zoom", name: "Zoom In Burst", desc: "Energetic lens punch-in" },
+        { id: "zoom_out", name: "Zoom Out Pull", desc: "Dramatic pull-back reveal" },
+        { id: "infinite_zoom", name: "Infinite Tunnel", desc: "Endless nested frame zoom" },
+        { id: "match_cut", name: "Match Cut Beat", desc: "Punchy snap-scale beat cut" },
+        { id: "pan_spin", name: "Pan & Spin 360", desc: "Dynamic swirl & orbit turn" },
+        { id: "spin", name: "Tilt Swirl", desc: "Playful diagonal tilt" },
+        { id: "film_burn", name: "Film Burn Leak", desc: "Warm orange analog light burn" },
+        { id: "luma_flash", name: "Luma Flash", desc: "High-key cinema exposure bloom" },
+        { id: "flash", name: "Camera Flash", desc: "Crisp white shutter pop" },
+        { id: "split_lr", name: "Split Sideways", desc: "Opens from center left & right" },
+        { id: "split_ud", name: "Split Up & Down", desc: "Opens from center top & bottom" },
+        { id: "origami", name: "Origami Fold", desc: "3D paper hinge fold reveal" },
+        { id: "mask_heart", name: "💖 Heart Iris", desc: "Expanding heart shape mask" },
+        { id: "mask_star", name: "⭐ Star Iris", desc: "5-point star shape reveal" },
+        { id: "mask_diamond", name: "💎 Diamond Mask", desc: "Geometric diamond wipe" },
+        { id: "mask_circle", name: "⭕ Circle Iris", desc: "Classic cinema iris open" },
+        { id: "blinds", name: "Venetian Blinds", desc: "Sliced shutter slats reveal" },
+        { id: "glitch_slice", name: "⚡ Glitch Slice", desc: "Cyber RGB shift & slice cut" }
+      ];
+
+      const FILTERS = [
+        { id: "original", name: "Original", desc: "Natural true-to-life colors", swatch: "linear-gradient(90deg,#94a3b8,#e2e8f0)" },
+        { id: "lofi", name: "Lo-Fi Matte", desc: "Warm creamy vintage film", swatch: "linear-gradient(90deg,#d6a27e,#f5deb3)" },
+        { id: "bw", name: "B&W Noir", desc: "Crisp monochrome contrast", swatch: "linear-gradient(90deg,#0f172a,#f8fafc)" },
+        { id: "sepia", name: "Warm Sepia", desc: "Nostalgic antique amber", swatch: "linear-gradient(90deg,#78350f,#fcd34d)" },
+        { id: "rainbow", name: "Rainbow Prism", desc: "Animated pastel light leaks", swatch: "linear-gradient(90deg,#ff4d8d,#fbbf24,#14d8b4,#a855f7)" },
+        { id: "forest", name: "Magical Forest", desc: "Emerald sunbeams & fireflies", swatch: "linear-gradient(90deg,#065f46,#34d399,#fef08a)" },
+        { id: "oldmovie", name: "Old Movie 1920", desc: "Flicker, scratches & vignette", swatch: "linear-gradient(90deg,#27272a,#a1a1aa,#713f12)" },
+        { id: "neon", name: "Cyber Neon", desc: "Electric magenta & cyan pop", swatch: "linear-gradient(90deg,#ec4899,#8b5cf6,#06b6d4)" },
+        { id: "disco", name: "Disco Party", desc: "Moving spotlights & bokeh", swatch: "linear-gradient(90deg,#f43f5e,#facc15,#38bdf8,#c084fc)" },
+        { id: "paradise", name: "Tropical Paradise", desc: "Golden sun flare & teal glow", swatch: "linear-gradient(90deg,#fb7185,#fdba74,#2dd4bf)" }
+      ];
+
+      const FLOATING_EFFECTS = [
+        { id: "hearts", name: "💖 Shiny Hearts", desc: "Translucent glass hearts rising" },
+        { id: "stars", name: "✨ Sparkling Stars", desc: "Twinkling 4-point starlight" },
+        { id: "moons", name: "🌙 Shiny Crescent Moons", desc: "Luminous floating crescents" },
+        { id: "snowflakes", name: "❄️ Shiny Snowflakes", desc: "Crystalline drifting snow" },
+        { id: "butterflies", name: "🦋 Butterflies", desc: "Fluttering pastel butterflies" },
+        { id: "petals", name: "🌸 Cherry Blossoms", desc: "Drifting sakura flower petals" },
+        { id: "bubbles", name: "🫧 Iridescent Bubbles", desc: "Floating rainbow soap bubbles" },
+        { id: "glitter", name: "🌟 Golden Glitter", desc: "Shimmering gold confetti dust" }
+      ];
+
+      const FRAMES = [
+        { id: "none", name: "Full Bleed", desc: "Edge-to-edge borderless video" },
+        { id: "handhearts", name: "✍️ Double-Lined Heart", desc: "Tall freehand double heart loop" },
+        { id: "handstars", name: "✍️ Double-Lined Star", desc: "Full-screen hand-drawn star loop" },
+        { id: "handwave", name: "✍️ Wavy Double Line", desc: "Organic non-straight wavy border" },
+        { id: "handcloud", name: "☁️ Scalloped Cloud Loop", desc: "Double-lined fluffy cloud border" },
+        { id: "thinline", name: "Thin Gallery Line", desc: "Minimal crisp white border" },
+        { id: "doubleline", name: "Double Fine Line", desc: "Elegant dual-stroke frame" },
+        { id: "arch", name: "Rounded Arch Window", desc: "Cream & gold arched gallery frame" },
+        { id: "brackets", name: "Viewfinder Corners", desc: "Clean corner focus brackets" },
+        { id: "stitch", name: "Dashed Stitch Line", desc: "Rounded dashed craft border" },
+        { id: "auraglow", name: "Gradient Aura Line", desc: "Glowing sunset-to-sky border" },
+        { id: "artdeco", name: "Gold Art Deco", desc: "Double gold lines with diamonds" },
+        { id: "filmstrip", name: "35mm Film Strip", desc: "Animated sprocket holes" },
+        { id: "polaroid", name: "Polaroid Instant", desc: "Classic white instant photo card" },
+        { id: "cinema", name: "Cinema Letterbox", desc: "Widescreen bars & live timecode" },
+        { id: "vhs", name: "VHS Camcorder", desc: "1998 REC indicator & scanlines" }
+      ];
+
+      const STAMPS = [
+        "💖", "💕", "💗", "💓", "💞", "💘", "💝", "❤️", "🩷", "🧡", "💛", "💚", "🩵", "💙", "💜", "🤍", "🖤", "🤎", "❤️‍🔥", "🫶",
+        "✨", "🔥", "🌸", "🌺", "🌷", "🌻", "🍀", "🦋", "🎵", "☀️", "🌙", "⭐", "🌟", "💫", "🌈", "🫧",
+        "🎞️", "🥂", "💍", "👑", "🎀", "🧸", "🍓", "🍒", "🌴", "🪩", "🎉", "🎂", "🕊️"
+      ];
+
+      const HANDWRITING_STAMPS = [
+        { id: "monstera_umbrella_left", label: "Leaf Umbrella L" },
+        { id: "monstera_umbrella_right", label: "Leaf Umbrella R" },
+        { id: "monstera_leaf", label: "Monstera Leaf" },
+        { id: "totoro_leaf_hat", label: "Leaf Hat" },
+        { id: "sprout_head", label: "Head Sprout" },
+        { id: "daisy_flower", label: "Daisy" },
+        { id: "tulip_doodle", label: "Tulip" },
+        { id: "rose_doodle", label: "Rose" },
+        { id: "cherry_blossom_doodle", label: "Blossom" },
+        { id: "four_leaf_clover", label: "Lucky Clover" },
+        { id: "sunflower_doodle", label: "Sunflower" },
+        { id: "palm_tree_doodle", label: "Palm Tree" },
+        { id: "mushroom_doodle", label: "Mushroom" },
+        { id: "cactus_doodle", label: "Cactus" },
+        { id: "vine_branch", label: "Leaf Vine" },
+        { id: "wave_doodle", label: "Ocean Wave" },
+        { id: "mountain_doodle", label: "Mountains" },
+
+        { id: "butterfly_wings_spread", label: "Butterfly Wings" },
+        { id: "angelwings", label: "Angel Wings" },
+        { id: "fairy_wings", label: "Fairy Wings" },
+        { id: "bat_wings", label: "Bat Wings" },
+        { id: "butterfly_sketch", label: "Mini Butterfly" },
+        { id: "halo_ring", label: "Angel Halo" },
+        { id: "devil_horns", label: "Devil Horns" },
+        { id: "unicornhorn", label: "Unicorn Horn" },
+        { id: "rabbitears", label: "Rabbit Ears" },
+        { id: "cat_ears", label: "Cat Ears" },
+        { id: "bear_ears", label: "Bear Ears" },
+        { id: "crown_sketch", label: "Queen Crown" },
+        { id: "tiara_doodle", label: "Tiara" },
+        { id: "party_hat", label: "Party Hat" },
+        { id: "witch_hat", label: "Witch Hat" },
+        { id: "cowboy_hat", label: "Cowboy Hat" },
+        { id: "catwhiskers", label: "Cat Whiskers" },
+        { id: "mustache_curl", label: "Mustache" },
+        { id: "beard_full", label: "Full Beard" },
+        { id: "goatee_doodle", label: "Beard & Stache" },
+        { id: "heart_glasses", label: "Heart Glasses" },
+        { id: "star_glasses", label: "Star Glasses" },
+        { id: "cool_shades", label: "Sunglasses" },
+        { id: "blush_cheeks", label: "Cute Blush" },
+        { id: "freckles_doodle", label: "Freckles" },
+        { id: "lips_kiss", label: "Kiss Lips" },
+        { id: "bow_tie", label: "Bow Tie" },
+        { id: "ribbon_bow", label: "Ribbon Bow" },
+
+        { id: "diamond_ring", label: "Diamond Ring" },
+        { id: "big_diamond", label: "Diamond" },
+        { id: "doubleheart", label: "2x Heart" },
+        { id: "winged_heart", label: "Winged Heart" },
+        { id: "arrow_heart", label: "Cupid Heart" },
+        { id: "sparkle_heart", label: "Sparkle Heart" },
+        { id: "infinite_love", label: "Infinity Heart" },
+        { id: "heart_pulse", label: "Heartbeat" },
+
+        { id: "yinyang", label: "Yin & Yang" },
+        { id: "sunmoon", label: "Sun & Moon" },
+        { id: "crescent_stars", label: "Moon & Stars" },
+        { id: "doublestar", label: "2x Star" },
+        { id: "sparkle_cluster", label: "Sparkles" },
+        { id: "lightning_bolt", label: "Lightning" },
+        { id: "snowflake_doodle", label: "Snowflake" },
+        { id: "crystal_gem", label: "Crystal" },
+        { id: "evil_eye", label: "Evil Eye" },
+        { id: "dreamcatcher", label: "Dreamcatcher" },
+        { id: "anchor_doodle", label: "Anchor" },
+        { id: "speech_bubble", label: "Speech Bubble" },
+        { id: "xoxo_doodle", label: "XOXO" }
+      ];
+
+      const SKETCH_INK_COLORS = ["#ffffff", "#fde047", "#f9a8d4", "#67e8f9", "#c4b5fd", "#6ee7b7", "#ff4d8d", "#0f172a"];
+
+      const TEXT_COLORS = [
+        { id: "#ffffff", label: "Pure White", css: "#ffffff" },
+        { id: "#0f172a", label: "Jet Black", css: "#0f172a" },
+        { id: "#fef3c7", label: "Soft Cream", css: "#fef3c7" },
+        { id: "#fbcfe8", label: "Blush Pink", css: "#fbcfe8" },
+        { id: "#ff4d8d", label: "Hot Rose", css: "#ff4d8d" },
+        { id: "#fde047", label: "Champagne Gold", css: "#fde047" },
+        { id: "#fb7185", label: "Sunset Coral", css: "#fb7185" },
+        { id: "#ddd6fe", label: "Lavender Mist", css: "#ddd6fe" },
+        { id: "#38bdf8", label: "Sky Blue", css: "#38bdf8" },
+        { id: "#6ee7b7", label: "Mint Sage", css: "#6ee7b7" },
+        { id: "#22d3ee", label: "Neon Cyan", css: "#22d3ee" },
+        { id: "#e879f9", label: "Neon Magenta", css: "#e879f9" },
+        { id: "#f43f5e", label: "Ruby Red", css: "#f43f5e" },
+        { id: "grad_gold", label: "Gold Foil Metallic", css: "linear-gradient(135deg,#fef08a,#eab308,#ca8a04,#fef9c3)" },
+        { id: "grad_sunset", label: "Sunset Gradient", css: "linear-gradient(135deg,#ff4d8d,#ff9e2c,#fde047)" },
+        { id: "grad_holo", label: "Holographic Pastel", css: "linear-gradient(135deg,#f9a8d4,#c4b5fd,#67e8f9,#fde68a)" }
+      ];
+
+      function buildDynamicPhraseLibrary() {
+        const now = new Date();
+        const monthsShort = ["JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"];
+        const monthsFull = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const daysFull = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+        const mShort = monthsShort[now.getMonth()];
+        const mFull = monthsFull[now.getMonth()];
+        const dNum = String(now.getDate()).padStart(2, "0");
+        const mNum = String(now.getMonth() + 1).padStart(2, "0");
+        const yyyy = now.getFullYear();
+        const yy = String(yyyy).slice(-2);
+        const dayName = daysFull[now.getDay()];
+
+        const datePhrases = [
+          `${mShort} ${dNum}, ${yyyy}`,
+          `${yyyy}.${mNum}.${dNum}`,
+          `${mFull} ${now.getDate()} • ${dayName}`,
+          `Captured on ${mNum}/${dNum}/${yy}`,
+          `Memory • ${mFull} ${yyyy}`,
+          `${dayName} Archive ✨`,
+          `REC • ${mShort} ${dNum} '${yy}`,
+          `${dNum} • ${mShort} • ${yyyy}`,
+          `Today's Moment • ${mNum}.${dNum}`,
+          `${mFull} Diaries 📖`,
+          `Chapter ${mNum} of ${yyyy}`,
+          `Saved Forever • ${yyyy}`
+        ];
+
+        const lovePhrases = [
+          "Love Forever 💕", "You & Me", "My Favorite Person", "Endless Love",
+          "Soulmates ✨", "Forever & Always", "Heart Full of You", "Pure Magic",
+          "Better Together", "My Happy Place", "All My Love", "Written in the Stars",
+          "Always Yours", "Sweetest Memories", "Love You to the Moon", "My Whole Heart",
+          "Date Night ✨", "Crazy in Love", "Us Against the World", "Forever Starts Now"
+        ];
+
+        const friendsPhrases = [
+          "Best Friends Forever 👯", "Partners in Crime", "Good Times & Crazy Friends",
+          "Soul Sisters ✨", "Unbreakable Bond", "My Day Ones", "Squad Goals",
+          "Laughing Until It Hurts", "Friends Like Family", "Core Memories Together",
+          "Girls Night Out 🥂", "No One Else I'd Rather Be With", "Through Thick & Thin",
+          "Besties for Life", "Weekend Crew", "Unforgettable Nights", "Forever My People",
+          "Making Memories", "Pure Chaos & Love", "Together is Best"
+        ];
+
+        const summerPhrases = [
+          "Memory of Summer ☀️", "Chasing Sunsets", "Golden Hour ✨", "Ocean Breeze",
+          "Paradise Found 🌴", "Wanderlust", "Summer Daze", "Salt in the Air",
+          "Vacation Mode ✈️", "Core Memory", "Endless Summer", "Sun-Kissed Days",
+          "Beach Vibes Only", "Lost in Paradise", "Tropical Escape", "Postcard from Here",
+          "Adventure Awaits", "Under the Palm Trees", "Sunkissed & Happy", "Take Me Back"
+        ];
+
+        const aestheticPhrases = [
+          "Main Character Energy ✨", "Slow Living", "Romanticize Your Life",
+          "Dreamy Days", "Little Things", "Aesthetic Mood", "Soft & Golden",
+          "In My Element", "Poetic Cinema", "Velvet Skies", "Stay Golden",
+          "Magic in the Mundane", "Snapshots of Joy", "Pure Bliss", "Timeless",
+          "Ethereal Moments", "Glow Different", "Keep Shining ✨", "Art of Living"
+        ];
+
+        const celebrationPhrases = [
+          "Happy Birthday 🎂", "Congratulations! 🎉", "Happy Valentine's Day 💕",
+          "Merry Christmas 🎄", "Happy Hanukkah 🕎", "Happy New Year 🥂",
+          "Break a Leg! 🎭", "Cheers to Us 🥂", "Best Night Ever",
+          "Celebrate Life", "You Did It! 🌟", "Wishing You Joy ✨",
+          "Season's Greetings ❄️", "Warmest Wishes", "Here's to Forever",
+          "New Chapter ✨", "Party All Night 🪩", "Blessed & Grateful",
+          "Sending Love & Light", "Best Wishes Always"
+        ];
+
+        const dailyPhrases = [
+          "Sunday Reset ☕", "Cozy Vibes Only", "Coffee & Sunshine", "Just Breathe",
+          "Weekend Recap", "Happy Heart", "Life Lately 📸", "Good Vibes Only",
+          "Small Joys", "Grateful Today", "Current Mood", "Simple Pleasures",
+          "Peace of Mind", "Every Day is a Gift", "Living in the Moment"
+        ];
+
+        const abbrPhrases = [
+          "XOXO 💋", "BFF 💕", "ILY 💖", "LOML ❤️", "POV:", "OOTD ✨", "GRWM 💄",
+          "TBT 🎞️", "OMG ✨", "LOL 😂", "SLAY 💅", "VIBE ✨", "QT 🩷", "BAE 💕",
+          "HBD 🎂", "TGIF 🥂", "YOLO 🌟", "BRB ✈️", "GOALS ✨", "ICONIC 👑",
+          "MOOD 🪩", "FBF 📸", "MCM 😍", "WCW 💕", "DIY 🎨", "VIP 🥂"
+        ];
+
+        const list = [];
+        abbrPhrases.forEach((text) => list.push({ cat: "abbr", text }));
+        datePhrases.forEach((text) => list.push({ cat: "date", text }));
+        lovePhrases.forEach((text) => list.push({ cat: "love", text }));
+        friendsPhrases.forEach((text) => list.push({ cat: "friends", text }));
+        summerPhrases.forEach((text) => list.push({ cat: "summer", text }));
+        aestheticPhrases.forEach((text) => list.push({ cat: "aesthetic", text }));
+        celebrationPhrases.forEach((text) => list.push({ cat: "celebration", text }));
+        dailyPhrases.forEach((text) => list.push({ cat: "daily", text }));
+        return list;
+      }
+
+      const PHRASE_CATEGORIES = [
+        { id: "all", label: "All (151)" },
+        { id: "abbr", label: "💬 XOXO / BFF / Abbreviations" },
+        { id: "celebration", label: "💌 Greeting Cards" },
+        { id: "date", label: "📅 Today's Date" },
+        { id: "love", label: "💕 Love" },
+        { id: "friends", label: "👯 Best Friends" },
+        { id: "summer", label: "☀️ Summer" },
+        { id: "aesthetic", label: "✨ Aesthetic" },
+        { id: "daily", label: "🌿 Daily" }
+      ];
+
+      const PHRASE_PRESETS = buildDynamicPhraseLibrary();
+
+      const TEMPLATES = [
+        {
+          id: "glossy_hearts_love",
+          name: "💖 Glossy Hearts & Romance",
+          desc: "Transparent shiny hearts, rose gold foil & thin line",
+          filter: "paradise",
+          frame: "thinline",
+          floating: ["hearts", "stars"],
+          transition: "crossfade",
+          text: "Love Forever 💕",
+          font: "script",
+          textColor: "grad_gold",
+          textStyle: "shadow",
+          textY: 0.84,
+          stamps: []
+        },
+        {
+          id: "butterfly_garden",
+          name: "🦋 Butterfly Arch Dream",
+          desc: "Fluttering butterflies, arched window & sparkles",
+          filter: "forest",
+          frame: "arch",
+          floating: ["butterflies", "stars"],
+          transition: "crossfade",
+          text: "Memory of Summer ☀️",
+          font: "serif",
+          textColor: "grad_holo",
+          textStyle: "glass",
+          textY: 0.85,
+          stamps: []
+        },
+        {
+          id: "lofi_vlog",
+          name: "✨ Aesthetic Lo-Fi Vlog",
+          desc: "Warm matte tones, Polaroid card & cherry blossoms",
+          filter: "lofi",
+          frame: "polaroid",
+          floating: ["petals"],
+          transition: "crossfade",
+          text: "slow days & cozy moments ✨",
+          font: "script",
+          textColor: "#0f172a",
+          textStyle: "shadow",
+          textY: 0.86,
+          stamps: []
+        },
+        {
+          id: "friday_disco",
+          name: "🪩 Friday Night Disco",
+          desc: "Party spotlights, golden glitter & neon border",
+          filter: "disco",
+          frame: "neonframe",
+          floating: ["glitter", "stars"],
+          transition: "whip",
+          text: "BEST FRIENDS FOREVER 👯",
+          font: "impact",
+          textColor: "#ffffff",
+          textStyle: "pill",
+          textY: 0.82,
+          stamps: []
+        },
+        {
+          id: "retro_1998",
+          name: "🎞️ 35mm Film Archive",
+          desc: "Old movie grain, 35mm sprockets & today's date",
+          filter: "oldmovie",
+          frame: "filmstrip",
+          floating: ["stars"],
+          transition: "flash",
+          text: PHRASE_PRESETS[0].text,
+          font: "retro",
+          textColor: "#fde047",
+          textStyle: "shadow",
+          textY: 0.84,
+          stamps: []
+        },
+        {
+          id: "tropical_paradise",
+          name: "🌴 Tropical Bubbles & Sun",
+          desc: "Teal & coral warmth, aura line & rising bubbles",
+          filter: "paradise",
+          frame: "auraglow",
+          floating: ["bubbles"],
+          transition: "slide",
+          text: "PARADISE FOUND ☀️",
+          font: "sans",
+          textColor: "grad_sunset",
+          textStyle: "pill",
+          textY: 0.83,
+          stamps: []
+        },
+        {
+          id: "noir_story",
+          name: "🖤 Art Deco Gold Story",
+          desc: "High-contrast B&W with gold art deco lines",
+          filter: "bw",
+          frame: "artdeco",
+          floating: ["glitter"],
+          transition: "zoom",
+          text: "CHAPTER ONE",
+          font: "serif",
+          textColor: "grad_gold",
+          textStyle: "shadow",
+          textY: 0.82,
+          stamps: []
+        },
+        {
+          id: "rainbow_vibes",
+          name: "🌈 Good Vibes Double Line",
+          desc: "Prism light leaks, double fine line & hearts",
+          filter: "rainbow",
+          frame: "doubleline",
+          floating: ["hearts", "bubbles"],
+          transition: "slide",
+          text: "PURE GOOD VIBES",
+          font: "impact",
+          textColor: "#ffffff",
+          textStyle: "glass",
+          textY: 0.84,
+          stamps: []
+        }
+      ];
+
+      /* =========================================================================
+         2. APPLICATION STATE
+         ========================================================================= */
+      const state = {
+        photos: [],
+        duration: 15,
+        aspectRatio: "9:16",
+        filter: "lofi",
+        frame: "thinline",
+        floatingEffects: ["hearts", "stars"],
+        floatingDensity: "medium",
+        transition: "crossfade",
+        textLayers: [
+          {
+            id: 101,
+            text: "Golden Hour Memories ✨",
+            font: "sans",
+            size: 48,
+            color: "#ffffff",
+            style: "pill",
+            x: 0.5,
+            y: 0.83
+          }
+        ],
+        activeTextId: 101,
+        phraseCategory: "all",
+        phraseSearch: "",
+        stamps: [],
+        selectedStampId: null,
+        isPlaying: true,
+        currentTime: 0,
+        lastFrameTimestamp: 0,
+        isDemoAlbum: true,
+        isExporting: false,
+        lastExportBlob: null,
+        lastExportExt: "mp4",
+        lastExportMime: "video/mp4"
+      };
+
+      /* =========================================================================
+         3. DOM REFERENCES & CORE HELPERS
+         ========================================================================= */
+      const canvas = document.getElementById("previewCanvas");
+      const ctx = canvas.getContext("2d");
+      const canvasShell = document.getElementById("canvasShell");
+      const photoInput = document.getElementById("photoInput");
+      const photoStrip = document.getElementById("photoStrip");
+      const timelineScrubber = document.getElementById("timelineScrubber");
+      const timeReadout = document.getElementById("timeReadout");
+      const toastEl = document.getElementById("toast");
+
+      let toastTimer = null;
+      function showToast(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove("show");
+        }, 3200);
+      }
+
+      function getActiveTextLayer() {
+        return state.textLayers.find((l) => l.id === state.activeTextId) || state.textLayers[0] || null;
+      }
+
+      const particles = Array.from({ length: 48 }, (_, i) => ({
+        x: ((i * 73) % 100) / 100,
+        y: ((i * 41) % 100) / 100,
+        r: 2 + (i % 4) * 1.1,
+        speedY: 0.04 + (i % 7) * 0.014,
+        phase: i * 1.37,
+        hue: (i * 29) % 360,
+        rotSpeed: (i % 2 === 0 ? 1 : -1) * (0.6 + (i % 5) * 0.25)
+      }));
+
+      function generateKenBurns(index) {
+        const patterns = [
+          { sx: -0.02, sy: -0.01, ex: 0.02, ey: 0.015, sScale: 1.04, eScale: 1.16 },
+          { sx: 0.02, sy: 0.01, ex: -0.02, ey: -0.015, sScale: 1.15, eScale: 1.04 },
+          { sx: 0, sy: -0.02, ex: 0, ey: 0.02, sScale: 1.05, eScale: 1.17 },
+          { sx: -0.025, sy: 0.015, ex: 0.02, ey: -0.01, sScale: 1.14, eScale: 1.05 }
+        ];
+        return patterns[index % patterns.length];
+      }
+
+      /* =========================================================================
+         4. BUILT-IN DEMO ALBUM GENERATOR
+         ========================================================================= */
+      function createDemoPhoto(index) {
+        const themes = [
+          { top: "#ff758c", mid: "#ff7eb3", bot: "#2b1055", sun: "#fef08a", label: "SUNSET MEMORIES" },
+          { top: "#0ea5e9", mid: "#2dd4bf", bot: "#064e3b", sun: "#fde047", label: "OCEAN BREEZE" },
+          { top: "#6366f1", mid: "#a855f7", bot: "#1e1b4b", sun: "#f9a8d4", label: "CITY LIGHTS" },
+          { top: "#f59e0b", mid: "#ec4899", bot: "#4c0519", sun: "#fef9c3", label: "GOLDEN HOUR" },
+          { top: "#10b981", mid: "#3b82f6", bot: "#0f172a", sun: "#a7f3d0", label: "ADVENTURE AWAITS" }
+        ];
+        const t = themes[index % themes.length];
+        const off = document.createElement("canvas");
+        off.width = 720;
+        off.height = 1280;
+        const octx = off.getContext("2d");
+
+        const grad = octx.createLinearGradient(0, 0, 0, off.height);
+        grad.addColorStop(0, t.top);
+        grad.addColorStop(0.55, t.mid);
+        grad.addColorStop(1, t.bot);
+        octx.fillStyle = grad;
+        octx.fillRect(0, 0, off.width, off.height);
+
+        const sunGrad = octx.createRadialGradient(360, 480, 10, 360, 480, 220);
+        sunGrad.addColorStop(0, t.sun);
+        sunGrad.addColorStop(1, "rgba(255,255,255,0)");
+        octx.fillStyle = sunGrad;
+        octx.beginPath();
+        octx.arc(360, 480, 220, 0, Math.PI * 2);
+        octx.fill();
+
+        octx.fillStyle = "rgba(10, 12, 22, 0.35)";
+        octx.beginPath();
+        octx.moveTo(0, 860);
+        octx.quadraticCurveTo(220, 720, 460, 830);
+        octx.quadraticCurveTo(600, 890, 720, 790);
+        octx.lineTo(720, 1280);
+        octx.lineTo(0, 1280);
+        octx.closePath();
+        octx.fill();
+
+        octx.fillStyle = "rgba(10, 12, 22, 0.65)";
+        octx.beginPath();
+        octx.moveTo(0, 960);
+        octx.quadraticCurveTo(340, 840, 720, 950);
+        octx.lineTo(720, 1280);
+        octx.lineTo(0, 1280);
+        octx.closePath();
+        octx.fill();
+
+        octx.fillStyle = "rgba(255,255,255,0.75)";
+        octx.font = "700 22px sans-serif";
+        octx.textAlign = "center";
+        octx.fillText(`DEMO SLIDE #${index + 1} • ${t.label}`, 360, 1140);
+
+        const img = new Image();
+        img.src = off.toDataURL("image/jpeg", 0.88);
+        return img;
+      }
+
+      function loadDemoAlbum() {
+        state.photos = [];
+        state.isDemoAlbum = true;
+        for (let i = 0; i < 5; i++) {
+          const img = createDemoPhoto(i);
+          state.photos.push({
+            id: Date.now() + i,
+            img,
+            url: img.src,
+            kenBurns: generateKenBurns(i)
+          });
+        }
+        state.currentTime = 0;
+        renderPhotoStrip();
+        updateDurationUI();
+      }
+
+      /* =========================================================================
+         5. PHOTO ALBUM UPLOAD, MULTI-PATH DECODING & MANAGEMENT
+         ========================================================================= */
+      function normalizeAndDownscaleSource(source, maxDim = 1440) {
+        return new Promise((resolve, reject) => {
+          try {
+            const srcW = source.naturalWidth || source.videoWidth || source.width;
+            const srcH = source.naturalHeight || source.videoHeight || source.height;
+            if (!srcW || !srcH) {
+              reject(new Error("Invalid image dimensions"));
+              return;
+            }
+            const scale = Math.min(1, maxDim / Math.max(srcW, srcH));
+            const dstW = Math.max(1, Math.round(srcW * scale));
+            const dstH = Math.max(1, Math.round(srcH * scale));
+
+            const off = document.createElement("canvas");
+            off.width = dstW;
+            off.height = dstH;
+            const octx = off.getContext("2d");
+            octx.drawImage(source, 0, 0, dstW, dstH);
+
+            const thumbUrl = off.toDataURL("image/jpeg", 0.86);
+            const finalImg = new Image();
+            finalImg.onload = () => resolve({ img: finalImg, url: thumbUrl });
+            finalImg.onerror = () => resolve({ img: off, url: thumbUrl });
+            finalImg.src = thumbUrl;
+          } catch (err) {
+            reject(err);
+          }
+        });
+      }
+
+      function decodeViaObjectURL(file) {
+        return new Promise((resolve, reject) => {
+          const url = URL.createObjectURL(file);
+          const img = new Image();
+          img.onload = () => {
+            normalizeAndDownscaleSource(img)
+              .then((res) => {
+                URL.revokeObjectURL(url);
+                resolve(res);
+              })
+              .catch((e) => {
+                URL.revokeObjectURL(url);
+                reject(e);
+              });
+          };
+          img.onerror = () => {
+            URL.revokeObjectURL(url);
+            reject(new Error("ObjectURL decode failed"));
+          };
+          img.src = url;
+        });
+      }
+
+      function decodeViaFileReader(file) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => {
+            const img = new Image();
+            img.onload = () => normalizeAndDownscaleSource(img).then(resolve).catch(reject);
+            img.onerror = () => reject(new Error("DataURL decode failed"));
+            img.src = reader.result;
+          };
+          reader.onerror = () => reject(new Error("FileReader failed"));
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function decodeViaImageBitmap(file) {
+        if (typeof createImageBitmap !== "function") {
+          throw new Error("createImageBitmap unavailable");
+        }
+        const bitmap = await createImageBitmap(file);
+        try {
+          return await normalizeAndDownscaleSource(bitmap);
+        } finally {
+          if (bitmap && typeof bitmap.close === "function") bitmap.close();
+        }
+      }
+
+      async function decodePhotoFile(file) {
+        try {
+          return await decodeViaObjectURL(file);
+        } catch (_) {
+          try {
+            return await decodeViaFileReader(file);
+          } catch (__) {
+            return await decodeViaImageBitmap(file);
+          }
+        }
+      }
+
+      async function handleFiles(fileList) {
+        const rawFiles = Array.from(fileList || []);
+        if (!rawFiles.length) return;
+
+        const validExt = /\.(jpe?g|png|webp|gif|heic|heif|bmp|avif)$/i;
+        const files = rawFiles.filter(
+          (f) => (f.type && f.type.startsWith("image/")) || validExt.test(f.name || "")
+        );
+
+        if (!files.length) {
+          showToast("Please choose photo files (JPG, PNG, WebP, or HEIC).");
+          return;
+        }
+
+        showToast(`Loading ${files.length} photo${files.length > 1 ? "s" : ""} from album...`);
+
+        if (state.isDemoAlbum) {
+          state.photos = [];
+          state.isDemoAlbum = false;
+          state.currentTime = 0;
+        }
+
+        let added = 0;
+        let failedHeic = 0;
+
+        for (let i = 0; i < files.length; i++) {
+          const file = files[i];
+          try {
+            const decoded = await decodePhotoFile(file);
+            state.photos.push({
+              id: Date.now() + Math.random(),
+              img: decoded.img,
+              url: decoded.url,
+              kenBurns: generateKenBurns(state.photos.length)
+            });
+            added++;
+            renderPhotoStrip();
+            updateDurationUI();
+          } catch (err) {
+            if (/\.heic|\.heif/i.test(file.name || "") || /heic|heif/i.test(file.type || "")) {
+              failedHeic++;
+            }
+          }
+        }
+
+        if (added > 0) {
+          showToast(`Added ${added} photo${added > 1 ? "s" : ""} to your video!`);
+        } else if (failedHeic > 0) {
+          showToast("This browser cannot decode HEIC directly — please pick JPG/PNG or use Safari.");
+        } else {
+          showToast("Could not read selected photo(s). Try JPG or PNG images.");
+        }
+      }
+
+      function renderPhotoStrip() {
+        document.getElementById("photoCountBadge").textContent = state.photos.length;
+        photoStrip.innerHTML = "";
+        state.photos.forEach((photo, index) => {
+          const item = document.createElement("div");
+          item.className = "photo-item";
+          item.dataset.index = index;
+          item.innerHTML = `
+            <img src="${photo.url}" alt="Slide ${index + 1}" />
+            <span class="photo-badge">#${index + 1}</span>
+            <div class="photo-controls">
+              <button type="button" class="mini-icon-btn" data-act="left" title="Move Left">◀</button>
+              <button type="button" class="mini-icon-btn" data-act="right" title="Move Right">▶</button>
+              <button type="button" class="mini-icon-btn del" data-act="remove" title="Remove">✕</button>
             </div>
-
-            <!-- Row 1: Photo / Folder / Original & Auto Ripple Toggle -->
-            <div class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                <label for="photoPicker" class="shrink-0 cursor-pointer px-3 py-1.5 rounded-full glass-pill text-xs font-extrabold flex items-center gap-1.5">
-                    <span>+ Photos</span>
-                </label>
-                <input id="photoPicker" type="file" accept="image/*" multiple class="hidden" />
-
-                <label for="folderPicker" class="shrink-0 cursor-pointer px-3 py-1.5 rounded-full glass-pill text-xs font-extrabold flex items-center gap-1.5">
-                    <span>Folder</span>
-                </label>
-                <input id="folderPicker" type="file" accept="image/*" webkitdirectory directory multiple class="hidden" />
-
-                <button id="originalBgBtn" type="button" class="shrink-0 px-3 py-1.5 rounded-full glass-pill glass-pill-active text-xs font-extrabold">
-                    Original
-                </button>
-
-                <button id="autoRippleToggleBtn" type="button" class="shrink-0 px-3 py-1.5 rounded-full glass-pill glass-pill-active text-xs font-extrabold">
-                    Auto Ripple: On
-                </button>
-            </div>
-
-            <!-- Row 2: 6 Photo Color Moods (10s each = 1 full minute per photo in Auto Cycle) -->
-            <div>
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/70">Photo Color Mood (60s Cycle)</span>
-                    <span id="moodStatusLabel" class="text-[10px] font-extrabold text-white/90">Auto Cycle (1/6)</span>
-                </div>
-                <div id="filterRow" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                    <button type="button" data-filter="auto" class="filter-btn glass-pill glass-pill-active px-2.5 py-1 rounded-full text-[11px] font-extrabold shrink-0">Auto Cycle</button>
-                    <button type="button" data-filter="natural" class="filter-btn glass-pill px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0">Natural</button>
-                    <button type="button" data-filter="lofi" class="filter-btn glass-pill px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0">Lofi</button>
-                    <button type="button" data-filter="bw" class="filter-btn glass-pill px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0">B&amp;W</button>
-                    <button type="button" data-filter="sepia" class="filter-btn glass-pill px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0">Sepia</button>
-                    <button type="button" data-filter="rainbow" class="filter-btn glass-pill px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0">Rainbow</button>
-                    <button type="button" data-filter="forest" class="filter-btn glass-pill px-2.5 py-1 rounded-full text-[11px] font-bold shrink-0">Magical Forest</button>
-                </div>
-            </div>
-
-            <!-- Row 3: Transparent Shiny Stamps -->
-            <div>
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/70">Floating Shiny Stamps</span>
-                    <span id="stampStatusLabel" class="text-[10px] font-extrabold text-white/90">None</span>
-                </div>
-                <div id="stampRow" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                    <button type="button" data-stamp="none" class="stamp-btn glass-pill glass-pill-active px-3 py-1 rounded-full text-[11px] font-extrabold shrink-0">None</button>
-                    <button type="button" data-stamp="hearts" class="stamp-btn glass-pill px-3 py-1 rounded-full text-[11px] font-bold shrink-0">Hearts</button>
-                    <button type="button" data-stamp="stars" class="stamp-btn glass-pill px-3 py-1 rounded-full text-[11px] font-bold shrink-0">Stars</button>
-                    <button type="button" data-stamp="butterflies" class="stamp-btn glass-pill px-3 py-1 rounded-full text-[11px] font-bold shrink-0">Butterflies</button>
-                </div>
-            </div>
-
-            <!-- Row 4: Ripple Soundscape -->
-            <div>
-                <div class="flex items-center justify-between mb-1">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/70">Ripple Sound</span>
-                    <span id="soundStatusLabel" class="text-[10px] font-extrabold text-white/90">Off</span>
-                </div>
-                <div id="soundRow" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                    <button type="button" data-sound="off" class="sound-btn glass-pill glass-pill-active px-3 py-1 rounded-full text-[11px] font-extrabold shrink-0">Off</button>
-                    <button type="button" data-sound="bowl" class="sound-btn glass-pill px-3 py-1 rounded-full text-[11px] font-bold shrink-0">Sound Bowl</button>
-                    <button type="button" data-sound="water" class="sound-btn glass-pill px-3 py-1 rounded-full text-[11px] font-bold shrink-0">Water Ripple</button>
-                    <button type="button" data-sound="chimes" class="sound-btn glass-pill px-3 py-1 rounded-full text-[11px] font-bold shrink-0">Bar Chimes</button>
-                </div>
-            </div>
-
-            <!-- Row 5: English Clock Font Styles -->
-            <div>
-                <div class="text-[10px] font-bold uppercase tracking-wider text-white/70 mb-1">Clock Font Style</div>
-                <div id="fontRow" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pb-0.5">
-                    <button type="button" data-font="clean" class="font-btn glass-pill glass-pill-active px-3 py-1 rounded-full text-xs font-bold shrink-0">Clean</button>
-                    <button type="button" data-font="round" class="font-btn glass-pill font-style-round px-3 py-1 rounded-full text-xs font-bold shrink-0">Round</button>
-                    <button type="button" data-font="fluffy" class="font-btn glass-pill font-style-fluffy px-3 py-1 rounded-full text-xs font-bold shrink-0">Fluffy</button>
-                    <button type="button" data-font="sharp" class="font-btn glass-pill font-style-sharp px-3 py-1 rounded-full text-xs font-bold shrink-0">Sharp</button>
-                    <button type="button" data-font="handwritten" class="font-btn glass-pill font-style-handwritten px-3 py-1 rounded-full text-sm font-bold shrink-0">Handwritten</button>
-                    <button type="button" data-font="classic" class="font-btn glass-pill font-style-classic px-3 py-1 rounded-full text-xs font-bold shrink-0">Classic</button>
-                </div>
-            </div>
-
-            <!-- Row 6: Clock Color, Size & Opacity -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-0.5">
-                <div class="flex items-center justify-between gap-1.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/70">Color</span>
-                    <div id="colorRow" class="flex items-center gap-1.5">
-                        <button type="button" data-color="#ffffff" class="color-btn w-5 h-5 rounded-full border-2 border-white shadow" style="background:#ffffff;"></button>
-                        <button type="button" data-color="#fef08a" class="color-btn w-5 h-5 rounded-full border border-white/50 shadow" style="background:#fef08a;"></button>
-                        <button type="button" data-color="#fbcfe8" class="color-btn w-5 h-5 rounded-full border border-white/50 shadow" style="background:#fbcfe8;"></button>
-                        <button type="button" data-color="#bae6fd" class="color-btn w-5 h-5 rounded-full border border-white/50 shadow" style="background:#bae6fd;"></button>
-                        <button type="button" data-color="#bbf7d0" class="color-btn w-5 h-5 rounded-full border border-white/50 shadow" style="background:#bbf7d0;"></button>
-                        <button type="button" data-color="#0f172a" class="color-btn w-5 h-5 rounded-full border border-white/50 shadow" style="background:#0f172a;"></button>
-                    </div>
-                </div>
-
-                <div class="flex items-center gap-2">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/70 shrink-0">Opacity</span>
-                    <input id="opacitySlider" type="range" min="0.2" max="1" step="0.02" value="0.96" class="w-full" />
-                    <span id="opacityValue" class="text-[10px] font-extrabold text-white/90 w-8 text-right">96%</span>
-                </div>
-            </div>
-
-            <!-- Row 7: Quick Position & Size Scale -->
-            <div class="flex items-center justify-between gap-2 pt-0.5">
-                <div class="flex items-center gap-1">
-                    <button type="button" data-pos="top" class="pos-btn glass-pill px-2.5 py-1 rounded-full text-[10px] font-bold">Top</button>
-                    <button type="button" data-pos="center" class="pos-btn glass-pill px-2.5 py-1 rounded-full text-[10px] font-bold">Center</button>
-                    <button type="button" data-pos="bottom" class="pos-btn glass-pill px-2.5 py-1 rounded-full text-[10px] font-bold">Bottom</button>
-                </div>
-                <div class="flex items-center gap-1.5 flex-1 max-w-[175px]">
-                    <span class="text-[10px] font-bold uppercase tracking-wider text-white/70">Size</span>
-                    <input id="scaleSlider" type="range" min="0.55" max="1.65" step="0.02" value="1" class="w-full" />
-                    <span id="scaleValue" class="text-[10px] font-extrabold text-white/90 w-8 text-right">100%</span>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- SUBTLE STATUS TOAST -->
-    <div id="toastPill" class="fixed top-6 left-1/2 -translate-x-1/2 z-40 px-4 py-1.5 rounded-full glass-sheet text-white text-xs font-bold shadow-lg opacity-0 pointer-events-none transition-opacity duration-300">
-        Double-tap anywhere for controls
-    </div>
-
-    <script>
-        (function () {
-            // ============================================================
-            // 1. LIVE CLOCK & DATE
-            // ============================================================
-            const clockContainer = document.getElementById('clockContainer');
-            const clockWrapper = document.getElementById('clockWrapper');
-            const bigClockEl = document.getElementById('bigClockDisplay');
-            const bigDateEl = document.getElementById('bigDateDisplay');
-
-            function updateClock() {
-                const now = new Date();
-                const hours = now.getHours() % 12 || 12;
-                const mins = String(now.getMinutes()).padStart(2, '0');
-                const dateStr = now.toLocaleDateString('en-US', {
-                    weekday: 'long',
-                    month: 'long',
-                    day: 'numeric'
-                });
-                bigClockEl.textContent = `${hours}:${mins}`;
-                bigDateEl.textContent = dateStr;
+          `;
+          item.querySelector('[data-act="left"]').onclick = (e) => {
+            e.stopPropagation();
+            if (index > 0) {
+              const tmp = state.photos[index - 1];
+              state.photos[index - 1] = state.photos[index];
+              state.photos[index] = tmp;
+              renderPhotoStrip();
             }
-            updateClock();
-            setInterval(updateClock, 1000);
-
-            // ============================================================
-            // 2. SYNTHESIZED SOUNDSCAPES (Tone.js)
-            // ============================================================
-            let soundMode = 'off'; // 'off' | 'bowl' | 'water' | 'chimes'
-            let audioInitialized = false;
-            let bowlSynth = null;
-            let chimeSynth = null;
-            let waterDropSynth = null;
-            let waterEchoSynth = null;
-            let reverbEffect = null;
-
-            async function ensureAudioReady() {
-                if (typeof Tone === 'undefined') return false;
-                try {
-                    if (Tone.context.state !== 'running') {
-                        await Tone.start();
-                    }
-                    if (!audioInitialized) {
-                        reverbEffect = new Tone.Reverb({ decay: 2.8, wet: 0.38 }).toDestination();
-
-                        // Tibetan Sound Bowl
-                        bowlSynth = new Tone.PolySynth(Tone.Synth, {
-                            oscillator: { type: 'sine' },
-                            envelope: { attack: 0.14, decay: 1.5, sustain: 0.25, release: 2.8 }
-                        }).connect(reverbEffect);
-                        bowlSynth.volume.value = -10;
-
-                        // Bar Chimes (Mark Tree shimmer sweep)
-                        chimeSynth = new Tone.PolySynth(Tone.Synth, {
-                            oscillator: { type: 'sine' },
-                            envelope: { attack: 0.004, decay: 0.65, sustain: 0.02, release: 2.1 }
-                        }).connect(reverbEffect);
-                        chimeSynth.volume.value = -12;
-
-                        // Glass Water Droplet (Primary resonant cavity bubble pop)
-                        waterDropSynth = new Tone.Synth({
-                            oscillator: { type: 'sine' },
-                            envelope: { attack: 0.003, decay: 0.24, sustain: 0, release: 0.18 }
-                        }).connect(reverbEffect);
-                        waterDropSynth.volume.value = -2;
-
-                        // Secondary delicate ripple droplet harmonic
-                        waterEchoSynth = new Tone.Synth({
-                            oscillator: { type: 'sine' },
-                            envelope: { attack: 0.003, decay: 0.18, sustain: 0, release: 0.14 }
-                        }).connect(reverbEffect);
-                        waterEchoSynth.volume.value = -7;
-
-                        audioInitialized = true;
-                    }
-                    return true;
-                } catch (err) {
-                    return false;
-                }
+          };
+          item.querySelector('[data-act="right"]').onclick = (e) => {
+            e.stopPropagation();
+            if (index < state.photos.length - 1) {
+              const tmp = state.photos[index + 1];
+              state.photos[index + 1] = state.photos[index];
+              state.photos[index] = tmp;
+              renderPhotoStrip();
             }
-
-            async function playRippleSound(isSlideSwitch) {
-                if (soundMode === 'off') return;
-                const ready = await ensureAudioReady();
-                if (!ready) return;
-
-                const now = Tone.now();
-                if (soundMode === 'bowl') {
-                    const bowlChords = [
-                        ['C4', 'G4', 'E5'],
-                        ['D4', 'A4', 'F#5'],
-                        ['F4', 'C5', 'A5']
-                    ];
-                    const chord = bowlChords[Math.floor(Math.random() * bowlChords.length)];
-                    bowlSynth.triggerAttackRelease(chord[0], '2n', now);
-                    bowlSynth.triggerAttackRelease(chord[1], '2n', now + 0.06);
-                    if (isSlideSwitch) {
-                        bowlSynth.triggerAttackRelease(chord[2], '2n', now + 0.14);
-                    }
-                } else if (soundMode === 'water') {
-                    // Authentic water droplet falling into a full glass of water (upward pitch chirp)
-                    const baseFreq = isSlideSwitch ? 390 : (410 + Math.random() * 80);
-                    const peakFreq = baseFreq * 2.65;
-
-                    waterDropSynth.frequency.cancelScheduledValues(now);
-                    waterDropSynth.frequency.setValueAtTime(baseFreq, now);
-                    waterDropSynth.frequency.exponentialRampToValueAtTime(peakFreq, now + 0.14);
-                    waterDropSynth.triggerAttackRelease(baseFreq, 0.24, now, 0.95);
-
-                    // Delicate secondary splash droplet on slide switch
-                    if (isSlideSwitch) {
-                        const echoStart = now + 0.19;
-                        const echoBase = baseFreq * 1.38;
-                        waterEchoSynth.frequency.cancelScheduledValues(echoStart);
-                        waterEchoSynth.frequency.setValueAtTime(echoBase, echoStart);
-                        waterEchoSynth.frequency.exponentialRampToValueAtTime(echoBase * 2.35, echoStart + 0.11);
-                        waterEchoSynth.triggerAttackRelease(echoBase, 0.18, echoStart, 0.72);
-                    }
-                } else if (soundMode === 'chimes') {
-                    // Shimmering Mark Tree / Bar Chimes sweep
-                    const barChimeScale = ['C6', 'D6', 'E6', 'G6', 'A6', 'B6', 'C7', 'D7', 'E7', 'G7', 'A7'];
-                    const count = isSlideSwitch ? barChimeScale.length : 6;
-                    const startOffset = isSlideSwitch ? 0 : Math.floor(Math.random() * 5);
-                    for (let i = 0; i < count; i++) {
-                        const note = barChimeScale[(startOffset + i) % barChimeScale.length];
-                        chimeSynth.triggerAttackRelease(note, '16n', now + i * 0.042, 0.42);
-                    }
-                }
-            }
-
-            // ============================================================
-            // 3. CRISP FULL-RES PHOTO + 6 COLOR MOODS + WATER RIPPLE ENGINE
-            // ============================================================
-            const canvas = document.getElementById('waterCanvas');
-            const ctx = canvas.getContext('2d');
-            const offscreen = document.createElement('canvas');
-            const octx = offscreen.getContext('2d');
-            const blitCanvas = document.createElement('canvas');
-            const bctx = blitCanvas.getContext('2d');
-            const fullResMoodCanvas = document.createElement('canvas');
-            const fullResMoodCtx = fullResMoodCanvas.getContext('2d');
-
-            const sim = {
-                scale: 3,
-                cols: 0,
-                rows: 0,
-                curr: null,
-                prev: null,
-                damping: 0.942,
-                basePixels: null,
-                outImage: null,
-                isRippling: false
-            };
-
-            const slideshow = {
-                mode: 'original',
-                images: [],
-                index: 0,
-                moodStep: 0,
-                autoRipple: true,
-                rippleDurationMs: 1500,
-                solidHoldMs: 10000, // 10s per color x 6 colors = 60s per picture
-                filterMode: 'auto', // 'auto' | 'natural' | 'lofi' | 'bw' | 'sepia' | 'rainbow' | 'forest'
-                autoFilterList: ['natural', 'lofi', 'bw', 'sepia', 'rainbow', 'forest'],
-                timerId: null
-            };
-
-            const stampSystem = {
-                type: 'none', // 'none' | 'hearts' | 'stars' | 'butterflies'
-                items: []
-            };
-
-            function getActiveFilterKey() {
-                if (slideshow.filterMode === 'auto') {
-                    return slideshow.autoFilterList[slideshow.moodStep % slideshow.autoFilterList.length];
-                }
-                return slideshow.filterMode;
-            }
-
-            // Pixel-level color grading + Magical Forest disco spotlights
-            function applyPixelColorMood(targetCtx, w, h, filterKey) {
-                if (!filterKey || filterKey === 'natural') return;
-
-                const imgData = targetCtx.getImageData(0, 0, w, h);
-                const d = imgData.data;
-
-                for (let y = 0; y < h; y++) {
-                    const ny = y / Math.max(1, h);
-                    for (let x = 0; x < w; x++) {
-                        const nx = x / Math.max(1, w);
-                        const i = (y * w + x) * 4;
-                        let r = d[i];
-                        let g = d[i + 1];
-                        let b = d[i + 2];
-
-                        if (filterKey === 'bw') {
-                            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-                            const contrast = (lum - 128) * 1.28 + 128;
-                            r = g = b = contrast;
-                        } else if (filterKey === 'sepia') {
-                            const sr = r * 0.393 + g * 0.769 + b * 0.189;
-                            const sg = r * 0.349 + g * 0.686 + b * 0.168;
-                            const sb = r * 0.272 + g * 0.534 + b * 0.131;
-                            r = sr * 1.06;
-                            g = sg * 1.02;
-                            b = sb * 0.92;
-                        } else if (filterKey === 'lofi') {
-                            r = r * 1.16 + 18;
-                            g = g * 1.04 + 8;
-                            b = b * 0.82 + 24;
-                        } else if (filterKey === 'rainbow') {
-                            const wave = (nx * 0.65 + ny * 0.55) * Math.PI * 2;
-                            const pr = 127 + 127 * Math.sin(wave);
-                            const pg = 127 + 127 * Math.sin(wave + 2.094);
-                            const pb = 127 + 127 * Math.sin(wave + 4.188);
-                            r = r * 0.64 + pr * 0.42;
-                            g = g * 0.64 + pg * 0.42;
-                            b = b * 0.64 + pb * 0.42;
-                        } else if (filterKey === 'forest') {
-                            // Deep moody midnight forest base
-                            const lum = 0.299 * r + 0.587 * g + 0.114 * b;
-                            r = r * 0.28 + lum * 0.08;
-                            g = g * 0.56 + lum * 0.18 + 12;
-                            b = b * 0.44 + lum * 0.14 + 16;
-                        }
-
-                        d[i] = r < 0 ? 0 : (r > 255 ? 255 : r);
-                        d[i + 1] = g < 0 ? 0 : (g > 255 ? 255 : g);
-                        d[i + 2] = b < 0 ? 0 : (b > 255 ? 255 : b);
-                    }
-                }
-                targetCtx.putImageData(imgData, 0, 0);
-
-                // Animated moving disco spotlights in the dark for Magical Forest
-                if (filterKey === 'forest') {
-                    const t = performance.now() * 0.0012;
-                    targetCtx.save();
-                    targetCtx.globalCompositeOperation = 'screen';
-
-                    const beams = [
-                        {
-                            x: w * (0.5 + 0.34 * Math.sin(t * 1.1)),
-                            y: h * (0.42 + 0.28 * Math.cos(t * 0.85)),
-                            r: Math.min(w, h) * 0.44,
-                            c1: 'rgba(52, 211, 153, 0.58)',
-                            c2: 'rgba(16, 185, 129, 0.18)'
-                        },
-                        {
-                            x: w * (0.5 + 0.36 * Math.cos(t * 0.9 + 1.4)),
-                            y: h * (0.55 + 0.26 * Math.sin(t * 1.25 + 0.8)),
-                            r: Math.min(w, h) * 0.40,
-                            c1: 'rgba(192, 132, 252, 0.52)',
-                            c2: 'rgba(139, 92, 246, 0.16)'
-                        },
-                        {
-                            x: w * (0.5 + 0.30 * Math.sin(t * 1.45 + 2.6)),
-                            y: h * (0.48 + 0.30 * Math.cos(t * 1.05 + 2.1)),
-                            r: Math.min(w, h) * 0.36,
-                            c1: 'rgba(56, 189, 248, 0.48)',
-                            c2: 'rgba(14, 165, 233, 0.14)'
-                        }
-                    ];
-
-                    beams.forEach((beam) => {
-                        const grad = targetCtx.createRadialGradient(beam.x, beam.y, 4, beam.x, beam.y, beam.r);
-                        grad.addColorStop(0, beam.c1);
-                        grad.addColorStop(0.55, beam.c2);
-                        grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
-                        targetCtx.fillStyle = grad;
-                        targetCtx.fillRect(0, 0, w, h);
-                    });
-
-                    targetCtx.restore();
-                }
-            }
-
-            function drawImageCover(targetCtx, img, targetW, targetH) {
-                const iw = img.naturalWidth || img.width || 1;
-                const ih = img.naturalHeight || img.height || 1;
-                const imgRatio = iw / ih;
-                const targetRatio = targetW / targetH;
-                let drawW, drawH, offsetX, offsetY;
-                if (imgRatio > targetRatio) {
-                    drawH = targetH;
-                    drawW = targetH * imgRatio;
-                    offsetX = (targetW - drawW) / 2;
-                    offsetY = 0;
-                } else {
-                    drawW = targetW;
-                    drawH = targetW / imgRatio;
-                    offsetX = 0;
-                    offsetY = (targetH - drawH) / 2;
-                }
-                targetCtx.drawImage(img, offsetX, offsetY, drawW, drawH);
-            }
-
-            function drawOriginalScene(targetCtx, w, h, sceneIdx) {
-                const palettes = [
-                    ['#0f172a', '#1e3a8a', '#f472b6', '#fde68a'],
-                    ['#064e3b', '#0284c7', '#38bdf8', '#e0f2fe'],
-                    ['#311042', '#7e22ce', '#fb7185', '#fed7aa']
-                ];
-                const pal = palettes[sceneIdx % palettes.length];
-                const sky = targetCtx.createLinearGradient(0, 0, 0, h * 0.65);
-                sky.addColorStop(0, pal[0]);
-                sky.addColorStop(0.55, pal[1]);
-                sky.addColorStop(1, pal[2]);
-                targetCtx.fillStyle = sky;
-                targetCtx.fillRect(0, 0, w, h * 0.65);
-
-                const sunX = w * (0.28 + 0.22 * (sceneIdx % 3));
-                const sunY = h * 0.56;
-                const glow = targetCtx.createRadialGradient(sunX, sunY, 4, sunX, sunY, w * 0.42);
-                glow.addColorStop(0, pal[3]);
-                glow.addColorStop(0.45, 'rgba(253, 230, 138, 0.35)');
-                glow.addColorStop(1, 'rgba(253, 230, 138, 0)');
-                targetCtx.fillStyle = glow;
-                targetCtx.fillRect(0, 0, w, h * 0.65);
-
-                const sea = targetCtx.createLinearGradient(0, h * 0.65, 0, h);
-                sea.addColorStop(0, pal[1]);
-                sea.addColorStop(1, pal[0]);
-                targetCtx.fillStyle = sea;
-                targetCtx.fillRect(0, h * 0.65, w, h * 0.35);
-            }
-
-            function drawSharpCurrentSlideFullRes() {
-                const w = canvas.width;
-                const h = canvas.height;
-                if (w === 0 || h === 0) return;
-
-                const filterKey = getActiveFilterKey();
-                fullResMoodCanvas.width = w;
-                fullResMoodCanvas.height = h;
-                fullResMoodCtx.save();
-                fullResMoodCtx.clearRect(0, 0, w, h);
-
-                if (slideshow.mode === 'custom' && slideshow.images.length > 0) {
-                    const activeImg = slideshow.images[slideshow.index % slideshow.images.length];
-                    drawImageCover(fullResMoodCtx, activeImg, w, h);
-                } else {
-                    drawOriginalScene(fullResMoodCtx, w, h, slideshow.index);
-                }
-
-                applyPixelColorMood(fullResMoodCtx, w, h, filterKey);
-                fullResMoodCtx.restore();
-
-                ctx.clearRect(0, 0, w, h);
-                ctx.drawImage(fullResMoodCanvas, 0, 0, w, h);
-            }
-
-            function renderCurrentSlideToBuffer() {
-                const w = sim.cols;
-                const h = sim.rows;
-                if (w === 0 || h === 0) return;
-
-                const filterKey = getActiveFilterKey();
-                offscreen.width = w;
-                offscreen.height = h;
-                octx.save();
-                octx.clearRect(0, 0, w, h);
-
-                if (slideshow.mode === 'custom' && slideshow.images.length > 0) {
-                    const activeImg = slideshow.images[slideshow.index % slideshow.images.length];
-                    drawImageCover(octx, activeImg, w, h);
-                } else {
-                    drawOriginalScene(octx, w, h, slideshow.index);
-                }
-
-                applyPixelColorMood(octx, w, h, filterKey);
-                octx.restore();
-
-                sim.basePixels = octx.getImageData(0, 0, w, h).data;
-                sim.outImage = octx.createImageData(w, h);
-            }
-
-            function resizeSimulation() {
-                canvas.width = window.innerWidth;
-                canvas.height = window.innerHeight;
-                sim.cols = Math.max(1, Math.floor(canvas.width / sim.scale));
-                sim.rows = Math.max(1, Math.floor(canvas.height / sim.scale));
-                sim.curr = new Float32Array(sim.cols * sim.rows);
-                sim.prev = new Float32Array(sim.cols * sim.rows);
-                blitCanvas.width = sim.cols;
-                blitCanvas.height = sim.rows;
-                renderCurrentSlideToBuffer();
-                drawSharpCurrentSlideFullRes();
-            }
-
-            function createWaterImpulse(screenX, screenY, radius, strength) {
-                const cols = sim.cols;
-                const rows = sim.rows;
-                if (!sim.prev || cols === 0 || rows === 0) return;
-
-                const cx = Math.floor(screenX / sim.scale);
-                const cy = Math.floor(screenY / sim.scale);
-                const r = radius || 8;
-                const s = strength || 480;
-
-                for (let y = cy - r; y <= cy + r; y++) {
-                    if (y <= 1 || y >= rows - 1) continue;
-                    for (let x = cx - r; x <= cx + r; x++) {
-                        if (x <= 1 || x >= cols - 1) continue;
-                        const distSq = (x - cx) * (x - cx) + (y - cy) * (y - cy);
-                        if (distSq <= r * r) {
-                            const falloff = 1 - Math.sqrt(distSq) / r;
-                            sim.prev[y * cols + x] += s * falloff;
-                        }
-                    }
-                }
-                sim.isRippling = true;
-            }
-
-            function clearWaterWaves() {
-                if (sim.curr) sim.curr.fill(0);
-                if (sim.prev) sim.prev.fill(0);
-                sim.isRippling = false;
-                drawSharpCurrentSlideFullRes();
-            }
-
-            // ============================================================
-            // 4. TRANSPARENT SHINY STAMPS (Hearts, Stars, Butterflies)
-            // ============================================================
-            function spawnStampParticle(initialY) {
-                const w = canvas.width || window.innerWidth;
-                const h = canvas.height || window.innerHeight;
-                return {
-                    x: Math.random() * w,
-                    y: initialY !== undefined ? initialY : h + 30 + Math.random() * 80,
-                    size: 16 + Math.random() * 20,
-                    vy: -(0.35 + Math.random() * 0.55),
-                    vx: (Math.random() - 0.5) * 0.35,
-                    phase: Math.random() * Math.PI * 2,
-                    alpha: 0,
-                    maxAlpha: 0.42 + Math.random() * 0.35,
-                    life: 0,
-                    maxLife: 340 + Math.random() * 240
-                };
-            }
-
-            function setStampType(type) {
-                stampSystem.type = type;
-                stampSystem.items = [];
-                if (type !== 'none') {
-                    const h = canvas.height || window.innerHeight;
-                    for (let i = 0; i < 14; i++) {
-                        stampSystem.items.push(spawnStampParticle(Math.random() * h));
-                    }
-                }
-                const labelMap = {
-                    none: 'None',
-                    hearts: 'Hearts',
-                    stars: 'Stars',
-                    butterflies: 'Butterflies'
-                };
-                document.getElementById('stampStatusLabel').textContent = labelMap[type] || 'None';
-            }
-
-            function drawShinyHeart(c, size) {
-                const s = size * 0.5;
-                c.beginPath();
-                c.moveTo(0, s * 0.45);
-                c.bezierCurveTo(-s * 1.15, -s * 0.35, -s * 0.65, -s * 1.2, 0, -s * 0.45);
-                c.bezierCurveTo(s * 0.65, -s * 1.2, s * 1.15, -s * 0.35, 0, s * 0.45);
-                c.closePath();
-                c.fill();
-                c.stroke();
-
-                c.fillStyle = 'rgba(255, 255, 255, 0.72)';
-                c.beginPath();
-                c.ellipse(-s * 0.34, -s * 0.42, s * 0.16, s * 0.09, -0.5, 0, Math.PI * 2);
-                c.fill();
-            }
-
-            function drawShinyStar(c, size) {
-                const outer = size * 0.55;
-                const inner = size * 0.18;
-                c.beginPath();
-                for (let i = 0; i < 8; i++) {
-                    const r = i % 2 === 0 ? outer : inner;
-                    const a = (i * Math.PI) / 4;
-                    const px = Math.cos(a) * r;
-                    const py = Math.sin(a) * r;
-                    if (i === 0) c.moveTo(px, py);
-                    else c.lineTo(px, py);
-                }
-                c.closePath();
-                c.fill();
-                c.stroke();
-            }
-
-            function drawShinyButterfly(c, size, flap) {
-                const s = size * 0.52;
-                const wingScaleX = 0.55 + 0.45 * Math.abs(Math.sin(flap));
-                c.save();
-                c.scale(wingScaleX, 1);
-
-                c.beginPath();
-                c.ellipse(-s * 0.45, -s * 0.2, s * 0.45, s * 0.3, -0.35, 0, Math.PI * 2);
-                c.ellipse(-s * 0.35, s * 0.25, s * 0.32, s * 0.22, 0.35, 0, Math.PI * 2);
-                c.fill();
-                c.stroke();
-
-                c.beginPath();
-                c.ellipse(s * 0.45, -s * 0.2, s * 0.45, s * 0.3, 0.35, 0, Math.PI * 2);
-                c.ellipse(s * 0.35, s * 0.25, s * 0.32, s * 0.22, -0.35, 0, Math.PI * 2);
-                c.fill();
-                c.stroke();
-                c.restore();
-
-                c.fillStyle = 'rgba(255, 255, 255, 0.85)';
-                c.beginPath();
-                c.ellipse(0, 0, s * 0.08, s * 0.38, 0, 0, Math.PI * 2);
-                c.fill();
-            }
-
-            function updateAndRenderStamps() {
-                if (stampSystem.type === 'none') return;
-                const w = canvas.width;
-                const h = canvas.height;
-
-                for (let i = 0; i < stampSystem.items.length; i++) {
-                    const p = stampSystem.items[i];
-                    p.life += 1;
-                    p.phase += 0.045;
-                    p.x += p.vx + Math.sin(p.phase * 0.6) * 0.35;
-                    p.y += p.vy;
-
-                    const progress = p.life / p.maxLife;
-                    const fadeEnv = progress < 0.2
-                        ? progress / 0.2
-                        : progress > 0.8
-                            ? (1 - progress) / 0.2
-                            : 1;
-                    const twinkle = 0.72 + 0.28 * Math.sin(p.phase * 2.2);
-                    const alpha = Math.max(0, p.maxAlpha * fadeEnv * twinkle);
-
-                    if (p.life >= p.maxLife || p.y < -40) {
-                        stampSystem.items[i] = spawnStampParticle();
-                        continue;
-                    }
-
-                    ctx.save();
-                    ctx.translate(p.x, p.y);
-                    ctx.rotate(Math.sin(p.phase * 0.5) * 0.16);
-                    ctx.globalAlpha = alpha;
-                    ctx.shadowColor = 'rgba(255, 255, 255, 0.85)';
-                    ctx.shadowBlur = 12;
-
-                    const grad = ctx.createRadialGradient(0, 0, 1, 0, 0, p.size * 0.6);
-                    grad.addColorStop(0, 'rgba(255, 255, 255, 0.92)');
-                    grad.addColorStop(0.65, 'rgba(255, 255, 255, 0.42)');
-                    grad.addColorStop(1, 'rgba(255, 255, 255, 0.12)');
-                    ctx.fillStyle = grad;
-                    ctx.strokeStyle = 'rgba(255, 255, 255, 0.78)';
-                    ctx.lineWidth = 1.2;
-
-                    if (stampSystem.type === 'hearts') {
-                        drawShinyHeart(ctx, p.size);
-                    } else if (stampSystem.type === 'stars') {
-                        drawShinyStar(ctx, p.size);
-                    } else if (stampSystem.type === 'butterflies') {
-                        drawShinyButterfly(ctx, p.size, p.phase * 2.4);
-                    }
-                    ctx.restore();
-                }
-            }
-
-            // ============================================================
-            // 5. SLIDESHOW CYCLE: 1 MIN PER PHOTO (6 COLORS x 10 SEC EACH)
-            // ============================================================
-            function updateMoodStatusLabel() {
-                const labelEl = document.getElementById('moodStatusLabel');
-                if (!labelEl) return;
-                const names = {
-                    natural: 'Natural',
-                    lofi: 'Lofi',
-                    bw: 'B&W',
-                    sepia: 'Sepia',
-                    rainbow: 'Rainbow',
-                    forest: 'Magical Forest'
-                };
-                if (slideshow.filterMode === 'auto') {
-                    const stepNum = (slideshow.moodStep % 6) + 1;
-                    const currentName = names[getActiveFilterKey()] || 'Natural';
-                    labelEl.textContent = `Auto (${stepNum}/6: ${currentName})`;
-                } else {
-                    labelEl.textContent = names[slideshow.filterMode] || 'Natural';
-                }
-            }
-
-            function triggerSingleRippleTransition(advanceSlide, isUserTap) {
-                const w = canvas.width || window.innerWidth;
-                const h = canvas.height || window.innerHeight;
-                const totalSlides = slideshow.mode === 'custom' && slideshow.images.length > 0
-                    ? slideshow.images.length
-                    : 3;
-
-                if (advanceSlide) {
-                    if (slideshow.filterMode === 'auto') {
-                        // Cycle 6 color moods (10s each = 60s), then advance to the next picture
-                        slideshow.moodStep = (slideshow.moodStep + 1) % 6;
-                        if (slideshow.moodStep === 0) {
-                            slideshow.index = (slideshow.index + 1) % totalSlides;
-                        }
-                    } else {
-                        slideshow.index = (slideshow.index + 1) % totalSlides;
-                    }
-                    updateMoodStatusLabel();
-                    renderCurrentSlideToBuffer();
-                }
-
-                if (slideshow.autoRipple || isUserTap) {
-                    createWaterImpulse(
-                        w * (0.35 + Math.random() * 0.3),
-                        h * (0.4 + Math.random() * 0.25),
-                        11,
-                        560
-                    );
-                    playRippleSound(true);
-                } else {
-                    clearWaterWaves();
-                }
-
-                clearTimeout(slideshow.timerId);
-                slideshow.timerId = setTimeout(() => {
-                    clearWaterWaves();
-                    slideshow.timerId = setTimeout(() => {
-                        triggerSingleRippleTransition(true, false);
-                    }, slideshow.solidHoldMs);
-                }, slideshow.rippleDurationMs);
-            }
-
-            function startSlideshowCycle() {
-                clearTimeout(slideshow.timerId);
-                renderCurrentSlideToBuffer();
-                updateMoodStatusLabel();
-                triggerSingleRippleTransition(false, false);
-            }
-
-            function renderLoop() {
-                const cols = sim.cols;
-                const rows = sim.rows;
-                if (cols > 0 && rows > 0 && sim.basePixels) {
-                    if (sim.isRippling) {
-                        const curr = sim.curr;
-                        const prev = sim.prev;
-                        const damping = sim.damping;
-                        const src = sim.basePixels;
-                        const dst = sim.outImage.data;
-                        let maxEnergy = 0;
-
-                        for (let y = 1; y < rows - 1; y++) {
-                            const rowIdx = y * cols;
-                            for (let x = 1; x < cols - 1; x++) {
-                                const i = rowIdx + x;
-                                const val = ((prev[i - 1] + prev[i + 1] + prev[i - cols] + prev[i + cols]) * 0.5 - curr[i]) * damping;
-                                curr[i] = val;
-
-                                const absVal = val < 0 ? -val : val;
-                                if (absVal > maxEnergy) maxEnergy = absVal;
-
-                                const dx = curr[i - 1] - curr[i + 1];
-                                const dy = curr[i - cols] - curr[i + cols];
-
-                                let sx = Math.floor(x + dx * 0.08);
-                                let sy = Math.floor(y + dy * 0.08);
-                                if (sx < 0) sx = 0;
-                                if (sx >= cols) sx = cols - 1;
-                                if (sy < 0) sy = 0;
-                                if (sy >= rows) sy = rows - 1;
-
-                                const sIdx = (sy * cols + sx) * 4;
-                                const dIdx = i * 4;
-                                const highlight = Math.max(-24, Math.min(44, (dx + dy) * 0.15));
-
-                                dst[dIdx] = Math.max(0, Math.min(255, src[sIdx] + highlight));
-                                dst[dIdx + 1] = Math.max(0, Math.min(255, src[sIdx + 1] + highlight));
-                                dst[dIdx + 2] = Math.max(0, Math.min(255, src[sIdx + 2] + highlight * 1.15));
-                                dst[dIdx + 3] = 255;
-                            }
-                        }
-
-                        sim.prev = curr;
-                        sim.curr = prev;
-
-                        bctx.putImageData(sim.outImage, 0, 0);
-                        ctx.clearRect(0, 0, canvas.width, canvas.height);
-                        ctx.imageSmoothingEnabled = true;
-                        ctx.imageSmoothingQuality = 'high';
-                        ctx.drawImage(blitCanvas, 0, 0, canvas.width, canvas.height);
-
-                        if (maxEnergy < 0.35) {
-                            clearWaterWaves();
-                        }
-                    } else {
-                        // Redraw full-resolution photo so Magical Forest disco beams animate smoothly
-                        drawSharpCurrentSlideFullRes();
-                    }
-
-                    updateAndRenderStamps();
-                }
-                requestAnimationFrame(renderLoop);
-            }
-
-            // ============================================================
-            // 6. DRAGGABLE & TWO-FINGER PINCH-TO-RESIZE CLOCK
-            // ============================================================
-            const clockPos = { xPercent: 50, yPercent: 18, scale: 1 };
-            let isDraggingClock = false;
-            let dragOffsetX = 0;
-            let dragOffsetY = 0;
-
-            const activePointers = new Map();
-            let initialPinchDist = 0;
-            let initialPinchScale = 1;
-
-            function applyClockTransform() {
-                clockContainer.style.left = `${clockPos.xPercent}%`;
-                clockContainer.style.top = `${clockPos.yPercent}%`;
-                clockContainer.style.transform = `translate(-50%, -50%) scale(${clockPos.scale})`;
-
-                const scaleSlider = document.getElementById('scaleSlider');
-                const scaleValue = document.getElementById('scaleValue');
-                if (scaleSlider) scaleSlider.value = clockPos.scale.toFixed(2);
-                if (scaleValue) scaleValue.textContent = `${Math.round(clockPos.scale * 100)}%`;
-            }
-
-            function getPinchDistance() {
-                const pts = Array.from(activePointers.values());
-                if (pts.length < 2) return 0;
-                return Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
-            }
-
-            clockContainer.addEventListener('pointerdown', (e) => {
-                e.stopPropagation();
-                activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-                if (activePointers.size === 2) {
-                    isDraggingClock = false;
-                    initialPinchDist = getPinchDistance();
-                    initialPinchScale = clockPos.scale;
-                    return;
-                }
-
-                isDraggingClock = true;
-                const rect = clockContainer.getBoundingClientRect();
-                dragOffsetX = e.clientX - (rect.left + rect.width / 2);
-                dragOffsetY = e.clientY - (rect.top + rect.height / 2);
-            });
-
-            // ============================================================
-            // 7. DRAWER VISIBILITY, DOUBLE-TAP & CANVAS RIPPLE INTERACTION
-            // ============================================================
-            const controlDrawer = document.getElementById('controlDrawer');
-            const reopenCornerBtn = document.getElementById('reopenCornerBtn');
-            const toastPill = document.getElementById('toastPill');
-            let drawerOpen = true;
-            let lastTapTime = 0;
-            let lastTapX = 0;
-            let lastTapY = 0;
-
-            function showToast(msg) {
-                toastPill.textContent = msg;
-                toastPill.classList.remove('opacity-0');
-                clearTimeout(toastPill._t);
-                toastPill._t = setTimeout(() => toastPill.classList.add('opacity-0'), 2200);
-            }
-
-            function hideDrawer() {
-                drawerOpen = false;
-                controlDrawer.classList.add('translate-y-full', 'opacity-0', 'pointer-events-none');
-                reopenCornerBtn.classList.remove('hidden');
-                showToast('Double-tap anywhere or tap ••• to edit');
-            }
-
-            function showDrawer() {
-                drawerOpen = true;
-                controlDrawer.classList.remove('translate-y-full', 'opacity-0', 'pointer-events-none');
-                reopenCornerBtn.classList.add('hidden');
-            }
-
-            reopenCornerBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                showDrawer();
-            });
-
-            document.getElementById('doneBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                hideDrawer();
-            });
-
-            document.addEventListener('pointerdown', (e) => {
-                if (e.target.closest('#controlDrawer') || e.target.closest('#reopenCornerBtn')) return;
-
-                activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-
-                if (activePointers.size === 2) {
-                    isDraggingClock = false;
-                    initialPinchDist = getPinchDistance();
-                    initialPinchScale = clockPos.scale;
-                    return;
-                }
-
-                const now = Date.now();
-                const dt = now - lastTapTime;
-                const dist = Math.hypot(e.clientX - lastTapX, e.clientY - lastTapY);
-
-                if (dt > 40 && dt < 380 && dist < 55) {
-                    lastTapTime = 0;
-                    if (drawerOpen) hideDrawer();
-                    else showDrawer();
-                } else {
-                    lastTapTime = now;
-                    lastTapX = e.clientX;
-                    lastTapY = e.clientY;
-                }
-
-                if (!e.target.closest('#clockContainer')) {
-                    createWaterImpulse(e.clientX, e.clientY, 8, 460);
-                    playRippleSound(false);
-                }
-            });
-
-            document.addEventListener('dblclick', (e) => {
-                if (e.target.closest('#controlDrawer') || e.target.closest('#reopenCornerBtn')) return;
-                if (drawerOpen) hideDrawer();
-                else showDrawer();
-            });
-
-            document.addEventListener('pointermove', (e) => {
-                if (activePointers.has(e.pointerId)) {
-                    activePointers.set(e.pointerId, { x: e.clientX, y: e.clientY });
-                }
-
-                if (activePointers.size === 2 && initialPinchDist > 10) {
-                    const currentDist = getPinchDistance();
-                    const ratio = currentDist / initialPinchDist;
-                    clockPos.scale = Math.max(0.55, Math.min(1.65, initialPinchScale * ratio));
-                    applyClockTransform();
-                    return;
-                }
-
-                if (isDraggingClock) {
-                    const centerX = e.clientX - dragOffsetX;
-                    const centerY = e.clientY - dragOffsetY;
-                    clockPos.xPercent = Math.max(12, Math.min(88, (centerX / window.innerWidth) * 100));
-                    clockPos.yPercent = Math.max(8, Math.min(92, (centerY / window.innerHeight) * 100));
-                    applyClockTransform();
-                    return;
-                }
-
-                if (e.buttons > 0 && !e.target.closest('#controlDrawer') && !e.target.closest('#clockContainer')) {
-                    createWaterImpulse(e.clientX, e.clientY, 5, 240);
-                }
-            });
-
-            function clearPointer(e) {
-                activePointers.delete(e.pointerId);
-                if (activePointers.size < 2) {
-                    initialPinchDist = 0;
-                }
-                isDraggingClock = false;
-            }
-
-            document.addEventListener('pointerup', clearPointer);
-            document.addEventListener('pointercancel', clearPointer);
-
-            // ============================================================
-            // 8. PHOTO & FOLDER PICKER HANDLERS
-            // ============================================================
-            function handleImageFiles(fileList) {
-                const files = Array.from(fileList || []).filter(f => f.type.startsWith('image/'));
-                if (files.length === 0) {
-                    showToast('No image files selected');
-                    return;
-                }
-                const loaded = [];
-                let doneCount = 0;
-                files.forEach((file) => {
-                    const reader = new FileReader();
-                    reader.onload = (ev) => {
-                        const img = new Image();
-                        img.onload = () => {
-                            loaded.push(img);
-                            doneCount++;
-                            if (doneCount === files.length) {
-                                slideshow.mode = 'custom';
-                                slideshow.images = loaded;
-                                slideshow.index = 0;
-                                slideshow.moodStep = 0;
-                                document.getElementById('originalBgBtn').classList.remove('glass-pill-active');
-                                startSlideshowCycle();
-                                hideDrawer();
-                                showToast(`${loaded.length} photo${loaded.length > 1 ? 's' : ''} loaded`);
-                            }
-                        };
-                        img.src = ev.target.result;
-                    };
-                    reader.readAsDataURL(file);
-                });
-            }
-
-            document.getElementById('photoPicker').addEventListener('change', (e) => {
-                handleImageFiles(e.target.files);
-                e.target.value = '';
-            });
-
-            document.getElementById('folderPicker').addEventListener('change', (e) => {
-                handleImageFiles(e.target.files);
-                e.target.value = '';
-            });
-
-            document.getElementById('originalBgBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                slideshow.mode = 'original';
-                slideshow.images = [];
-                slideshow.index = 0;
-                slideshow.moodStep = 0;
-                e.currentTarget.classList.add('glass-pill-active');
-                startSlideshowCycle();
-                showToast('Original twilight waves');
-            });
-
-            // Auto Ripple On/Off button
-            document.getElementById('autoRippleToggleBtn').addEventListener('click', (e) => {
-                e.stopPropagation();
-                slideshow.autoRipple = !slideshow.autoRipple;
-                const btn = e.currentTarget;
-                btn.textContent = `Auto Ripple: ${slideshow.autoRipple ? 'On' : 'Off'}`;
-                btn.classList.toggle('glass-pill-active', slideshow.autoRipple);
-                if (!slideshow.autoRipple) {
-                    clearWaterWaves();
-                } else {
-                    triggerSingleRippleTransition(false, false);
-                }
-                showToast(slideshow.autoRipple ? 'Auto Ripple On' : 'Auto Ripple Off');
-            });
-
-            // Photo Color Mood Selector
-            document.getElementById('filterRow').addEventListener('click', (e) => {
-                const btn = e.target.closest('.filter-btn');
-                if (!btn) return;
-                e.stopPropagation();
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('glass-pill-active'));
-                btn.classList.add('glass-pill-active');
-                slideshow.filterMode = btn.dataset.filter;
-                updateMoodStatusLabel();
-                renderCurrentSlideToBuffer();
-                if (slideshow.autoRipple) {
-                    createWaterImpulse(window.innerWidth * 0.5, window.innerHeight * 0.52, 9, 460);
-                } else {
-                    drawSharpCurrentSlideFullRes();
-                }
-            });
-
-            // Floating Shiny Stamp Selector
-            document.getElementById('stampRow').addEventListener('click', (e) => {
-                const btn = e.target.closest('.stamp-btn');
-                if (!btn) return;
-                e.stopPropagation();
-                document.querySelectorAll('.stamp-btn').forEach(b => b.classList.remove('glass-pill-active'));
-                btn.classList.add('glass-pill-active');
-                setStampType(btn.dataset.stamp);
-            });
-
-            // Ripple Soundscape Selector
-            document.getElementById('soundRow').addEventListener('click', (e) => {
-                const btn = e.target.closest('.sound-btn');
-                if (!btn) return;
-                e.stopPropagation();
-                document.querySelectorAll('.sound-btn').forEach(b => b.classList.remove('glass-pill-active'));
-                btn.classList.add('glass-pill-active');
-                soundMode = btn.dataset.sound;
-                const labels = {
-                    off: 'Off',
-                    bowl: 'Sound Bowl',
-                    water: 'Water Ripple',
-                    chimes: 'Bar Chimes'
-                };
-                document.getElementById('soundStatusLabel').textContent = labels[soundMode] || 'Off';
-                if (soundMode !== 'off') {
-                    playRippleSound(false);
-                }
-            });
-
-            // ============================================================
-            // 9. FONT, COLOR, OPACITY, POSITION & SIZE CONTROLS
-            // ============================================================
-            const fontMap = {
-                clean: 'font-style-clean',
-                round: 'font-style-round',
-                fluffy: 'font-style-fluffy',
-                sharp: 'font-style-sharp',
-                handwritten: 'font-style-handwritten',
-                classic: 'font-style-classic'
-            };
-
-            document.getElementById('fontRow').addEventListener('click', (e) => {
-                const btn = e.target.closest('.font-btn');
-                if (!btn) return;
-                e.stopPropagation();
-                document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('glass-pill-active'));
-                btn.classList.add('glass-pill-active');
-
-                Object.values(fontMap).forEach(cls => clockWrapper.classList.remove(cls));
-                clockWrapper.classList.add(fontMap[btn.dataset.font] || 'font-style-clean');
-            });
-
-            document.getElementById('colorRow').addEventListener('click', (e) => {
-                const btn = e.target.closest('.color-btn');
-                if (!btn) return;
-                e.stopPropagation();
-                document.querySelectorAll('.color-btn').forEach(b => {
-                    b.classList.remove('border-2', 'border-white', 'scale-110');
-                    b.classList.add('border', 'border-white/50');
-                });
-                btn.classList.remove('border', 'border-white/50');
-                btn.classList.add('border-2', 'border-white', 'scale-110');
-                clockWrapper.style.color = btn.dataset.color;
-            });
-
-            document.getElementById('opacitySlider').addEventListener('input', (e) => {
-                e.stopPropagation();
-                const val = parseFloat(e.target.value);
-                clockWrapper.style.opacity = val;
-                document.getElementById('opacityValue').textContent = `${Math.round(val * 100)}%`;
-            });
-
-            document.getElementById('scaleSlider').addEventListener('input', (e) => {
-                e.stopPropagation();
-                clockPos.scale = parseFloat(e.target.value);
-                applyClockTransform();
-            });
-
-            document.querySelectorAll('.pos-btn').forEach((btn) => {
-                btn.addEventListener('click', (e) => {
-                    e.stopPropagation();
-                    const pos = btn.dataset.pos;
-                    if (pos === 'top') { clockPos.xPercent = 50; clockPos.yPercent = 18; }
-                    if (pos === 'center') { clockPos.xPercent = 50; clockPos.yPercent = 45; }
-                    if (pos === 'bottom') { clockPos.xPercent = 50; clockPos.yPercent = 76; }
-                    applyClockTransform();
-                });
-            });
-
-            // ============================================================
-            // 10. INITIALIZE ON WINDOW LOAD
-            // ============================================================
-            window.addEventListener('resize', resizeSimulation);
-
-            window.onload = function () {
-                reopenCornerBtn.classList.add('hidden');
-                resizeSimulation();
-                startSlideshowCycle();
-                renderLoop();
-            };
-        })();
-    </script>
-</body>
-</html>
+          };
+          item.querySelector('[data-act="remove"]').onclick = (e) => {
+            e.stopPropagation();
+            state.photos.splice(index, 1);
+            renderPhotoStrip();
+            updateDurationUI();
+          };
+          item.onclick = () => {
+            const perSlide = state.duration / Math.max(1, state.photos.length);
+            state.currentTime = index * perSlide + 0.05;
+          };
+          photoStrip.appendChild(item);
+        });
+      }
+
+      /* =========================================================================
+         6. CANVAS SIZING & RESPONSIVE ASPECT RATIO
+         ========================================================================= */
+      function getCanvasLogicalDimensions(heightTarget) {
+        if (state.aspectRatio === "4:5") {
+          return { w: Math.round(heightTarget * 0.8), h: heightTarget };
+        }
+        if (state.aspectRatio === "1:1") {
+          return { w: heightTarget, h: heightTarget };
+        }
+        return { w: Math.round((heightTarget * 9) / 16), h: heightTarget };
+      }
+
+      function resizePreviewCanvas() {
+        const dims = getCanvasLogicalDimensions(1280);
+        canvas.width = dims.w;
+        canvas.height = dims.h;
+
+        const isMobile = window.innerWidth <= 900;
+        const maxH = isMobile ? Math.min(285, window.innerHeight * 0.34) : Math.min(590, window.innerHeight - 175);
+        const aspect = dims.w / dims.h;
+        const displayH = Math.max(200, maxH);
+        const displayW = Math.round(displayH * aspect);
+
+        canvasShell.style.width = displayW + "px";
+        canvasShell.style.height = displayH + "px";
+      }
+
+      /* =========================================================================
+         7. CORE VIDEO FRAME RENDERING ENGINE (PREVIEW + EXPORT)
+         ========================================================================= */
+      function drawImageCover(targetCtx, img, x, y, w, h, zoom = 1, panX = 0, panY = 0, rot = 0) {
+        if (!img || !img.width || !img.height) return;
+        targetCtx.save();
+        targetCtx.translate(x + w / 2 + panX * w, y + h / 2 + panY * h);
+        if (rot) targetCtx.rotate(rot);
+        targetCtx.scale(zoom, zoom);
+
+        const imgAspect = img.width / img.height;
+        const boxAspect = w / h;
+        let drawW, drawH;
+        if (imgAspect > boxAspect) {
+          drawH = h;
+          drawW = h * imgAspect;
+        } else {
+          drawW = w;
+          drawH = w / imgAspect;
+        }
+        targetCtx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
+        targetCtx.restore();
+      }
+
+      function getFilterCSS(filterId) {
+        switch (filterId) {
+          case "bw":
+            return "grayscale(100%) contrast(132%) brightness(102%)";
+          case "sepia":
+            return "sepia(88%) contrast(112%) brightness(98%) saturate(115%)";
+          case "lofi":
+            return "contrast(88%) brightness(107%) saturate(82%) sepia(24%)";
+          case "rainbow":
+            return "saturate(135%) contrast(108%) brightness(104%)";
+          case "forest":
+            return "saturate(128%) contrast(110%) hue-rotate(14deg) brightness(98%)";
+          case "oldmovie":
+            return "grayscale(85%) sepia(38%) contrast(135%) brightness(92%)";
+          case "neon":
+            return "saturate(190%) contrast(130%) brightness(104%) hue-rotate(-10deg)";
+          case "disco":
+            return "saturate(165%) contrast(122%) brightness(106%)";
+          case "paradise":
+            return "saturate(148%) contrast(108%) brightness(106%) sepia(14%)";
+          default:
+            return "none";
+        }
+      }
+
+      function renderFilterAtmosphere(targetCtx, w, h, t) {
+        const f = state.filter;
+
+        if (f === "lofi") {
+          targetCtx.fillStyle = "rgba(255, 214, 165, 0.11)";
+          targetCtx.fillRect(0, 0, w, h);
+        } else if (f === "rainbow") {
+          const shift = Math.sin(t * 1.4) * 0.25;
+          const grad = targetCtx.createLinearGradient(0, h * shift, w, h * (1 - shift));
+          grad.addColorStop(0, "rgba(255, 77, 141, 0.26)");
+          grad.addColorStop(0.28, "rgba(255, 190, 11, 0.22)");
+          grad.addColorStop(0.55, "rgba(20, 216, 180, 0.24)");
+          grad.addColorStop(0.82, "rgba(56, 189, 248, 0.26)");
+          grad.addColorStop(1, "rgba(168, 85, 247, 0.28)");
+          targetCtx.save();
+          targetCtx.globalCompositeOperation = "screen";
+          targetCtx.fillStyle = grad;
+          targetCtx.fillRect(0, 0, w, h);
+          targetCtx.restore();
+        } else if (f === "forest") {
+          const beam = targetCtx.createRadialGradient(w * 0.2, h * 0.12, 10, w * 0.3, h * 0.2, w * 0.9);
+          beam.addColorStop(0, "rgba(254, 249, 195, 0.32)");
+          beam.addColorStop(0.5, "rgba(16, 185, 129, 0.16)");
+          beam.addColorStop(1, "rgba(6, 78, 59, 0.24)");
+          targetCtx.fillStyle = beam;
+          targetCtx.fillRect(0, 0, w, h);
+
+          targetCtx.save();
+          particles.forEach((p) => {
+            const px = ((p.x + Math.sin(t * 0.9 + p.phase) * 0.06 + 1) % 1) * w;
+            const py = ((p.y - t * p.speedY + 10) % 1) * h;
+            const alpha = 0.35 + 0.55 * Math.abs(Math.sin(t * 2.5 + p.phase));
+            targetCtx.fillStyle = `rgba(217, 249, 157, ${alpha.toFixed(2)})`;
+            targetCtx.beginPath();
+            targetCtx.arc(px, py, p.r * 1.4, 0, Math.PI * 2);
+            targetCtx.fill();
+          });
+          targetCtx.restore();
+        } else if (f === "oldmovie") {
+          const flicker = 0.06 * Math.sin(t * 37) + 0.04 * Math.cos(t * 53);
+          targetCtx.fillStyle = flicker > 0 ? `rgba(255,248,220,${flicker})` : `rgba(0,0,0,${-flicker})`;
+          targetCtx.fillRect(0, 0, w, h);
+
+          targetCtx.strokeStyle = "rgba(255, 255, 255, 0.22)";
+          targetCtx.lineWidth = 1.5;
+          for (let s = 0; s < 3; s++) {
+            const sx = ((Math.sin(t * (11 + s * 5) + s) * 0.5 + 0.5) * w);
+            targetCtx.beginPath();
+            targetCtx.moveTo(sx, 0);
+            targetCtx.lineTo(sx + Math.sin(t * 20) * 4, h);
+            targetCtx.stroke();
+          }
+
+          const vig = targetCtx.createRadialGradient(w / 2, h / 2, w * 0.28, w / 2, h / 2, h * 0.65);
+          vig.addColorStop(0, "rgba(0,0,0,0)");
+          vig.addColorStop(1, "rgba(0,0,0,0.62)");
+          targetCtx.fillStyle = vig;
+          targetCtx.fillRect(0, 0, w, h);
+        } else if (f === "neon") {
+          const nGrad = targetCtx.createLinearGradient(0, 0, w, h);
+          nGrad.addColorStop(0, "rgba(236, 72, 153, 0.26)");
+          nGrad.addColorStop(0.5, "rgba(124, 92, 255, 0.08)");
+          nGrad.addColorStop(1, "rgba(6, 182, 212, 0.28)");
+          targetCtx.save();
+          targetCtx.globalCompositeOperation = "screen";
+          targetCtx.fillStyle = nGrad;
+          targetCtx.fillRect(0, 0, w, h);
+          targetCtx.restore();
+        } else if (f === "disco") {
+          targetCtx.save();
+          targetCtx.globalCompositeOperation = "screen";
+          const colors = ["rgba(244,63,94,0.24)", "rgba(56,189,248,0.24)", "rgba(250,204,21,0.22)", "rgba(168,85,247,0.24)"];
+          for (let b = 0; b < 4; b++) {
+            const angle = t * 1.6 + (b * Math.PI) / 2;
+            const bx = w * 0.5 + Math.cos(angle) * w * 0.42;
+            const by = h * 0.45 + Math.sin(angle * 1.3) * h * 0.35;
+            const spot = targetCtx.createRadialGradient(bx, by, 10, bx, by, w * 0.45);
+            spot.addColorStop(0, colors[b]);
+            spot.addColorStop(1, "rgba(0,0,0,0)");
+            targetCtx.fillStyle = spot;
+            targetCtx.fillRect(0, 0, w, h);
+          }
