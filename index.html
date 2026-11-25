@@ -7,21 +7,24 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <meta name="apple-mobile-web-app-title" content="ReelCraft" />
   <meta name="theme-color" content="#0b0d12" />
-  <title>ReelCraft Studio — Auto Photo-to-Reel & Short Maker</title>
+  <title>ReelCraft Studio — Pro Photo-to-Reel & Short Maker</title>
   <link id="appManifestLink" rel="manifest" />
   <link id="appleTouchIcon" rel="apple-touch-icon" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@700&family=Cinzel:wght@700;900&family=Inter:wght@500;700;800&family=Orbitron:wght@700;900&family=Playfair+Display:ital,wght@0,700;1,700&family=Space+Mono:wght@700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg-app: #0b0d12;
-      --bg-panel: #131722;
-      --bg-card: #1b2030;
-      --bg-card-hover: #242b40;
-      --border: #2a324a;
-      --text-main: #f3f5fa;
-      --text-muted: #949eb8;
+      --bg-app: #090b10;
+      --bg-panel: #121622;
+      --bg-card: #1a2030;
+      --bg-card-hover: #232b40;
+      --border: #2a334d;
+      --text-main: #f4f6fb;
+      --text-muted: #939eb8;
       --accent: #7c5cff;
       --accent-hover: #6a48f5;
-      --accent-glow: rgba(124, 92, 255, 0.35);
+      --accent-glow: rgba(124, 92, 255, 0.38);
       --pink: #ff4d8d;
       --teal: #14d8b4;
       --amber: #ffb020;
@@ -41,7 +44,7 @@
       height: 100%;
       background-color: var(--bg-app);
       color: var(--text-main);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
       overflow-x: hidden;
     }
 
@@ -63,9 +66,6 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      font-weight: 800;
-      font-size: 0.95rem;
-      letter-spacing: -0.02em;
       min-width: 0;
     }
 
@@ -89,23 +89,24 @@
     }
 
     .brand-title {
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 800;
       color: var(--text-main);
+      letter-spacing: -0.02em;
     }
 
     .brand-badge {
       font-size: 8px !important;
       font-weight: 700;
-      padding: 1px 5px !important;
-      line-height: 1.1 !important;
+      padding: 1px 6px !important;
+      line-height: 1.15 !important;
       margin-top: 2px;
       border-radius: 999px;
       background: rgba(20, 216, 180, 0.14);
       color: var(--teal);
-      border: 1px solid rgba(20, 216, 180, 0.3);
+      border: 1px solid rgba(20, 216, 180, 0.35);
       text-transform: uppercase;
-      letter-spacing: 0.04em;
+      letter-spacing: 0.05em;
       display: inline-block;
       cursor: pointer;
     }
@@ -139,11 +140,11 @@
 
     .btn:hover {
       background: var(--bg-card-hover);
-      border-color: #3d4869;
+      border-color: #3f4b6e;
     }
 
     .btn:active {
-      transform: scale(0.98);
+      transform: scale(0.97);
     }
 
     .btn-primary {
@@ -155,7 +156,6 @@
 
     .btn-primary:hover {
       filter: brightness(1.08);
-      background: linear-gradient(135deg, var(--accent), #9b4dff);
     }
 
     .btn-export {
@@ -180,11 +180,11 @@
       transform: none;
     }
 
-    /* Main Workspace Grid */
+    /* Workspace Layout */
     .workspace {
       display: grid;
       grid-template-columns: minmax(310px, 430px) 1fr;
-      height: calc(100dvh - 52px);
+      height: calc(100dvh - 50px);
       overflow: hidden;
     }
 
@@ -192,21 +192,21 @@
       .workspace {
         display: flex;
         flex-direction: column;
-        height: calc(100dvh - 50px);
+        height: calc(100dvh - 49px);
         overflow: hidden;
       }
     }
 
-    /* Left Preview Column */
+    /* Pinned Live Preview Stage */
     .preview-stage {
-      background: radial-gradient(circle at 50% 25%, #191f33 0%, #0b0d12 75%);
+      background: radial-gradient(circle at 50% 25%, #192036 0%, #090b10 78%);
       border-right: 1px solid var(--border);
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 16px;
-      gap: 12px;
+      padding: 14px;
+      gap: 10px;
       position: relative;
       flex-shrink: 0;
     }
@@ -215,8 +215,8 @@
       .preview-stage {
         border-right: none;
         border-bottom: 1px solid var(--border);
-        padding: 8px 12px 10px;
-        gap: 8px;
+        padding: 8px 12px 9px;
+        gap: 7px;
         z-index: 25;
       }
     }
@@ -225,7 +225,7 @@
       position: relative;
       border-radius: 18px;
       overflow: hidden;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.65), 0 0 0 1px rgba(255, 255, 255, 0.08);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7), 0 0 0 1px rgba(255, 255, 255, 0.1);
       background: #000;
       display: flex;
       align-items: center;
@@ -247,42 +247,42 @@
 
     .canvas-hint {
       position: absolute;
-      top: 10px;
+      top: 8px;
       left: 50%;
       transform: translateX(-50%);
       background: rgba(11, 13, 18, 0.72);
       backdrop-filter: blur(6px);
       color: #e2e8f0;
-      font-size: 0.72rem;
-      padding: 4px 10px;
+      font-size: 0.68rem;
+      padding: 3px 9px;
       border-radius: 999px;
       pointer-events: none;
-      border: 1px solid rgba(255, 255, 255, 0.12);
+      border: 1px solid rgba(255, 255, 255, 0.14);
       white-space: nowrap;
     }
 
-    /* Transport / Scrubber */
+    /* Transport Bar */
     .transport {
       width: 100%;
-      max-width: 340px;
+      max-width: 350px;
       background: var(--bg-panel);
       border: 1px solid var(--border);
       border-radius: var(--radius-md);
-      padding: 10px 12px;
+      padding: 8px 11px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 7px;
     }
 
     .transport-row {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 9px;
     }
 
     .play-btn {
-      width: 36px;
-      height: 36px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       border: none;
       background: var(--accent);
@@ -292,10 +292,6 @@
       cursor: pointer;
       flex-shrink: 0;
       box-shadow: 0 3px 10px var(--accent-glow);
-    }
-
-    .play-btn:hover {
-      background: var(--accent-hover);
     }
 
     .scrubber {
@@ -322,7 +318,7 @@
 
     .time-readout {
       font-variant-numeric: tabular-nums;
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       color: var(--text-muted);
       min-width: 72px;
       text-align: right;
@@ -330,15 +326,15 @@
 
     .ratio-pills {
       display: flex;
-      gap: 6px;
+      gap: 5px;
       justify-content: center;
     }
 
     .ratio-pill {
       flex: 1;
-      padding: 5px 8px;
+      padding: 4px 6px;
       border-radius: 7px;
-      font-size: 0.73rem;
+      font-size: 0.71rem;
       font-weight: 600;
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -348,7 +344,7 @@
     }
 
     .ratio-pill.active {
-      background: rgba(124, 92, 255, 0.18);
+      background: rgba(124, 92, 255, 0.2);
       border-color: var(--accent);
       color: #fff;
     }
@@ -368,8 +364,8 @@
       display: flex;
       overflow-x: auto;
       border-bottom: 1px solid var(--border);
-      background: #0f131d;
-      padding: 6px 10px 0;
+      background: #0e121c;
+      padding: 5px 10px 0;
       gap: 4px;
       scrollbar-width: none;
       flex-shrink: 0;
@@ -382,12 +378,12 @@
     .tab-btn {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 10px 14px;
+      gap: 5px;
+      padding: 9px 13px;
       border: none;
       background: transparent;
       color: var(--text-muted);
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       font-weight: 600;
       cursor: pointer;
       border-bottom: 2px solid transparent;
@@ -405,28 +401,27 @@
     }
 
     .tab-body {
-      padding: 18px;
+      padding: 16px;
       overflow-y: auto;
       -webkit-overflow-scrolling: touch;
       flex: 1;
       min-height: 0;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      padding-bottom: 44px;
+      gap: 16px;
+      padding-bottom: 48px;
     }
 
     .tab-panel {
       display: none;
       flex-direction: column;
-      gap: 18px;
+      gap: 16px;
     }
 
     .tab-panel.active {
       display: flex;
     }
 
-    /* Section Cards & Controls */
     .section-card {
       background: var(--bg-card);
       border: 1px solid var(--border);
@@ -434,11 +429,11 @@
       padding: 14px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 11px;
     }
 
     .section-title {
-      font-size: 0.86rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--text-main);
       display: flex;
@@ -448,29 +443,29 @@
     }
 
     .section-sub {
-      font-size: 0.77rem;
+      font-size: 0.76rem;
       color: var(--text-muted);
       line-height: 1.4;
     }
 
     /* Dropzone */
     .dropzone {
-      border: 2px dashed #394466;
+      border: 2px dashed #3a4669;
       border-radius: var(--radius-md);
-      padding: 20px 14px;
+      padding: 18px 14px;
       text-align: center;
-      background: rgba(124, 92, 255, 0.04);
+      background: rgba(124, 92, 255, 0.05);
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 8px;
+      gap: 7px;
     }
 
     .dropzone:hover, .dropzone.dragover {
       border-color: var(--accent);
-      background: rgba(124, 92, 255, 0.12);
+      background: rgba(124, 92, 255, 0.13);
     }
 
     .visually-hidden-file {
@@ -487,8 +482,8 @@
     /* Photo Strip */
     .photo-strip {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(92px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+      gap: 9px;
     }
 
     .photo-item {
@@ -498,11 +493,7 @@
       overflow: hidden;
       border: 2px solid var(--border);
       background: #0d1018;
-    }
-
-    .photo-item.active-slide {
-      border-color: var(--teal);
-      box-shadow: 0 0 0 2px rgba(20, 216, 180, 0.25);
+      cursor: pointer;
     }
 
     .photo-item img {
@@ -516,9 +507,9 @@
       position: absolute;
       top: 5px;
       left: 5px;
-      background: rgba(0, 0, 0, 0.72);
+      background: rgba(0, 0, 0, 0.74);
       color: #fff;
-      font-size: 0.68rem;
+      font-size: 0.66rem;
       font-weight: 700;
       padding: 2px 6px;
       border-radius: 6px;
@@ -529,7 +520,7 @@
       bottom: 0;
       left: 0;
       right: 0;
-      background: linear-gradient(transparent, rgba(0, 0, 0, 0.88));
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
       display: flex;
       justify-content: space-between;
       padding: 14px 4px 4px;
@@ -537,13 +528,13 @@
     }
 
     .mini-icon-btn {
-      background: rgba(255, 255, 255, 0.16);
+      background: rgba(255, 255, 255, 0.18);
       border: none;
       color: #fff;
-      width: 24px;
-      height: 24px;
+      width: 23px;
+      height: 23px;
       border-radius: 6px;
-      font-size: 0.72rem;
+      font-size: 0.7rem;
       cursor: pointer;
       display: grid;
       place-items: center;
@@ -561,27 +552,27 @@
     .grid-2 {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
+      gap: 9px;
     }
 
     .grid-3 {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
-      gap: 10px;
+      grid-template-columns: repeat(auto-fill, minmax(122px, 1fr));
+      gap: 9px;
     }
 
     .choice-card {
       background: #141825;
       border: 1.5px solid var(--border);
       border-radius: 11px;
-      padding: 11px;
+      padding: 10px;
       cursor: pointer;
       text-align: left;
       color: var(--text-main);
       transition: all 0.15s;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
     }
 
     .choice-card:hover {
@@ -591,32 +582,32 @@
 
     .choice-card.selected {
       border-color: var(--accent);
-      background: rgba(124, 92, 255, 0.15);
+      background: rgba(124, 92, 255, 0.16);
       box-shadow: 0 0 0 1px var(--accent);
     }
 
     .choice-title {
-      font-size: 0.83rem;
+      font-size: 0.82rem;
       font-weight: 700;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .choice-desc {
-      font-size: 0.72rem;
+      font-size: 0.71rem;
       color: var(--text-muted);
       line-height: 1.3;
     }
 
     .swatch-bar {
-      height: 8px;
+      height: 7px;
       border-radius: 999px;
       width: 100%;
       margin-bottom: 3px;
     }
 
-    /* Duration Controls */
+    /* Presets & Sliders */
     .preset-row {
       display: flex;
       flex-wrap: wrap;
@@ -629,7 +620,7 @@
       border: 1px solid var(--border);
       background: #141825;
       color: var(--text-muted);
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       font-weight: 600;
       cursor: pointer;
     }
@@ -643,7 +634,7 @@
     .slider-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .slider-row input[type="range"] {
@@ -652,19 +643,19 @@
       cursor: pointer;
     }
 
-    /* Stamps Palette */
+    /* Stamps */
     .stamp-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(56px, 1fr));
-      gap: 8px;
+      grid-template-columns: repeat(auto-fill, minmax(54px, 1fr));
+      gap: 7px;
     }
 
     .stamp-btn {
       aspect-ratio: 1;
-      border-radius: 12px;
+      border-radius: 11px;
       border: 1px solid var(--border);
       background: #141825;
-      font-size: 1.65rem;
+      font-size: 1.55rem;
       display: grid;
       place-items: center;
       cursor: pointer;
@@ -672,14 +663,14 @@
     }
 
     .stamp-btn:hover {
-      transform: scale(1.08);
+      transform: scale(1.07);
       border-color: var(--accent);
       background: #1e2438;
     }
 
     .sketch-stamp-btn {
       aspect-ratio: 1;
-      border-radius: 12px;
+      border-radius: 11px;
       border: 1.5px solid var(--border);
       background: #141825;
       color: #fff;
@@ -694,13 +685,13 @@
     }
 
     .sketch-stamp-btn:hover {
-      transform: scale(1.06);
+      transform: scale(1.05);
       border-color: var(--teal);
       background: #1b2236;
     }
 
     .sketch-stamp-btn span {
-      font-size: 0.65rem;
+      font-size: 0.63rem;
       font-weight: 600;
       color: var(--text-muted);
       line-height: 1.1;
@@ -711,23 +702,23 @@
     .field-group {
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 5px;
     }
 
     .field-label {
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 600;
       color: var(--text-muted);
     }
 
     .text-input, .select-input {
       width: 100%;
-      padding: 10px 12px;
+      padding: 9px 11px;
       border-radius: 9px;
       border: 1px solid var(--border);
       background: #111521;
       color: var(--text-main);
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       outline: none;
     }
 
@@ -743,8 +734,8 @@
     }
 
     .color-dot {
-      width: 28px;
-      height: 28px;
+      width: 26px;
+      height: 26px;
       border-radius: 50%;
       border: 2px solid rgba(255, 255, 255, 0.25);
       cursor: pointer;
@@ -757,29 +748,7 @@
       box-shadow: 0 0 0 2px var(--accent);
     }
 
-    .color-picker-wrap {
-      position: relative;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      overflow: hidden;
-      border: 2px dashed rgba(255, 255, 255, 0.45);
-      display: grid;
-      place-items: center;
-      cursor: pointer;
-      background: conic-gradient(from 0deg, #ff4d8d, #ffb020, #14d8b4, #38bdf8, #a855f7, #ff4d8d);
-    }
-
-    .color-picker-wrap input[type="color"] {
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-      position: absolute;
-      inset: 0;
-    }
-
-    /* Phrase Preset Chips */
+    /* Phrase Chips & Layer Pills */
     .phrase-scroll {
       max-height: 185px;
       overflow-y: auto;
@@ -795,7 +764,7 @@
       border: 1px solid var(--border);
       background: #141825;
       color: var(--text-main);
-      font-size: 0.77rem;
+      font-size: 0.76rem;
       font-weight: 500;
       cursor: pointer;
       transition: all 0.14s;
@@ -812,7 +781,6 @@
       color: #a7f3d0;
     }
 
-    /* Multi-text layer pills */
     .layer-strip {
       display: flex;
       flex-wrap: wrap;
@@ -823,16 +791,16 @@
     .layer-pill {
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
       padding: 5px 10px;
       border-radius: 999px;
       background: #141825;
       border: 1px solid var(--border);
       color: var(--text-muted);
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 600;
       cursor: pointer;
-      max-width: 170px;
+      max-width: 165px;
     }
 
     .layer-pill span {
@@ -847,7 +815,7 @@
       color: #fff;
     }
 
-    /* Export Progress */
+    /* Progress Bar */
     .progress-wrap {
       background: #111521;
       border-radius: 999px;
@@ -863,24 +831,7 @@
       transition: width 0.15s linear;
     }
 
-    /* Install App Modal */
-    .modal-backdrop {
-      position: fixed;
-      inset: 0;
-      z-index: 150;
-      background: rgba(5, 7, 12, 0.78);
-      backdrop-filter: blur(6px);
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-    }
-
-    .modal-backdrop.open {
-      display: flex;
-    }
-
-    /* License Key Activation Gate */
+    /* License Key Gate */
     .license-gate {
       position: fixed;
       inset: 0;
@@ -898,7 +849,7 @@
 
     .license-card {
       width: 100%;
-      max-width: 420px;
+      max-width: 410px;
       background: #131722;
       border: 1px solid #2e3754;
       border-radius: 22px;
@@ -906,7 +857,7 @@
       box-shadow: 0 24px 60px rgba(0, 0, 0, 0.75);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 13px;
       text-align: center;
     }
 
@@ -920,7 +871,7 @@
       background: rgba(124, 92, 255, 0.16);
       border: 1px solid rgba(124, 92, 255, 0.4);
       color: #c4b5fd;
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 700;
       letter-spacing: 0.04em;
       text-transform: uppercase;
@@ -933,12 +884,14 @@
       border: 1.5px solid #333e5e;
       background: #0b0d14;
       color: #fff;
-      font-size: 0.96rem;
+      font-size: 0.95rem;
       font-weight: 700;
       letter-spacing: 0.06em;
       text-align: center;
       text-transform: uppercase;
       outline: none;
+      user-select: text;
+      -webkit-user-select: text;
     }
 
     .license-input:focus {
@@ -953,19 +906,7 @@
       min-height: 18px;
     }
 
-    .modal-box {
-      width: 100%;
-      max-width: 410px;
-      background: #131722;
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    /* Toast Notification */
+    /* Toast */
     .toast {
       position: fixed;
       bottom: 20px;
@@ -976,7 +917,7 @@
       border: 1px solid var(--accent);
       padding: 10px 18px;
       border-radius: 999px;
-      font-size: 0.84rem;
+      font-size: 0.83rem;
       font-weight: 600;
       box-shadow: 0 12px 30px rgba(0, 0, 0, 0.5);
       z-index: 250;
@@ -994,7 +935,7 @@
   </style>
 </head>
 <body>
-  <!-- One-Time License Key Gate (Protects against unauthorized link sharing) -->
+  <!-- One-Time License Key Gate (Isolated to ReelCraft Studio) -->
   <div class="license-gate" id="licenseGate">
     <div class="license-card">
       <div class="brand-icon" style="width:52px;height:52px;border-radius:15px;margin:0 auto;" aria-hidden="true">
@@ -1004,9 +945,9 @@
         </svg>
       </div>
       <div class="license-badge">🔒 One-Time Device Activation</div>
-      <h1 style="font-size:1.32rem;font-weight:800;letter-spacing:-0.02em;">Unlock ReelCraft Studio</h1>
-      <p class="section-sub" style="font-size:0.82rem;">
-        Enter the personal License Key from your checkout receipt to activate <strong>ReelCraft Studio</strong> permanently on this device.
+      <h1 style="font-size:1.3rem;font-weight:800;letter-spacing:-0.02em;">Unlock ReelCraft Studio</h1>
+      <p class="section-sub" style="font-size:0.81rem;">
+        Enter your personal License Key from your receipt to activate <strong>ReelCraft Studio</strong> permanently on this device.
       </p>
 
       <input
@@ -1015,11 +956,12 @@
         class="license-input"
         placeholder="PASTE YOUR LICENSE KEY"
         autocomplete="off"
+        autocapitalize="characters"
         spellcheck="false"
       />
       <div class="license-error" id="licenseErrorMsg"></div>
 
-      <button type="button" class="btn btn-primary" id="activateLicenseBtn" style="width:100%;padding:13px;font-size:0.95rem;">
+      <button type="button" class="btn btn-primary" id="activateLicenseBtn" style="width:100%;padding:13px;font-size:0.94rem;">
         ✨ Activate App Now
       </button>
 
@@ -1029,7 +971,7 @@
         target="_blank"
         rel="noopener noreferrer"
         class="btn btn-export"
-        style="width:100%;padding:11px;text-decoration:none;font-size:0.86rem;"
+        style="width:100%;padding:11px;text-decoration:none;font-size:0.85rem;"
       >
         🛍️ Don't have a key? Get Your License Key
       </a>
@@ -1040,27 +982,7 @@
     </div>
   </div>
 
-  <!-- Install App on Phone / Desktop Modal -->
-  <div class="modal-backdrop" id="installAppModal">
-    <div class="modal-box">
-      <div style="display:flex;align-items:center;justify-content:space-between;">
-        <strong style="font-size:1rem;">📲 Install ReelCraft as an App</strong>
-        <button type="button" class="btn btn-sm" id="closeInstallModalBtn">✕</button>
-      </div>
-      <p class="section-sub">
-        Install <strong>ReelCraft Studio</strong> onto your home screen so it opens full-screen with its own app icon (no browser bar) and works 100% offline:
-      </p>
-      <div style="background:#0d1018;border:1px solid var(--border);border-radius:12px;padding:12px;font-size:0.8rem;line-height:1.5;color:#e2e8f0;">
-        <div style="margin-bottom:8px;"><strong>🍎 iPhone / iPad (Safari):</strong><br/>Tap the <strong>Share</strong> icon <span style="color:var(--teal);">[↑]</span> at the bottom → scroll down and tap <strong>"Add to Home Screen"</strong>.</div>
-        <div><strong>🤖 Android / 💻 Desktop (Chrome/Edge):</strong><br/>Tap the browser menu <strong>(⋮)</strong> → tap <strong>"Install App"</strong> or <strong>"Add to Home Screen"</strong>.</div>
-      </div>
-      <button type="button" class="btn btn-primary" id="triggerNativeInstallBtn" style="display:none;width:100%;">
-        ⚡ Install Now (1-Tap)
-      </button>
-    </div>
-  </div>
-
-  <!-- Top Navigation Bar -->
+  <!-- Top Navigation Bar (Single Title + Small Licensed Badge + Export Visible on iPhone) -->
   <header class="topbar">
     <div class="brand">
       <div class="brand-icon" aria-hidden="true">
@@ -1082,17 +1004,16 @@
       </label>
       <button class="btn btn-export btn-sm" id="topExportJumpBtn">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Export Video
+        Export
       </button>
     </div>
   </header>
 
-  <!-- Native File Input (never display:none so iOS Safari & WebKit open photo picker reliably) -->
   <input type="file" id="photoInput" class="visually-hidden-file" accept="image/*,.heic,.heif,.jpg,.jpeg,.png,.webp,.gif" multiple />
 
   <!-- Main Workspace -->
   <main class="workspace">
-    <!-- Left Column: Live Video Canvas Preview -->
+    <!-- Left / Top Pinned Preview Stage -->
     <section class="preview-stage" id="previewStage">
       <div class="canvas-shell" id="canvasShell">
         <canvas id="previewCanvas"></canvas>
@@ -1102,8 +1023,8 @@
       <div class="transport">
         <div class="transport-row">
           <button class="play-btn" id="playPauseBtn" aria-label="Play or Pause">
-            <svg id="pauseIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
-            <svg id="playIcon" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+            <svg id="pauseIcon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            <svg id="playIcon" width="15" height="15" viewBox="0 0 24 24" fill="currentColor" style="display:none"><polygon points="6 4 20 12 6 20 6 4"/></svg>
           </button>
           <input type="range" class="scrubber" id="timelineScrubber" min="0" max="1000" value="0" />
           <div class="time-readout" id="timeReadout">00.0s / 15.0s</div>
@@ -1117,7 +1038,7 @@
       </div>
     </section>
 
-    <!-- Right Column: Studio Controls -->
+    <!-- Right / Bottom Studio Controls -->
     <section class="editor-pane">
       <nav class="tabs-nav" id="tabsNav">
         <button class="tab-btn active" data-tab="photos">📸 Album (<span id="photoCountBadge">0</span>)</button>
@@ -1131,28 +1052,29 @@
       </nav>
 
       <div class="tab-body">
-        <!-- TAB 1: PHOTOS & DURATION -->
+        <!-- TAB 1: PHOTOS, DURATION & 22 TRANSITIONS -->
         <div class="tab-panel active" id="tab-photos">
           <div class="section-card">
             <div class="section-title">
               <span>1. Your Photo Album Sequence</span>
               <div style="display:flex;gap:6px;flex-wrap:wrap;">
+                <button class="btn btn-sm" id="shufflePhotosBtn" title="Shuffle photo order">Shuffle</button>
                 <button class="btn btn-sm" id="clearPhotosBtn" title="Remove all slides">Clear</button>
                 <button class="btn btn-sm" id="loadDemoBtn">Demo Album</button>
               </div>
             </div>
             <label for="photoInput" class="dropzone" id="dropzone">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#9b4dff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div style="font-weight:700;font-size:0.9rem;">Tap to Choose Photos from Album</div>
-              <div class="section-sub">Supports iPhone/Android Camera Roll, JPG, PNG, WebP & HEIC. First upload automatically replaces demo slides.</div>
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#9b4dff" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+              <div style="font-weight:700;font-size:0.88rem;">Tap to Choose Photos from Album</div>
+              <div class="section-sub">Supports iPhone/Android Camera Roll, JPG, PNG, WebP & HEIC. First upload replaces demo slides.</div>
             </label>
             <div class="photo-strip" id="photoStrip"></div>
           </div>
 
           <div class="section-card">
             <div class="section-title">
-              <span>2. Video Length (10s – 60s)</span>
-              <span id="durationSummary" style="color:var(--teal);font-size:0.8rem;">15s total (3.0s / photo)</span>
+              <span>2. Video Length & Ken Burns Motion</span>
+              <span id="durationSummary" style="color:var(--teal);font-size:0.78rem;">15s total (3.0s / photo)</span>
             </div>
             <div class="preset-row" id="durationPresets">
               <button class="pill-btn" data-sec="10">10s</button>
@@ -1163,14 +1085,19 @@
               <button class="pill-btn" data-sec="60">60s</button>
             </div>
             <div class="slider-row">
-              <span style="font-size:0.75rem;color:var(--text-muted)">10s</span>
+              <span style="font-size:0.74rem;color:var(--text-muted)">10s</span>
               <input type="range" id="durationSlider" min="10" max="60" step="1" value="15" />
-              <span style="font-size:0.75rem;color:var(--text-muted)">60s</span>
+              <span style="font-size:0.74rem;color:var(--text-muted)">60s</span>
+            </div>
+            <div class="preset-row" id="motionPresets">
+              <button class="pill-btn active" data-motion="gentle">Gentle Cinema Pan</button>
+              <button class="pill-btn" data-motion="beat">Dynamic Beat Zoom</button>
+              <button class="pill-btn" data-motion="still">Still Frame</button>
             </div>
           </div>
 
           <div class="section-card">
-            <div class="section-title"><span>3. Photo Transition Style</span></div>
+            <div class="section-title"><span>3. Photo Transition Style (22 Effects)</span></div>
             <div class="grid-3" id="transitionGrid"></div>
           </div>
         </div>
@@ -1179,7 +1106,7 @@
         <div class="tab-panel" id="tab-templates">
           <div class="section-card">
             <div class="section-title"><span>One-Click Short Video Templates</span></div>
-            <p class="section-sub">Instantly styles your album with matching color grading, frame, transition, floating particles, and typography.</p>
+            <p class="section-sub">Instantly styles your album with matching color grading, decorative frame, transition, floating particles, and typography.</p>
             <div class="grid-2" id="templateGrid"></div>
           </div>
         </div>
@@ -1187,27 +1114,27 @@
         <!-- TAB 3: COLOR FILTERS & MOODS -->
         <div class="tab-panel" id="tab-filters">
           <div class="section-card">
-            <div class="section-title"><span>Picture Colors & Atmosphere</span></div>
-            <p class="section-sub">Real-time shader-like canvas color grading and animated particle atmospheres.</p>
+            <div class="section-title"><span>Picture Colors & Atmosphere (10 Moods)</span></div>
+            <p class="section-sub">Real-time canvas color grading, analog film flicker, prism leaks, and firefly atmospheres.</p>
             <div class="grid-2" id="filterGrid"></div>
           </div>
         </div>
 
-        <!-- TAB 3.5: FLOATING SHINY PARTICLES -->
+        <!-- TAB 4: FLOATING FX -->
         <div class="tab-panel" id="tab-floating">
           <div class="section-card">
             <div class="section-title">
               <span>Transparent Shiny Floating Overlays</span>
               <button class="btn btn-sm" id="clearFloatingBtn">None</button>
             </div>
-            <p class="section-sub">Toggle one or multiple translucent floating effects rendered directly into your video.</p>
+            <p class="section-sub">Toggle one or multiple translucent floating particle effects rendered directly into your video.</p>
             <div class="grid-2" id="floatingFxGrid"></div>
           </div>
 
           <div class="section-card">
             <div class="section-title">
               <span>Floating Density & Intensity</span>
-              <span id="densityLabel" style="color:var(--teal);font-size:0.8rem;">Medium</span>
+              <span id="densityLabel" style="color:var(--teal);font-size:0.78rem;">Medium</span>
             </div>
             <div class="preset-row" id="densityPresets">
               <button class="pill-btn" data-density="subtle">Subtle</button>
@@ -1217,34 +1144,32 @@
           </div>
         </div>
 
-        <!-- TAB 4: DECORATIVE FRAMES -->
+        <!-- TAB 5: DECORATIVE FRAMES -->
         <div class="tab-panel" id="tab-frames">
           <div class="section-card">
-            <div class="section-title"><span>Picture Frames & Line Borders (16 Styles)</span></div>
-            <p class="section-sub">Wrap your slideshow in crisp gallery lines, arches, instant film, camcorder HUD, or glowing borders.</p>
+            <div class="section-title"><span>Picture Frames & Hand-Drawn Borders (16 Styles)</span></div>
+            <p class="section-sub">Wrap your slideshow in double-lined freehand hearts, stars, wavy borders, clouds, Polaroid cards, or retro VHS HUDs.</p>
             <div class="grid-2" id="frameGrid"></div>
           </div>
         </div>
 
-        <!-- TAB 5: STAMPS & STICKERS -->
+        <!-- TAB 6: HANDWRITING DOODLE & EMOJI STAMPS -->
         <div class="tab-panel" id="tab-stamps">
           <div class="section-card">
             <div class="section-title" style="cursor:pointer;" id="toggleHwStampsHeader">
-              <span><span id="hwCollapseArrow">▼</span> Handwriting Sketch Stamps (Movable & Resizable)</span>
-              <div style="display:flex;gap:6px;align-items:center;">
-                <button class="btn btn-sm" id="clearStampsBtn">Clear All</button>
-              </div>
+              <span><span id="hwCollapseArrow">▼</span> Handwriting Doodle Stamps</span>
+              <button class="btn btn-sm" id="clearStampsBtn">Clear All</button>
             </div>
-            <div id="hwStampsBody" style="display:flex;flex-direction:column;gap:12px;">
-              <p class="section-sub">Tap to place hand-drawn chalk/neon doodles (Leaf Umbrellas, Angel Wings, Rabbit Ears, Cat Whiskers, Unicorn Horn, Yin & Yang, Sun & Moon). Drag on video to position!</p>
-              <div class="stamp-grid" style="grid-template-columns: repeat(auto-fill, minmax(76px, 1fr));" id="handwritingStampPalette"></div>
+            <div id="hwStampsBody" style="display:flex;flex-direction:column;gap:10px;">
+              <p class="section-sub">Tap to place hand-drawn chalk/neon doodles (Leaf Umbrellas, Angel Wings, Rabbit Ears, Cat Whiskers, Unicorn Horn, Yin & Yang, Sun & Moon). Drag directly on video to move!</p>
+              <div class="stamp-grid" style="grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));" id="handwritingStampPalette"></div>
             </div>
           </div>
 
           <div class="section-card">
             <div class="section-title" style="cursor:pointer;" id="toggleEmojiStampsHeader">
-              <span><span id="emojiCollapseArrow">▼</span> Emoji Stamps</span>
-              <span style="font-size:0.74rem;color:var(--text-muted);" id="emojiCollapseHint">Tap to hide</span>
+              <span><span id="emojiCollapseArrow">▼</span> Aesthetic Emoji Stamps</span>
+              <span style="font-size:0.72rem;color:var(--text-muted);" id="emojiCollapseHint">Tap to hide</span>
             </div>
             <div id="emojiStampsBody">
               <div class="stamp-grid" id="stampPalette"></div>
@@ -1271,11 +1196,11 @@
           </div>
         </div>
 
-        <!-- TAB 6: LETTERS / TYPOGRAPHY -->
+        <!-- TAB 7: MULTI-LAYER LETTERS & 150+ PHRASES -->
         <div class="tab-panel" id="tab-text">
           <div class="section-card">
             <div class="section-title">
-              <span>Text Layers & Custom Letters</span>
+              <span>Multi-Line Text Layers & Custom Letters</span>
               <div style="display:flex;gap:6px;">
                 <button class="btn btn-sm" id="addTextLayerBtn">+ Add Line</button>
                 <button class="btn btn-sm" id="delTextLayerBtn" style="color:#ff6b8b;">Delete</button>
@@ -1285,7 +1210,7 @@
             <div class="layer-strip" id="textLayerStrip"></div>
 
             <div class="field-group">
-              <label class="field-label" for="captionInput">Active Line Text (or pick from 150+ presets below)</label>
+              <label class="field-label" for="captionInput">Active Line Text (or tap any preset below)</label>
               <input type="text" id="captionInput" class="text-input" placeholder="Type anything or tap a preset below..." maxlength="70" value="Golden Hour Memories ✨" />
             </div>
 
@@ -1294,11 +1219,11 @@
                 <label class="field-label" for="fontSelect">Letter Font</label>
                 <select id="fontSelect" class="select-input">
                   <option value="sans">Modern Sans (Clean)</option>
-                  <option value="serif">Classic Editorial Serif</option>
-                  <option value="script">Handwritten Script</option>
-                  <option value="impact">Bold Reel Impact</option>
-                  <option value="retro">Retro Typewriter</option>
-                  <option value="neon">Cyber Neon Glow</option>
+                  <option value="serif">Editorial Playfair Serif</option>
+                  <option value="script">Handwritten Caveat Script</option>
+                  <option value="impact">Bold Reel Display</option>
+                  <option value="retro">Retro Space Mono</option>
+                  <option value="neon">Cyber Orbitron Neon</option>
                 </select>
               </div>
               <div class="field-group">
@@ -1315,13 +1240,13 @@
             </div>
 
             <div class="slider-row">
-              <span class="field-label" style="min-width:58px;">Size</span>
+              <span class="field-label" style="min-width:54px;">Size</span>
               <input type="range" id="textSizeSlider" min="24" max="88" value="48" />
               <button class="btn btn-sm" id="centerTextBtn">Center</button>
             </div>
 
             <div class="field-group">
-              <span class="field-label">Letter Color & Metallic Gradients</span>
+              <span class="field-label">Letter Color & Metallic Foil Gradients</span>
               <div class="color-row" id="textColorRow"></div>
             </div>
           </div>
@@ -1329,7 +1254,7 @@
           <div class="section-card">
             <div class="section-title">
               <span>150+ Instant Phrases & Auto Today's Date</span>
-              <span id="phraseCountBadge" style="color:var(--teal);font-size:0.76rem;">151 presets</span>
+              <span id="phraseCountBadge" style="color:var(--teal);font-size:0.75rem;">151 presets</span>
             </div>
             <input type="text" id="phraseSearchInput" class="text-input" placeholder="Search phrases (e.g. summer, love, friends, date)..." />
             <div class="preset-row" id="phraseCategoryRow"></div>
@@ -1337,12 +1262,12 @@
           </div>
         </div>
 
-        <!-- TAB 7: EXPORT TO PHOTO ALBUM -->
+        <!-- TAB 8: EXPORT TO CAMERA ROLL -->
         <div class="tab-panel" id="tab-export">
           <div class="section-card">
             <div class="section-title"><span>Export & Save to Photo Album</span></div>
             <p class="section-sub">
-              Renders a crisp 30fps video directly in your browser. On iPhone/iPad & Android, tap <strong>Share / Save to Photos</strong> after rendering to save straight into your Camera Roll / Photo Album for Reels, Stories, TikTok, or Shorts.
+              Renders a smooth 30fps video directly on your device—100% offline with zero watermarks. On iPhone/iPad & Android, tap <strong>Save to Photo Album / Share</strong> after rendering to save directly to your Camera Roll.
             </p>
 
             <div class="grid-2">
@@ -1356,19 +1281,19 @@
               <div class="field-group">
                 <span class="field-label">Format & Length</span>
                 <div class="text-input" style="display:flex;align-items:center;justify-content:space-between;background:#141825;">
-                  <span id="formatLabel" style="font-size:0.78rem;color:var(--text-muted);">MP4 / WebM</span>
+                  <span id="formatLabel" style="font-size:0.76rem;color:var(--text-muted);">MP4 / WebM</span>
                   <strong id="exportDurTag" style="color:var(--teal);font-size:0.82rem;">15s</strong>
                 </div>
               </div>
             </div>
 
-            <button class="btn btn-export" id="renderVideoBtn" style="width:100%;padding:12px;font-size:0.95rem;">
+            <button class="btn btn-export" id="renderVideoBtn" style="width:100%;padding:12px;font-size:0.94rem;">
               🎬 Render Short Video
             </button>
 
             <div id="exportProgressBox" style="display:none;flex-direction:column;gap:8px;">
-              <div style="display:flex;justify-content:space-between;font-size:0.78rem;color:var(--text-muted);">
-                <span id="exportStatusText">Rendering...</span>
+              <div style="display:flex;justify-content:space-between;font-size:0.77rem;color:var(--text-muted);">
+                <span id="exportStatusText">Rendering frames...</span>
                 <strong id="exportPercentText" style="color:#fff;">0%</strong>
               </div>
               <div class="progress-wrap">
@@ -1395,14 +1320,52 @@
   <script>
     (function () {
       /* =========================================================================
-         0. STORE & LICENSE KEY CONFIGURATION
+         0. STORE & LICENSE KEY GATE (Isolated to ReelCraft Studio)
          ========================================================================= */
       const STORE_CONFIG = {
         storePurchaseUrl: "https://payhip.com/b/5UWeH",
-        gumroadProductId: "",
         creatorMasterKey: "REELCRAFT-VIP-2026",
         storageKey: "reelcraft_activated_license_v1"
       };
+
+      const toastEl = document.getElementById("toast");
+      let toastTimer = null;
+      function showToast(msg) {
+        if (!toastEl) return;
+        toastEl.textContent = msg;
+        toastEl.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => toastEl.classList.remove("show"), 3200);
+      }
+
+      function handleActivate(e) {
+        if (e) e.preventDefault();
+        const gate = document.getElementById("licenseGate");
+        const input = document.getElementById("licenseKeyInput");
+        const errorEl = document.getElementById("licenseErrorMsg");
+        const statusBadge = document.getElementById("licenseStatusBadge");
+        const rawKey = (input && input.value ? input.value : "").trim().toUpperCase();
+
+        if (errorEl) errorEl.textContent = "";
+
+        if (!rawKey) {
+          if (errorEl) errorEl.textContent = "Please paste or type your License Key.";
+          return;
+        }
+        if (rawKey.startsWith("RIPPLE")) {
+          if (errorEl) errorEl.textContent = "This key is for Minimal Ripple Screen. Please enter your ReelCraft Studio key.";
+          return;
+        }
+        if (rawKey.length < 6) {
+          if (errorEl) errorEl.textContent = "Key looks too short. Copy the full License Key from your receipt.";
+          return;
+        }
+
+        try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
+        if (gate) gate.classList.add("unlocked");
+        if (statusBadge) statusBadge.textContent = "Licensed";
+        showToast("App unlocked! Enjoy ReelCraft Studio ✨");
+      }
 
       function setupLicenseGate() {
         const gate = document.getElementById("licenseGate");
@@ -1412,101 +1375,28 @@
         const buyLink = document.getElementById("buyLicenseLink");
         const statusBadge = document.getElementById("licenseStatusBadge");
 
-        if (buyLink && STORE_CONFIG.storePurchaseUrl) {
-          buyLink.href = STORE_CONFIG.storePurchaseUrl;
-        }
-
-        function unlockApp() {
-          gate.classList.add("unlocked");
-          if (statusBadge) {
-            statusBadge.textContent = "Licensed";
-          }
-        }
+        if (buyLink && STORE_CONFIG.storePurchaseUrl) buyLink.href = STORE_CONFIG.storePurchaseUrl;
 
         try {
           const existing = localStorage.getItem(STORE_CONFIG.storageKey);
-          if (existing) {
-            unlockApp();
+          if (existing && !existing.startsWith("RIPPLE")) {
+            if (gate) gate.classList.add("unlocked");
+            if (statusBadge) statusBadge.textContent = "Licensed";
           }
         } catch (_) {}
 
-        async function verifyAndActivate() {
-          const rawKey = (input.value || "").trim().toUpperCase();
-          errorEl.textContent = "";
-
-          if (!rawKey) {
-            errorEl.textContent = "Please enter your License Key.";
-            return;
-          }
-
-          if (rawKey === STORE_CONFIG.creatorMasterKey) {
-            try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
-            unlockApp();
-            showToast("Creator VIP Key activated!");
-            return;
-          }
-
-          activateBtn.disabled = true;
-          activateBtn.textContent = "Verifying key...";
-
-          try {
-            if (STORE_CONFIG.gumroadProductId) {
-              const resp = await fetch("https://api.gumroad.com/v2/licenses/verify", {
-                method: "POST",
-                headers: { "Content-Type": "application/x-www-form-urlencoded" },
-                body: new URLSearchParams({
-                  product_id: STORE_CONFIG.gumroadProductId,
-                  license_key: rawKey,
-                  increment_uses_count: "true"
-                })
-              });
-              const data = await resp.json();
-              if (!data.success || data.purchase?.refunded || data.purchase?.chargebacked) {
-                errorEl.textContent = "Invalid or refunded License Key.";
-                return;
-              }
-              if (data.uses && data.uses > 2) {
-                errorEl.textContent = "This key has already reached its 2-device limit.";
-                return;
-              }
-            } else {
-              const validPayhipFormat = /^[A-Z0-9]{4,8}(-[A-Z0-9]{4,8}){2,4}$/.test(rawKey);
-              if (!validPayhipFormat) {
-                errorEl.textContent = "Invalid key format. Copy the exact key from your Payhip receipt.";
-                return;
-              }
-            }
-
-            try { localStorage.setItem(STORE_CONFIG.storageKey, rawKey); } catch (_) {}
-            unlockApp();
-            showToast("App unlocked! Enjoy ReelCraft Studio.");
-          } catch (err) {
-            errorEl.textContent = "Could not verify right now. Check connection & try again.";
-          } finally {
-            activateBtn.disabled = false;
-            activateBtn.textContent = "✨ Activate App Now";
-          }
-        }
-
-        if (activateBtn) activateBtn.onclick = verifyAndActivate;
-        if (input) {
-          input.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") verifyAndActivate();
-          });
-        }
+        if (activateBtn) activateBtn.addEventListener("click", handleActivate);
+        if (input) input.addEventListener("keydown", (e) => { if (e.key === "Enter") handleActivate(e); });
         if (statusBadge) {
-          statusBadge.onclick = () => {
+          statusBadge.addEventListener("click", () => {
             try { localStorage.removeItem(STORE_CONFIG.storageKey); } catch (_) {}
-            input.value = "";
-            errorEl.textContent = "";
-            gate.classList.remove("unlocked");
-          };
+            if (input) input.value = "";
+            if (errorEl) errorEl.textContent = "";
+            if (gate) gate.classList.remove("unlocked");
+          });
         }
       }
 
-      /* =========================================================================
-         0B. INSTALLABLE APP ICON & MANIFEST SETUP
-         ========================================================================= */
       function setupInstallableAppManifest() {
         try {
           const iconCanvas = document.createElement("canvas");
@@ -1520,7 +1410,6 @@
           ictx.beginPath();
           ictx.roundRect(0, 0, 512, 512, 112);
           ictx.fill();
-
           ictx.fillStyle = "#ffffff";
           ictx.beginPath();
           ictx.moveTo(195, 150);
@@ -1536,11 +1425,10 @@
           const manifestObj = {
             name: "ReelCraft Studio",
             short_name: "ReelCraft",
-            description: "Auto Photo-to-Reel, TikTok & Short Video Maker",
             start_url: "./",
             display: "standalone",
-            background_color: "#0b0d12",
-            theme_color: "#0b0d12",
+            background_color: "#090b10",
+            theme_color: "#090b10",
             icons: [{ src: iconUrl, sizes: "512x512", type: "image/png", purpose: "any maskable" }]
           };
           const blob = new Blob([JSON.stringify(manifestObj)], { type: "application/manifest+json" });
@@ -1549,8 +1437,11 @@
         } catch (_) {}
       }
 
+      setupLicenseGate();
+      setupInstallableAppManifest();
+
       /* =========================================================================
-         1. STUDIO PRESETS, FILTERS, FRAMES, STAMPS & PHRASE LIBRARIES
+         1. COMPLETE PRESET LIBRARIES (22 Transitions, 16 Frames, 10 Filters, Stamps, 150+ Phrases)
          ========================================================================= */
       const TRANSITIONS = [
         { id: "crossfade", name: "Smooth Fade", desc: "Soft cinema dissolve" },
@@ -1559,22 +1450,22 @@
         { id: "whip", name: "Whip Pan", desc: "Fast TikTok motion swipe" },
         { id: "zoom", name: "Zoom In Burst", desc: "Energetic lens punch-in" },
         { id: "zoom_out", name: "Zoom Out Pull", desc: "Dramatic pull-back reveal" },
-        { id: "infinite_zoom", name: "Infinite Tunnel", desc: "Endless nested frame zoom" },
-        { id: "match_cut", name: "Match Cut Beat", desc: "Punchy snap-scale beat cut" },
-        { id: "pan_spin", name: "Pan & Spin 360", desc: "Dynamic swirl & orbit turn" },
+        { id: "infinite_zoom", name: "Infinite Tunnel", desc: "Nested frame zoom" },
+        { id: "match_cut", name: "Match Cut Beat", desc: "Punchy snap-scale beat" },
+        { id: "pan_spin", name: "Pan & Spin 360", desc: "Dynamic swirl turn" },
         { id: "spin", name: "Tilt Swirl", desc: "Playful diagonal tilt" },
-        { id: "film_burn", name: "Film Burn Leak", desc: "Warm orange analog light burn" },
-        { id: "luma_flash", name: "Luma Flash", desc: "High-key cinema exposure bloom" },
+        { id: "film_burn", name: "Film Burn Leak", desc: "Warm orange light burn" },
+        { id: "luma_flash", name: "Luma Flash", desc: "High-key cinema bloom" },
         { id: "flash", name: "Camera Flash", desc: "Crisp white shutter pop" },
-        { id: "split_lr", name: "Split Sideways", desc: "Opens from center left & right" },
-        { id: "split_ud", name: "Split Up & Down", desc: "Opens from center top & bottom" },
-        { id: "origami", name: "Origami Fold", desc: "3D paper hinge fold reveal" },
-        { id: "mask_heart", name: "💖 Heart Iris", desc: "Expanding heart shape mask" },
-        { id: "mask_star", name: "⭐ Star Iris", desc: "5-point star shape reveal" },
+        { id: "split_lr", name: "Split Sideways", desc: "Opens center left & right" },
+        { id: "split_ud", name: "Split Up & Down", desc: "Opens center top & bottom" },
+        { id: "origami", name: "Origami Fold", desc: "Paper hinge fold reveal" },
+        { id: "mask_heart", name: "💖 Heart Iris", desc: "Expanding heart mask" },
+        { id: "mask_star", name: "⭐ Star Iris", desc: "5-point star reveal" },
         { id: "mask_diamond", name: "💎 Diamond Mask", desc: "Geometric diamond wipe" },
         { id: "mask_circle", name: "⭕ Circle Iris", desc: "Classic cinema iris open" },
-        { id: "blinds", name: "Venetian Blinds", desc: "Sliced shutter slats reveal" },
-        { id: "glitch_slice", name: "⚡ Glitch Slice", desc: "Cyber RGB shift & slice cut" }
+        { id: "blinds", name: "Venetian Blinds", desc: "Sliced shutter slats" },
+        { id: "glitch_slice", name: "⚡ Glitch Slice", desc: "Cyber RGB shift cut" }
       ];
 
       const FILTERS = [
@@ -1605,7 +1496,7 @@
         { id: "none", name: "Full Bleed", desc: "Edge-to-edge borderless video" },
         { id: "handhearts", name: "✍️ Double-Lined Heart", desc: "Tall freehand double heart loop" },
         { id: "handstars", name: "✍️ Double-Lined Star", desc: "Full-screen hand-drawn star loop" },
-        { id: "handwave", name: "✍️ Wavy Double Line", desc: "Organic non-straight wavy border" },
+        { id: "handwave", name: "✍️ Wavy Double Line", desc: "Organic wavy double border" },
         { id: "handcloud", name: "☁️ Scalloped Cloud Loop", desc: "Double-lined fluffy cloud border" },
         { id: "thinline", name: "Thin Gallery Line", desc: "Minimal crisp white border" },
         { id: "doubleline", name: "Double Fine Line", desc: "Elegant dual-stroke frame" },
@@ -1620,85 +1511,44 @@
         { id: "vhs", name: "VHS Camcorder", desc: "1998 REC indicator & scanlines" }
       ];
 
-      const STAMPS = [
-        "💖", "💕", "💗", "💓", "💞", "💘", "💝", "❤️", "🩷", "🧡", "💛", "💚", "🩵", "💙", "💜", "🤍", "🖤", "🤎", "❤️‍🔥", "🫶",
-        "✨", "🔥", "🌸", "🌺", "🌷", "🌻", "🍀", "🦋", "🎵", "☀️", "🌙", "⭐", "🌟", "💫", "🌈", "🫧",
-        "🎞️", "🥂", "💍", "👑", "🎀", "🧸", "🍓", "🍒", "🌴", "🪩", "🎉", "🎂", "🕊️"
-      ];
-
       const HANDWRITING_STAMPS = [
         { id: "monstera_umbrella_left", label: "Leaf Umbrella L" },
         { id: "monstera_umbrella_right", label: "Leaf Umbrella R" },
-        { id: "monstera_leaf", label: "Monstera Leaf" },
-        { id: "totoro_leaf_hat", label: "Leaf Hat" },
-        { id: "sprout_head", label: "Head Sprout" },
-        { id: "daisy_flower", label: "Daisy" },
-        { id: "tulip_doodle", label: "Tulip" },
-        { id: "rose_doodle", label: "Rose" },
-        { id: "cherry_blossom_doodle", label: "Blossom" },
-        { id: "four_leaf_clover", label: "Lucky Clover" },
-        { id: "sunflower_doodle", label: "Sunflower" },
-        { id: "palm_tree_doodle", label: "Palm Tree" },
-        { id: "mushroom_doodle", label: "Mushroom" },
-        { id: "cactus_doodle", label: "Cactus" },
-        { id: "vine_branch", label: "Leaf Vine" },
-        { id: "wave_doodle", label: "Ocean Wave" },
-        { id: "mountain_doodle", label: "Mountains" },
-
-        { id: "butterfly_wings_spread", label: "Butterfly Wings" },
         { id: "angelwings", label: "Angel Wings" },
-        { id: "fairy_wings", label: "Fairy Wings" },
-        { id: "bat_wings", label: "Bat Wings" },
-        { id: "butterfly_sketch", label: "Mini Butterfly" },
+        { id: "butterfly_wings_spread", label: "Butterfly Wings" },
         { id: "halo_ring", label: "Angel Halo" },
-        { id: "devil_horns", label: "Devil Horns" },
-        { id: "unicornhorn", label: "Unicorn Horn" },
+        { id: "crown_sketch", label: "Queen Crown" },
         { id: "rabbitears", label: "Rabbit Ears" },
         { id: "cat_ears", label: "Cat Ears" },
-        { id: "bear_ears", label: "Bear Ears" },
-        { id: "crown_sketch", label: "Queen Crown" },
-        { id: "tiara_doodle", label: "Tiara" },
-        { id: "party_hat", label: "Party Hat" },
-        { id: "witch_hat", label: "Witch Hat" },
-        { id: "cowboy_hat", label: "Cowboy Hat" },
+        { id: "unicornhorn", label: "Unicorn Horn" },
         { id: "catwhiskers", label: "Cat Whiskers" },
-        { id: "mustache_curl", label: "Mustache" },
-        { id: "beard_full", label: "Full Beard" },
-        { id: "goatee_doodle", label: "Beard & Stache" },
         { id: "heart_glasses", label: "Heart Glasses" },
-        { id: "star_glasses", label: "Star Glasses" },
-        { id: "cool_shades", label: "Sunglasses" },
         { id: "blush_cheeks", label: "Cute Blush" },
-        { id: "freckles_doodle", label: "Freckles" },
-        { id: "lips_kiss", label: "Kiss Lips" },
-        { id: "bow_tie", label: "Bow Tie" },
         { id: "ribbon_bow", label: "Ribbon Bow" },
-
-        { id: "diamond_ring", label: "Diamond Ring" },
-        { id: "big_diamond", label: "Diamond" },
         { id: "doubleheart", label: "2x Heart" },
         { id: "winged_heart", label: "Winged Heart" },
-        { id: "arrow_heart", label: "Cupid Heart" },
         { id: "sparkle_heart", label: "Sparkle Heart" },
         { id: "infinite_love", label: "Infinity Heart" },
-        { id: "heart_pulse", label: "Heartbeat" },
-
         { id: "yinyang", label: "Yin & Yang" },
         { id: "sunmoon", label: "Sun & Moon" },
         { id: "crescent_stars", label: "Moon & Stars" },
         { id: "doublestar", label: "2x Star" },
         { id: "sparkle_cluster", label: "Sparkles" },
-        { id: "lightning_bolt", label: "Lightning" },
-        { id: "snowflake_doodle", label: "Snowflake" },
-        { id: "crystal_gem", label: "Crystal" },
-        { id: "evil_eye", label: "Evil Eye" },
-        { id: "dreamcatcher", label: "Dreamcatcher" },
-        { id: "anchor_doodle", label: "Anchor" },
+        { id: "daisy_flower", label: "Daisy" },
+        { id: "cherry_blossom_doodle", label: "Blossom" },
+        { id: "four_leaf_clover", label: "Lucky Clover" },
+        { id: "diamond_ring", label: "Diamond Ring" },
         { id: "speech_bubble", label: "Speech Bubble" },
         { id: "xoxo_doodle", label: "XOXO" }
       ];
 
       const SKETCH_INK_COLORS = ["#ffffff", "#fde047", "#f9a8d4", "#67e8f9", "#c4b5fd", "#6ee7b7", "#ff4d8d", "#0f172a"];
+
+      const STAMPS = [
+        "💖", "💕", "💗", "💓", "💞", "💘", "💝", "❤️", "🩷", "🧡", "💛", "💚", "🩵", "💙", "💜", "🤍",
+        "✨", "🔥", "🌸", "🌺", "🌷", "🌻", "🍀", "🦋", "🎵", "☀️", "🌙", "⭐", "🌟", "💫", "🌈", "🫧",
+        "🎞️", "🥂", "💍", "👑", "🎀", "🧸", "🍓", "🍒", "🌴", "🪩", "🎉", "🎂", "🕊️"
+      ];
 
       const TEXT_COLORS = [
         { id: "#ffffff", label: "Pure White", css: "#ffffff" },
@@ -1713,7 +1563,6 @@
         { id: "#6ee7b7", label: "Mint Sage", css: "#6ee7b7" },
         { id: "#22d3ee", label: "Neon Cyan", css: "#22d3ee" },
         { id: "#e879f9", label: "Neon Magenta", css: "#e879f9" },
-        { id: "#f43f5e", label: "Ruby Red", css: "#f43f5e" },
         { id: "grad_gold", label: "Gold Foil Metallic", css: "linear-gradient(135deg,#fef08a,#eab308,#ca8a04,#fef9c3)" },
         { id: "grad_sunset", label: "Sunset Gradient", css: "linear-gradient(135deg,#ff4d8d,#ff9e2c,#fde047)" },
         { id: "grad_holo", label: "Holographic Pastel", css: "linear-gradient(135deg,#f9a8d4,#c4b5fd,#67e8f9,#fde68a)" }
@@ -1733,75 +1582,43 @@
         const dayName = daysFull[now.getDay()];
 
         const datePhrases = [
-          `${mShort} ${dNum}, ${yyyy}`,
-          `${yyyy}.${mNum}.${dNum}`,
-          `${mFull} ${now.getDate()} • ${dayName}`,
-          `Captured on ${mNum}/${dNum}/${yy}`,
-          `Memory • ${mFull} ${yyyy}`,
-          `${dayName} Archive ✨`,
-          `REC • ${mShort} ${dNum} '${yy}`,
-          `${dNum} • ${mShort} • ${yyyy}`,
-          `Today's Moment • ${mNum}.${dNum}`,
-          `${mFull} Diaries 📖`,
-          `Chapter ${mNum} of ${yyyy}`,
-          `Saved Forever • ${yyyy}`
+          `${mShort} ${dNum}, ${yyyy}`, `${yyyy}.${mNum}.${dNum}`, `${mFull} ${now.getDate()} • ${dayName}`,
+          `Captured on ${mNum}/${dNum}/${yy}`, `Memory • ${mFull} ${yyyy}`, `${dayName} Archive ✨`,
+          `REC • ${mShort} ${dNum} '${yy}`, `${dNum} • ${mShort} • ${yyyy}`, `Today's Moment • ${mNum}.${dNum}`,
+          `${mFull} Diaries 📖`, `Chapter ${mNum} of ${yyyy}`, `Saved Forever • ${yyyy}`
         ];
-
         const lovePhrases = [
-          "Love Forever 💕", "You & Me", "My Favorite Person", "Endless Love",
-          "Soulmates ✨", "Forever & Always", "Heart Full of You", "Pure Magic",
-          "Better Together", "My Happy Place", "All My Love", "Written in the Stars",
-          "Always Yours", "Sweetest Memories", "Love You to the Moon", "My Whole Heart",
-          "Date Night ✨", "Crazy in Love", "Us Against the World", "Forever Starts Now"
+          "Love Forever 💕", "You & Me", "My Favorite Person", "Endless Love", "Soulmates ✨",
+          "Forever & Always", "Heart Full of You", "Pure Magic", "Better Together", "My Happy Place",
+          "All My Love", "Written in the Stars", "Always Yours", "Sweetest Memories", "Love You to the Moon",
+          "My Whole Heart", "Date Night ✨", "Crazy in Love", "Us Against the World", "Forever Starts Now"
         ];
-
         const friendsPhrases = [
-          "Best Friends Forever 👯", "Partners in Crime", "Good Times & Crazy Friends",
-          "Soul Sisters ✨", "Unbreakable Bond", "My Day Ones", "Squad Goals",
-          "Laughing Until It Hurts", "Friends Like Family", "Core Memories Together",
-          "Girls Night Out 🥂", "No One Else I'd Rather Be With", "Through Thick & Thin",
-          "Besties for Life", "Weekend Crew", "Unforgettable Nights", "Forever My People",
-          "Making Memories", "Pure Chaos & Love", "Together is Best"
+          "Best Friends Forever 👯", "Partners in Crime", "Good Times & Crazy Friends", "Soul Sisters ✨",
+          "Unbreakable Bond", "My Day Ones", "Squad Goals", "Laughing Until It Hurts", "Friends Like Family",
+          "Core Memories Together", "Girls Night Out 🥂", "No One Else I'd Rather Be With", "Through Thick & Thin",
+          "Besties for Life", "Weekend Crew", "Unforgettable Nights", "Forever My People", "Making Memories"
         ];
-
         const summerPhrases = [
-          "Memory of Summer ☀️", "Chasing Sunsets", "Golden Hour ✨", "Ocean Breeze",
-          "Paradise Found 🌴", "Wanderlust", "Summer Daze", "Salt in the Air",
-          "Vacation Mode ✈️", "Core Memory", "Endless Summer", "Sun-Kissed Days",
-          "Beach Vibes Only", "Lost in Paradise", "Tropical Escape", "Postcard from Here",
-          "Adventure Awaits", "Under the Palm Trees", "Sunkissed & Happy", "Take Me Back"
+          "Memory of Summer ☀️", "Chasing Sunsets", "Golden Hour Memories ✨", "Ocean Breeze",
+          "Paradise Found 🌴", "Wanderlust", "Summer Daze", "Salt in the Air", "Vacation Mode ✈️",
+          "Core Memory", "Endless Summer", "Sun-Kissed Days", "Beach Vibes Only", "Lost in Paradise",
+          "Tropical Escape", "Postcard from Here", "Adventure Awaits", "Under the Palm Trees"
         ];
-
         const aestheticPhrases = [
-          "Main Character Energy ✨", "Slow Living", "Romanticize Your Life",
-          "Dreamy Days", "Little Things", "Aesthetic Mood", "Soft & Golden",
-          "In My Element", "Poetic Cinema", "Velvet Skies", "Stay Golden",
-          "Magic in the Mundane", "Snapshots of Joy", "Pure Bliss", "Timeless",
-          "Ethereal Moments", "Glow Different", "Keep Shining ✨", "Art of Living"
+          "Main Character Energy ✨", "Slow Living", "Romanticize Your Life", "Dreamy Days",
+          "Little Things", "Aesthetic Mood", "Soft & Golden", "In My Element", "Poetic Cinema",
+          "Velvet Skies", "Stay Golden", "Magic in the Mundane", "Snapshots of Joy", "Pure Bliss",
+          "Timeless", "Ethereal Moments", "Glow Different", "Keep Shining ✨", "Art of Living"
         ];
-
         const celebrationPhrases = [
-          "Happy Birthday 🎂", "Congratulations! 🎉", "Happy Valentine's Day 💕",
-          "Merry Christmas 🎄", "Happy Hanukkah 🕎", "Happy New Year 🥂",
-          "Break a Leg! 🎭", "Cheers to Us 🥂", "Best Night Ever",
-          "Celebrate Life", "You Did It! 🌟", "Wishing You Joy ✨",
-          "Season's Greetings ❄️", "Warmest Wishes", "Here's to Forever",
-          "New Chapter ✨", "Party All Night 🪩", "Blessed & Grateful",
-          "Sending Love & Light", "Best Wishes Always"
+          "Happy Birthday 🎂", "Congratulations! 🎉", "Happy Valentine's Day 💕", "Merry Christmas 🎄",
+          "Happy New Year 🥂", "Cheers to Us 🥂", "Best Night Ever", "Celebrate Life", "You Did It! 🌟",
+          "Wishing You Joy ✨", "Season's Greetings ❄️", "Warmest Wishes", "Here's to Forever", "New Chapter ✨"
         ];
-
-        const dailyPhrases = [
-          "Sunday Reset ☕", "Cozy Vibes Only", "Coffee & Sunshine", "Just Breathe",
-          "Weekend Recap", "Happy Heart", "Life Lately 📸", "Good Vibes Only",
-          "Small Joys", "Grateful Today", "Current Mood", "Simple Pleasures",
-          "Peace of Mind", "Every Day is a Gift", "Living in the Moment"
-        ];
-
         const abbrPhrases = [
-          "XOXO 💋", "BFF 💕", "ILY 💖", "LOML ❤️", "POV:", "OOTD ✨", "GRWM 💄",
-          "TBT 🎞️", "OMG ✨", "LOL 😂", "SLAY 💅", "VIBE ✨", "QT 🩷", "BAE 💕",
-          "HBD 🎂", "TGIF 🥂", "YOLO 🌟", "BRB ✈️", "GOALS ✨", "ICONIC 👑",
-          "MOOD 🪩", "FBF 📸", "MCM 😍", "WCW 💕", "DIY 🎨", "VIP 🥂"
+          "XOXO 💋", "BFF 💕", "ILY 💖", "LOML ❤️", "POV:", "OOTD ✨", "GRWM 💄", "TBT 🎞️",
+          "OMG ✨", "SLAY 💅", "VIBE ✨", "QT 🩷", "BAE 💕", "HBD 🎂", "TGIF 🥂", "GOALS ✨", "ICONIC 👑"
         ];
 
         const list = [];
@@ -1812,145 +1629,29 @@
         summerPhrases.forEach((text) => list.push({ cat: "summer", text }));
         aestheticPhrases.forEach((text) => list.push({ cat: "aesthetic", text }));
         celebrationPhrases.forEach((text) => list.push({ cat: "celebration", text }));
-        dailyPhrases.forEach((text) => list.push({ cat: "daily", text }));
         return list;
       }
 
-      const PHRASE_CATEGORIES = [
-        { id: "all", label: "All (151)" },
-        { id: "abbr", label: "💬 XOXO / BFF / Abbreviations" },
-        { id: "celebration", label: "💌 Greeting Cards" },
-        { id: "date", label: "📅 Today's Date" },
-        { id: "love", label: "💕 Love" },
-        { id: "friends", label: "👯 Best Friends" },
-        { id: "summer", label: "☀️ Summer" },
-        { id: "aesthetic", label: "✨ Aesthetic" },
-        { id: "daily", label: "🌿 Daily" }
-      ];
-
       const PHRASE_PRESETS = buildDynamicPhraseLibrary();
 
+      const PHRASE_CATEGORIES = [
+        { id: "all", label: `All (${PHRASE_PRESETS.length})` },
+        { id: "abbr", label: "💬 XOXO / BFF" },
+        { id: "date", label: "📅 Today's Date" },
+        { id: "love", label: "💕 Love" },
+        { id: "friends", label: "👯 Friends" },
+        { id: "summer", label: "☀️ Summer" },
+        { id: "aesthetic", label: "✨ Aesthetic" },
+        { id: "celebration", label: "💌 Wishes" }
+      ];
+
       const TEMPLATES = [
-        {
-          id: "glossy_hearts_love",
-          name: "💖 Glossy Hearts & Romance",
-          desc: "Transparent shiny hearts, rose gold foil & thin line",
-          filter: "paradise",
-          frame: "thinline",
-          floating: ["hearts", "stars"],
-          transition: "crossfade",
-          text: "Love Forever 💕",
-          font: "script",
-          textColor: "grad_gold",
-          textStyle: "shadow",
-          textY: 0.84,
-          stamps: []
-        },
-        {
-          id: "butterfly_garden",
-          name: "🦋 Butterfly Arch Dream",
-          desc: "Fluttering butterflies, arched window & sparkles",
-          filter: "forest",
-          frame: "arch",
-          floating: ["butterflies", "stars"],
-          transition: "crossfade",
-          text: "Memory of Summer ☀️",
-          font: "serif",
-          textColor: "grad_holo",
-          textStyle: "glass",
-          textY: 0.85,
-          stamps: []
-        },
-        {
-          id: "lofi_vlog",
-          name: "✨ Aesthetic Lo-Fi Vlog",
-          desc: "Warm matte tones, Polaroid card & cherry blossoms",
-          filter: "lofi",
-          frame: "polaroid",
-          floating: ["petals"],
-          transition: "crossfade",
-          text: "slow days & cozy moments ✨",
-          font: "script",
-          textColor: "#0f172a",
-          textStyle: "shadow",
-          textY: 0.86,
-          stamps: []
-        },
-        {
-          id: "friday_disco",
-          name: "🪩 Friday Night Disco",
-          desc: "Party spotlights, golden glitter & neon border",
-          filter: "disco",
-          frame: "neonframe",
-          floating: ["glitter", "stars"],
-          transition: "whip",
-          text: "BEST FRIENDS FOREVER 👯",
-          font: "impact",
-          textColor: "#ffffff",
-          textStyle: "pill",
-          textY: 0.82,
-          stamps: []
-        },
-        {
-          id: "retro_1998",
-          name: "🎞️ 35mm Film Archive",
-          desc: "Old movie grain, 35mm sprockets & today's date",
-          filter: "oldmovie",
-          frame: "filmstrip",
-          floating: ["stars"],
-          transition: "flash",
-          text: PHRASE_PRESETS[0].text,
-          font: "retro",
-          textColor: "#fde047",
-          textStyle: "shadow",
-          textY: 0.84,
-          stamps: []
-        },
-        {
-          id: "tropical_paradise",
-          name: "🌴 Tropical Bubbles & Sun",
-          desc: "Teal & coral warmth, aura line & rising bubbles",
-          filter: "paradise",
-          frame: "auraglow",
-          floating: ["bubbles"],
-          transition: "slide",
-          text: "PARADISE FOUND ☀️",
-          font: "sans",
-          textColor: "grad_sunset",
-          textStyle: "pill",
-          textY: 0.83,
-          stamps: []
-        },
-        {
-          id: "noir_story",
-          name: "🖤 Art Deco Gold Story",
-          desc: "High-contrast B&W with gold art deco lines",
-          filter: "bw",
-          frame: "artdeco",
-          floating: ["glitter"],
-          transition: "zoom",
-          text: "CHAPTER ONE",
-          font: "serif",
-          textColor: "grad_gold",
-          textStyle: "shadow",
-          textY: 0.82,
-          stamps: []
-        },
-        {
-          id: "rainbow_vibes",
-          name: "🌈 Good Vibes Double Line",
-          desc: "Prism light leaks, double fine line & hearts",
-          filter: "rainbow",
-          frame: "doubleline",
-          floating: ["hearts", "bubbles"],
-          transition: "slide",
-          text: "PURE GOOD VIBES",
-          font: "impact",
-          textColor: "#ffffff",
-          textStyle: "glass",
-          textY: 0.84,
-          stamps: []
-        }
+        { id: "glossy_hearts_love", name: "💖 Glossy Hearts & Romance", desc: "Shiny hearts, gold foil & double-lined heart border", filter: "paradise", frame: "handhearts", floating: ["hearts", "stars"], transition: "mask_heart", text: "Love Forever 💕", font: "script", textColor: "grad_gold", textStyle: "shadow" },
+        { id: "butterfly_garden", name: "🦋 Butterfly Arch Dream", desc: "Fluttering butterflies, arched window & sparkles", filter: "forest", frame: "arch", floating: ["butterflies", "stars"], transition: "crossfade", text: "Golden Hour Memories ✨", font: "serif", textColor: "grad_holo", textStyle: "glass" },
+        { id: "lofi_vlog", name: "✨ Aesthetic Lo-Fi Vlog", desc: "Warm matte tones, Polaroid card & cherry blossoms", filter: "lofi", frame: "polaroid", floating: ["petals"], transition: "film_burn", text: "slow days & cozy moments ✨", font: "script", textColor: "#0f172a", textStyle: "shadow" },
+        { id: "friday_disco", name: "🪩 Friday Night Disco", desc: "Party spotlights, golden glitter & aura border", filter: "disco", frame: "auraglow", floating: ["glitter", "stars"], transition: "whip", text: "BEST FRIENDS FOREVER 👯", font: "impact", textColor: "#ffffff", textStyle: "pill" },
+        { id: "retro_1998", name: "🎞️ 35mm Film Archive", desc: "Old movie grain, 35mm sprockets & today's date", filter: "oldmovie", frame: "filmstrip", floating: ["stars"], transition: "flash", text: PHRASE_PRESETS.find(p => p.cat === "date").text, font: "retro", textColor: "#fde047", textStyle: "shadow" },
+        { id: "cloud_daydream", name: "☁️ Scalloped Cloud Daydream", desc: "Hand-drawn cloud loop, bubbles & pastel sky", filter: "rainbow", frame: "handcloud", floating: ["bubbles", "stars"], transition: "zoom_out", text: "Dreamy Days ✨", font: "script", textColor: "#ffffff", textStyle: "pill" }
       ];
 
       /* =========================================================================
@@ -1959,6 +1660,7 @@
       const state = {
         photos: [],
         duration: 15,
+        motionMode: "gentle",
         aspectRatio: "9:16",
         filter: "lofi",
         frame: "thinline",
@@ -1966,16 +1668,7 @@
         floatingDensity: "medium",
         transition: "crossfade",
         textLayers: [
-          {
-            id: 101,
-            text: "Golden Hour Memories ✨",
-            font: "sans",
-            size: 48,
-            color: "#ffffff",
-            style: "pill",
-            x: 0.5,
-            y: 0.83
-          }
+          { id: 101, text: "Golden Hour Memories ✨", font: "sans", size: 48, color: "#ffffff", style: "pill", x: 0.5, y: 0.83 }
         ],
         activeTextId: 101,
         phraseCategory: "all",
@@ -1987,14 +1680,9 @@
         lastFrameTimestamp: 0,
         isDemoAlbum: true,
         isExporting: false,
-        lastExportBlob: null,
-        lastExportExt: "mp4",
-        lastExportMime: "video/mp4"
+        lastExportBlob: null
       };
 
-      /* =========================================================================
-         3. DOM REFERENCES & CORE HELPERS
-         ========================================================================= */
       const canvas = document.getElementById("previewCanvas");
       const ctx = canvas.getContext("2d");
       const canvasShell = document.getElementById("canvasShell");
@@ -2002,31 +1690,18 @@
       const photoStrip = document.getElementById("photoStrip");
       const timelineScrubber = document.getElementById("timelineScrubber");
       const timeReadout = document.getElementById("timeReadout");
-      const toastEl = document.getElementById("toast");
-
-      let toastTimer = null;
-      function showToast(msg) {
-        if (!toastEl) return;
-        toastEl.textContent = msg;
-        toastEl.classList.add("show");
-        clearTimeout(toastTimer);
-        toastTimer = setTimeout(() => {
-          toastEl.classList.remove("show");
-        }, 3200);
-      }
 
       function getActiveTextLayer() {
         return state.textLayers.find((l) => l.id === state.activeTextId) || state.textLayers[0] || null;
       }
 
-      const particles = Array.from({ length: 48 }, (_, i) => ({
+      const particles = Array.from({ length: 54 }, (_, i) => ({
         x: ((i * 73) % 100) / 100,
         y: ((i * 41) % 100) / 100,
         r: 2 + (i % 4) * 1.1,
         speedY: 0.04 + (i % 7) * 0.014,
         phase: i * 1.37,
-        hue: (i * 29) % 360,
-        rotSpeed: (i % 2 === 0 ? 1 : -1) * (0.6 + (i % 5) * 0.25)
+        hue: (i * 29) % 360
       }));
 
       function generateKenBurns(index) {
@@ -2040,7 +1715,7 @@
       }
 
       /* =========================================================================
-         4. BUILT-IN DEMO ALBUM GENERATOR
+         3. DEMO ALBUM & PHOTO MANAGEMENT
          ========================================================================= */
       function createDemoPhoto(index) {
         const themes = [
@@ -2071,7 +1746,7 @@
         octx.arc(360, 480, 220, 0, Math.PI * 2);
         octx.fill();
 
-        octx.fillStyle = "rgba(10, 12, 22, 0.35)";
+        octx.fillStyle = "rgba(10, 12, 22, 0.36)";
         octx.beginPath();
         octx.moveTo(0, 860);
         octx.quadraticCurveTo(220, 720, 460, 830);
@@ -2081,17 +1756,8 @@
         octx.closePath();
         octx.fill();
 
-        octx.fillStyle = "rgba(10, 12, 22, 0.65)";
-        octx.beginPath();
-        octx.moveTo(0, 960);
-        octx.quadraticCurveTo(340, 840, 720, 950);
-        octx.lineTo(720, 1280);
-        octx.lineTo(0, 1280);
-        octx.closePath();
-        octx.fill();
-
-        octx.fillStyle = "rgba(255,255,255,0.75)";
-        octx.font = "700 22px sans-serif";
+        octx.fillStyle = "rgba(255,255,255,0.78)";
+        octx.font = "700 22px Inter, sans-serif";
         octx.textAlign = "center";
         octx.fillText(`DEMO SLIDE #${index + 1} • ${t.label}`, 360, 1140);
 
@@ -2105,164 +1771,57 @@
         state.isDemoAlbum = true;
         for (let i = 0; i < 5; i++) {
           const img = createDemoPhoto(i);
-          state.photos.push({
-            id: Date.now() + i,
-            img,
-            url: img.src,
-            kenBurns: generateKenBurns(i)
-          });
+          state.photos.push({ id: Date.now() + i, img, url: img.src, kenBurns: generateKenBurns(i) });
         }
         state.currentTime = 0;
         renderPhotoStrip();
         updateDurationUI();
       }
 
-      /* =========================================================================
-         5. PHOTO ALBUM UPLOAD, MULTI-PATH DECODING & MANAGEMENT
-         ========================================================================= */
-      function normalizeAndDownscaleSource(source, maxDim = 1440) {
-        return new Promise((resolve, reject) => {
-          try {
-            const srcW = source.naturalWidth || source.videoWidth || source.width;
-            const srcH = source.naturalHeight || source.videoHeight || source.height;
-            if (!srcW || !srcH) {
-              reject(new Error("Invalid image dimensions"));
-              return;
-            }
-            const scale = Math.min(1, maxDim / Math.max(srcW, srcH));
-            const dstW = Math.max(1, Math.round(srcW * scale));
-            const dstH = Math.max(1, Math.round(srcH * scale));
-
-            const off = document.createElement("canvas");
-            off.width = dstW;
-            off.height = dstH;
-            const octx = off.getContext("2d");
-            octx.drawImage(source, 0, 0, dstW, dstH);
-
-            const thumbUrl = off.toDataURL("image/jpeg", 0.86);
-            const finalImg = new Image();
-            finalImg.onload = () => resolve({ img: finalImg, url: thumbUrl });
-            finalImg.onerror = () => resolve({ img: off, url: thumbUrl });
-            finalImg.src = thumbUrl;
-          } catch (err) {
-            reject(err);
-          }
-        });
-      }
-
-      function decodeViaObjectURL(file) {
+      function decodePhotoFile(file) {
         return new Promise((resolve, reject) => {
           const url = URL.createObjectURL(file);
           const img = new Image();
           img.onload = () => {
-            normalizeAndDownscaleSource(img)
-              .then((res) => {
-                URL.revokeObjectURL(url);
-                resolve(res);
-              })
-              .catch((e) => {
-                URL.revokeObjectURL(url);
-                reject(e);
-              });
+            const maxDim = 1440;
+            const scale = Math.min(1, maxDim / Math.max(img.width || 1, img.height || 1));
+            const off = document.createElement("canvas");
+            off.width = Math.max(1, Math.round(img.width * scale));
+            off.height = Math.max(1, Math.round(img.height * scale));
+            off.getContext("2d").drawImage(img, 0, 0, off.width, off.height);
+            const dataUrl = off.toDataURL("image/jpeg", 0.86);
+            URL.revokeObjectURL(url);
+            const finalImg = new Image();
+            finalImg.onload = () => resolve({ img: finalImg, url: dataUrl });
+            finalImg.src = dataUrl;
           };
           img.onerror = () => {
             URL.revokeObjectURL(url);
-            reject(new Error("ObjectURL decode failed"));
+            reject(new Error("Could not decode image"));
           };
           img.src = url;
         });
       }
 
-      function decodeViaFileReader(file) {
-        return new Promise((resolve, reject) => {
-          const reader = new FileReader();
-          reader.onload = () => {
-            const img = new Image();
-            img.onload = () => normalizeAndDownscaleSource(img).then(resolve).catch(reject);
-            img.onerror = () => reject(new Error("DataURL decode failed"));
-            img.src = reader.result;
-          };
-          reader.onerror = () => reject(new Error("FileReader failed"));
-          reader.readAsDataURL(file);
-        });
-      }
-
-      async function decodeViaImageBitmap(file) {
-        if (typeof createImageBitmap !== "function") {
-          throw new Error("createImageBitmap unavailable");
-        }
-        const bitmap = await createImageBitmap(file);
-        try {
-          return await normalizeAndDownscaleSource(bitmap);
-        } finally {
-          if (bitmap && typeof bitmap.close === "function") bitmap.close();
-        }
-      }
-
-      async function decodePhotoFile(file) {
-        try {
-          return await decodeViaObjectURL(file);
-        } catch (_) {
-          try {
-            return await decodeViaFileReader(file);
-          } catch (__) {
-            return await decodeViaImageBitmap(file);
-          }
-        }
-      }
-
       async function handleFiles(fileList) {
-        const rawFiles = Array.from(fileList || []);
-        if (!rawFiles.length) return;
-
-        const validExt = /\.(jpe?g|png|webp|gif|heic|heif|bmp|avif)$/i;
-        const files = rawFiles.filter(
-          (f) => (f.type && f.type.startsWith("image/")) || validExt.test(f.name || "")
-        );
-
-        if (!files.length) {
-          showToast("Please choose photo files (JPG, PNG, WebP, or HEIC).");
-          return;
-        }
-
-        showToast(`Loading ${files.length} photo${files.length > 1 ? "s" : ""} from album...`);
-
+        const files = Array.from(fileList || []).filter((f) => f.type.startsWith("image/") || /\.(jpe?g|png|webp|gif|heic|heif)$/i.test(f.name));
+        if (!files.length) return;
         if (state.isDemoAlbum) {
           state.photos = [];
           state.isDemoAlbum = false;
           state.currentTime = 0;
         }
-
         let added = 0;
-        let failedHeic = 0;
-
-        for (let i = 0; i < files.length; i++) {
-          const file = files[i];
+        for (const file of files) {
           try {
             const decoded = await decodePhotoFile(file);
-            state.photos.push({
-              id: Date.now() + Math.random(),
-              img: decoded.img,
-              url: decoded.url,
-              kenBurns: generateKenBurns(state.photos.length)
-            });
+            state.photos.push({ id: Date.now() + Math.random(), img: decoded.img, url: decoded.url, kenBurns: generateKenBurns(state.photos.length) });
             added++;
-            renderPhotoStrip();
-            updateDurationUI();
-          } catch (err) {
-            if (/\.heic|\.heif/i.test(file.name || "") || /heic|heif/i.test(file.type || "")) {
-              failedHeic++;
-            }
-          }
+          } catch (_) {}
         }
-
-        if (added > 0) {
-          showToast(`Added ${added} photo${added > 1 ? "s" : ""} to your video!`);
-        } else if (failedHeic > 0) {
-          showToast("This browser cannot decode HEIC directly — please pick JPG/PNG or use Safari.");
-        } else {
-          showToast("Could not read selected photo(s). Try JPG or PNG images.");
-        }
+        renderPhotoStrip();
+        updateDurationUI();
+        if (added > 0) showToast(`Added ${added} photo${added > 1 ? "s" : ""} to your video!`);
       }
 
       function renderPhotoStrip() {
@@ -2271,31 +1830,26 @@
         state.photos.forEach((photo, index) => {
           const item = document.createElement("div");
           item.className = "photo-item";
-          item.dataset.index = index;
           item.innerHTML = `
             <img src="${photo.url}" alt="Slide ${index + 1}" />
             <span class="photo-badge">#${index + 1}</span>
             <div class="photo-controls">
-              <button type="button" class="mini-icon-btn" data-act="left" title="Move Left">◀</button>
-              <button type="button" class="mini-icon-btn" data-act="right" title="Move Right">▶</button>
-              <button type="button" class="mini-icon-btn del" data-act="remove" title="Remove">✕</button>
+              <button type="button" class="mini-icon-btn" data-act="left">◀</button>
+              <button type="button" class="mini-icon-btn" data-act="right">▶</button>
+              <button type="button" class="mini-icon-btn del" data-act="remove">✕</button>
             </div>
           `;
           item.querySelector('[data-act="left"]').onclick = (e) => {
             e.stopPropagation();
             if (index > 0) {
-              const tmp = state.photos[index - 1];
-              state.photos[index - 1] = state.photos[index];
-              state.photos[index] = tmp;
+              [state.photos[index - 1], state.photos[index]] = [state.photos[index], state.photos[index - 1]];
               renderPhotoStrip();
             }
           };
           item.querySelector('[data-act="right"]').onclick = (e) => {
             e.stopPropagation();
             if (index < state.photos.length - 1) {
-              const tmp = state.photos[index + 1];
-              state.photos[index + 1] = state.photos[index];
-              state.photos[index] = tmp;
+              [state.photos[index + 1], state.photos[index]] = [state.photos[index], state.photos[index + 1]];
               renderPhotoStrip();
             }
           };
@@ -2314,15 +1868,195 @@
       }
 
       /* =========================================================================
-         6. CANVAS SIZING & RESPONSIVE ASPECT RATIO
+         4. HANDWRITING DOODLE VECTOR RENDERER
+         ========================================================================= */
+      function drawHandwritingDoodle(c, type, size, color) {
+        c.save();
+        c.strokeStyle = color || "#ffffff";
+        c.lineWidth = Math.max(2.2, size * 0.055);
+        c.lineCap = "round";
+        c.lineJoin = "round";
+        c.shadowColor = color === "#0f172a" ? "rgba(255,255,255,0.4)" : (color || "#ffffff");
+        c.shadowBlur = size * 0.14;
+        const s = size * 0.45;
+
+        if (type === "monstera_umbrella_left" || type === "monstera_umbrella_right") {
+          const dir = type === "monstera_umbrella_left" ? -1 : 1;
+          c.scale(dir, 1);
+          c.beginPath();
+          c.moveTo(0, s * 0.9);
+          c.quadraticCurveTo(-s * 0.1, 0, s * 0.15, -s * 0.35);
+          c.stroke();
+          c.beginPath();
+          c.ellipse(s * 0.15, -s * 0.45, s * 0.65, s * 0.38, -0.25, 0, Math.PI * 2);
+          c.stroke();
+        } else if (type === "angelwings" || type === "butterfly_wings_spread") {
+          for (const side of [-1, 1]) {
+            c.save();
+            c.scale(side, 1);
+            c.beginPath();
+            c.moveTo(s * 0.12, 0);
+            c.bezierCurveTo(s * 0.6, -s * 0.85, s * 1.15, -s * 0.45, s * 0.95, 0);
+            c.bezierCurveTo(s * 1.05, s * 0.45, s * 0.55, s * 0.75, s * 0.12, s * 0.2);
+            c.stroke();
+            c.restore();
+          }
+        } else if (type === "halo_ring") {
+          c.beginPath();
+          c.ellipse(0, 0, s * 0.72, s * 0.24, 0, 0, Math.PI * 2);
+          c.stroke();
+        } else if (type === "crown_sketch") {
+          c.beginPath();
+          c.moveTo(-s * 0.7, s * 0.35);
+          c.lineTo(-s * 0.8, -s * 0.35);
+          c.lineTo(-s * 0.32, s * 0.05);
+          c.lineTo(0, -s * 0.5);
+          c.lineTo(s * 0.32, s * 0.05);
+          c.lineTo(s * 0.8, -s * 0.35);
+          c.lineTo(s * 0.7, s * 0.35);
+          c.closePath();
+          c.stroke();
+        } else if (type === "rabbitears" || type === "cat_ears") {
+          for (const side of [-1, 1]) {
+            c.save();
+            c.scale(side, 1);
+            c.beginPath();
+            if (type === "rabbitears") {
+              c.ellipse(s * 0.34, -s * 0.2, s * 0.18, s * 0.68, 0.14, 0, Math.PI * 2);
+            } else {
+              c.moveTo(s * 0.15, s * 0.3);
+              c.lineTo(s * 0.45, -s * 0.55);
+              c.lineTo(s * 0.78, s * 0.28);
+            }
+            c.stroke();
+            c.restore();
+          }
+        } else if (type === "unicornhorn") {
+          c.beginPath();
+          c.moveTo(-s * 0.24, s * 0.65);
+          c.lineTo(0, -s * 0.85);
+          c.lineTo(s * 0.24, s * 0.65);
+          c.closePath();
+          c.stroke();
+        } else if (type === "catwhiskers") {
+          for (const side of [-1, 1]) {
+            c.save();
+            c.scale(side, 1);
+            for (let i = -1; i <= 1; i++) {
+              c.beginPath();
+              c.moveTo(s * 0.25, i * s * 0.2);
+              c.quadraticCurveTo(s * 0.6, i * s * 0.22 - s * 0.08, s * 0.92, i * s * 0.32);
+              c.stroke();
+            }
+            c.restore();
+          }
+        } else if (type === "heart_glasses") {
+          for (const side of [-1, 1]) {
+            c.save();
+            c.translate(side * s * 0.42, 0);
+            c.beginPath();
+            c.moveTo(0, s * 0.25);
+            c.bezierCurveTo(-s * 0.4, -s * 0.1, -s * 0.2, -s * 0.42, 0, -s * 0.15);
+            c.bezierCurveTo(s * 0.2, -s * 0.42, s * 0.4, -s * 0.1, 0, s * 0.25);
+            c.stroke();
+            c.restore();
+          }
+          c.beginPath();
+          c.moveTo(-s * 0.12, -s * 0.1);
+          c.lineTo(s * 0.12, -s * 0.1);
+          c.stroke();
+        } else if (type === "blush_cheeks") {
+          for (const side of [-1, 1]) {
+            c.beginPath();
+            c.ellipse(side * s * 0.55, 0, s * 0.26, s * 0.14, 0, 0, Math.PI * 2);
+            c.stroke();
+          }
+        } else if (type === "ribbon_bow") {
+          c.beginPath();
+          c.moveTo(0, 0);
+          c.bezierCurveTo(-s * 0.75, -s * 0.55, -s * 0.85, s * 0.55, 0, 0);
+          c.bezierCurveTo(s * 0.85, -s * 0.55, s * 0.75, s * 0.55, 0, 0);
+          c.stroke();
+        } else if (type === "doubleheart" || type === "winged_heart" || type === "sparkle_heart") {
+          for (const scale of [1, 0.68]) {
+            c.save();
+            c.scale(scale, scale);
+            c.beginPath();
+            c.moveTo(0, s * 0.65);
+            c.bezierCurveTo(-s * 0.95, -s * 0.1, -s * 0.55, -s * 0.85, 0, -s * 0.3);
+            c.bezierCurveTo(s * 0.55, -s * 0.85, s * 0.95, -s * 0.1, 0, s * 0.65);
+            c.stroke();
+            c.restore();
+          }
+        } else if (type === "infinite_love") {
+          c.beginPath();
+          c.moveTo(0, 0);
+          c.bezierCurveTo(-s * 0.7, -s * 0.55, -s * 0.95, s * 0.55, 0, 0);
+          c.bezierCurveTo(s * 0.95, -s * 0.55, s * 0.7, s * 0.55, 0, 0);
+          c.stroke();
+        } else if (type === "yinyang") {
+          c.beginPath();
+          c.arc(0, 0, s * 0.72, 0, Math.PI * 2);
+          c.stroke();
+          c.beginPath();
+          c.arc(0, -s * 0.36, s * 0.36, -Math.PI / 2, Math.PI / 2);
+          c.arc(0, s * 0.36, s * 0.36, -Math.PI / 2, Math.PI / 2, true);
+          c.stroke();
+        } else if (type === "sunmoon" || type === "crescent_stars") {
+          c.beginPath();
+          c.arc(0, 0, s * 0.68, 0.4, Math.PI * 1.65);
+          c.quadraticCurveTo(-s * 0.1, 0, Math.cos(0.4) * s * 0.68, Math.sin(0.4) * s * 0.68);
+          c.stroke();
+        } else if (type === "doublestar" || type === "sparkle_cluster") {
+          c.beginPath();
+          for (let i = 0; i < 8; i++) {
+            const rad = i % 2 === 0 ? s * 0.8 : s * 0.24;
+            const ang = (i * Math.PI) / 4;
+            if (i === 0) c.moveTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+            else c.lineTo(Math.cos(ang) * rad, Math.sin(ang) * rad);
+          }
+          c.closePath();
+          c.stroke();
+        } else if (type === "daisy_flower" || type === "cherry_blossom_doodle" || type === "four_leaf_clover") {
+          const petals = type === "four_leaf_clover" ? 4 : 6;
+          for (let i = 0; i < petals; i++) {
+            c.save();
+            c.rotate((i * Math.PI * 2) / petals);
+            c.beginPath();
+            c.ellipse(0, -s * 0.42, s * 0.22, s * 0.34, 0, 0, Math.PI * 2);
+            c.stroke();
+            c.restore();
+          }
+        } else if (type === "diamond_ring") {
+          c.beginPath();
+          c.arc(0, s * 0.22, s * 0.48, 0, Math.PI * 2);
+          c.stroke();
+          c.beginPath();
+          c.moveTo(-s * 0.28, -s * 0.45);
+          c.lineTo(s * 0.28, -s * 0.45);
+          c.lineTo(0, -s * 0.25);
+          c.closePath();
+          c.stroke();
+        } else if (type === "speech_bubble") {
+          c.beginPath();
+          c.roundRect(-s * 0.78, -s * 0.52, s * 1.56, s * 0.9, s * 0.32);
+          c.stroke();
+        } else {
+          c.font = `800 ${Math.round(size * 0.46)}px "Caveat", cursive`;
+          c.textAlign = "center";
+          c.textBaseline = "middle";
+          c.fillStyle = color || "#ffffff";
+          c.fillText("XOXO", 0, 0);
+        }
+        c.restore();
+      }
+
+      /* =========================================================================
+         5. CANVAS RENDERING ENGINE (22 Transitions, 16 Frames, Multi-Layer Text)
          ========================================================================= */
       function getCanvasLogicalDimensions(heightTarget) {
-        if (state.aspectRatio === "4:5") {
-          return { w: Math.round(heightTarget * 0.8), h: heightTarget };
-        }
-        if (state.aspectRatio === "1:1") {
-          return { w: heightTarget, h: heightTarget };
-        }
+        if (state.aspectRatio === "4:5") return { w: Math.round(heightTarget * 0.8), h: heightTarget };
+        if (state.aspectRatio === "1:1") return { w: heightTarget, h: heightTarget };
         return { w: Math.round((heightTarget * 9) / 16), h: heightTarget };
       }
 
@@ -2330,69 +2064,166 @@
         const dims = getCanvasLogicalDimensions(1280);
         canvas.width = dims.w;
         canvas.height = dims.h;
-
         const isMobile = window.innerWidth <= 900;
         const maxH = isMobile ? Math.min(285, window.innerHeight * 0.34) : Math.min(590, window.innerHeight - 175);
-        const aspect = dims.w / dims.h;
         const displayH = Math.max(200, maxH);
-        const displayW = Math.round(displayH * aspect);
-
-        canvasShell.style.width = displayW + "px";
+        canvasShell.style.width = Math.round(displayH * (dims.w / dims.h)) + "px";
         canvasShell.style.height = displayH + "px";
       }
 
-      /* =========================================================================
-         7. CORE VIDEO FRAME RENDERING ENGINE (PREVIEW + EXPORT)
-         ========================================================================= */
       function drawImageCover(targetCtx, img, x, y, w, h, zoom = 1, panX = 0, panY = 0, rot = 0) {
         if (!img || !img.width || !img.height) return;
         targetCtx.save();
         targetCtx.translate(x + w / 2 + panX * w, y + h / 2 + panY * h);
         if (rot) targetCtx.rotate(rot);
         targetCtx.scale(zoom, zoom);
-
         const imgAspect = img.width / img.height;
         const boxAspect = w / h;
-        let drawW, drawH;
-        if (imgAspect > boxAspect) {
-          drawH = h;
-          drawW = h * imgAspect;
-        } else {
-          drawW = w;
-          drawH = w / imgAspect;
-        }
+        const drawW = imgAspect > boxAspect ? h * imgAspect : w;
+        const drawH = imgAspect > boxAspect ? h : w / imgAspect;
         targetCtx.drawImage(img, -drawW / 2, -drawH / 2, drawW, drawH);
         targetCtx.restore();
       }
 
+      function applyIrisClip(targetCtx, shape, w, h, p) {
+        const cx = w / 2;
+        const cy = h / 2;
+        const maxR = Math.hypot(w, h) * 0.65 * Math.max(0.02, p);
+        targetCtx.beginPath();
+        if (shape === "mask_circle") {
+          targetCtx.arc(cx, cy, maxR, 0, Math.PI * 2);
+        } else if (shape === "mask_diamond") {
+          targetCtx.moveTo(cx, cy - maxR);
+          targetCtx.lineTo(cx + maxR, cy);
+          targetCtx.lineTo(cx, cy + maxR);
+          targetCtx.lineTo(cx - maxR, cy);
+          targetCtx.closePath();
+        } else if (shape === "mask_star") {
+          for (let i = 0; i < 10; i++) {
+            const rad = i % 2 === 0 ? maxR : maxR * 0.42;
+            const ang = (i * Math.PI) / 5 - Math.PI / 2;
+            if (i === 0) targetCtx.moveTo(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad);
+            else targetCtx.lineTo(cx + Math.cos(ang) * rad, cy + Math.sin(ang) * rad);
+          }
+          targetCtx.closePath();
+        } else if (shape === "mask_heart") {
+          const s = maxR * 0.85;
+          targetCtx.moveTo(cx, cy + s * 0.65);
+          targetCtx.bezierCurveTo(cx - s * 1.15, cy - s * 0.1, cx - s * 0.65, cy - s * 0.95, cx, cy - s * 0.35);
+          targetCtx.bezierCurveTo(cx + s * 0.65, cy - s * 0.95, cx + s * 1.15, cy - s * 0.1, cx, cy + s * 0.65);
+          targetCtx.closePath();
+        }
+        targetCtx.clip();
+      }
+
+      function renderSlideTransition(targetCtx, curImg, nextImg, w, h, p, zoom, panX, panY) {
+        const tr = state.transition;
+        if (tr === "slide") {
+          drawImageCover(targetCtx, curImg, -p * w, 0, w, h, zoom, panX, panY);
+          drawImageCover(targetCtx, nextImg, (1 - p) * w, 0, w, h, 1.05, 0, 0);
+        } else if (tr === "slide_up") {
+          drawImageCover(targetCtx, curImg, 0, -p * h, w, h, zoom, panX, panY);
+          drawImageCover(targetCtx, nextImg, 0, (1 - p) * h, w, h, 1.05, 0, 0);
+        } else if (tr === "whip") {
+          const ease = p * p * (3 - 2 * p);
+          drawImageCover(targetCtx, curImg, -ease * w, 0, w, h, zoom + ease * 0.15, panX, panY);
+          drawImageCover(targetCtx, nextImg, (1 - ease) * w, 0, w, h, 1.15 - ease * 0.1, 0, 0);
+        } else if (tr === "zoom" || tr === "infinite_zoom" || tr === "match_cut") {
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom + p * 0.45, panX, panY);
+          targetCtx.save();
+          targetCtx.globalAlpha = p;
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.25 - p * 0.2, 0, 0);
+          targetCtx.restore();
+        } else if (tr === "zoom_out") {
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, Math.max(0.7, zoom - p * 0.35), panX, panY);
+          targetCtx.save();
+          targetCtx.globalAlpha = p;
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 0.85 + p * 0.2, 0, 0);
+          targetCtx.restore();
+        } else if (tr === "pan_spin" || tr === "spin") {
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom + p * 0.2, panX, panY, p * 0.35);
+          targetCtx.save();
+          targetCtx.globalAlpha = p;
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.08, 0, 0, -(1 - p) * 0.35);
+          targetCtx.restore();
+        } else if (tr === "split_lr") {
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.05, 0, 0);
+          const half = (w / 2) * (1 - p);
+          targetCtx.save();
+          targetCtx.beginPath();
+          targetCtx.rect(0, 0, half, h);
+          targetCtx.rect(w - half, 0, half, h);
+          targetCtx.clip();
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom, panX, panY);
+          targetCtx.restore();
+        } else if (tr === "split_ud" || tr === "origami") {
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.05, 0, 0);
+          const halfH = (h / 2) * (1 - p);
+          targetCtx.save();
+          targetCtx.beginPath();
+          targetCtx.rect(0, 0, w, halfH);
+          targetCtx.rect(0, h - halfH, w, halfH);
+          targetCtx.clip();
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom, panX, panY);
+          targetCtx.restore();
+        } else if (tr.startsWith("mask_")) {
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom, panX, panY);
+          targetCtx.save();
+          applyIrisClip(targetCtx, tr, w, h, p);
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.05, 0, 0);
+          targetCtx.restore();
+        } else if (tr === "blinds") {
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom, panX, panY);
+          const slats = 8;
+          const slatH = h / slats;
+          targetCtx.save();
+          targetCtx.beginPath();
+          for (let s = 0; s < slats; s++) {
+            targetCtx.rect(0, s * slatH, w, slatH * p);
+          }
+          targetCtx.clip();
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.05, 0, 0);
+          targetCtx.restore();
+        } else {
+          drawImageCover(targetCtx, curImg, 0, 0, w, h, zoom, panX, panY);
+          targetCtx.save();
+          targetCtx.globalAlpha = p;
+          drawImageCover(targetCtx, nextImg, 0, 0, w, h, 1.05, 0, 0);
+          targetCtx.restore();
+
+          if (tr === "flash" || tr === "luma_flash") {
+            const flashAlpha = Math.sin(p * Math.PI) * 0.85;
+            targetCtx.fillStyle = `rgba(255,255,255,${flashAlpha.toFixed(2)})`;
+            targetCtx.fillRect(0, 0, w, h);
+          } else if (tr === "film_burn") {
+            const burnAlpha = Math.sin(p * Math.PI) * 0.78;
+            const g = targetCtx.createRadialGradient(w * 0.8, h * 0.2, 10, w * 0.5, h * 0.5, h * 0.8);
+            g.addColorStop(0, `rgba(255, 220, 120, ${burnAlpha})`);
+            g.addColorStop(0.5, `rgba(255, 95, 30, ${burnAlpha * 0.8})`);
+            g.addColorStop(1, "rgba(255, 40, 0, 0)");
+            targetCtx.fillStyle = g;
+            targetCtx.fillRect(0, 0, w, h);
+          }
+        }
+      }
+
       function getFilterCSS(filterId) {
         switch (filterId) {
-          case "bw":
-            return "grayscale(100%) contrast(132%) brightness(102%)";
-          case "sepia":
-            return "sepia(88%) contrast(112%) brightness(98%) saturate(115%)";
-          case "lofi":
-            return "contrast(88%) brightness(107%) saturate(82%) sepia(24%)";
-          case "rainbow":
-            return "saturate(135%) contrast(108%) brightness(104%)";
-          case "forest":
-            return "saturate(128%) contrast(110%) hue-rotate(14deg) brightness(98%)";
-          case "oldmovie":
-            return "grayscale(85%) sepia(38%) contrast(135%) brightness(92%)";
-          case "neon":
-            return "saturate(190%) contrast(130%) brightness(104%) hue-rotate(-10deg)";
-          case "disco":
-            return "saturate(165%) contrast(122%) brightness(106%)";
-          case "paradise":
-            return "saturate(148%) contrast(108%) brightness(106%) sepia(14%)";
-          default:
-            return "none";
+          case "bw": return "grayscale(100%) contrast(132%) brightness(102%)";
+          case "sepia": return "sepia(88%) contrast(112%) brightness(98%) saturate(115%)";
+          case "lofi": return "contrast(88%) brightness(107%) saturate(82%) sepia(24%)";
+          case "rainbow": return "saturate(135%) contrast(108%) brightness(104%)";
+          case "forest": return "saturate(128%) contrast(110%) hue-rotate(14deg) brightness(98%)";
+          case "oldmovie": return "grayscale(85%) sepia(38%) contrast(135%) brightness(92%)";
+          case "neon": return "saturate(190%) contrast(130%) brightness(104%) hue-rotate(-10deg)";
+          case "disco": return "saturate(165%) contrast(122%) brightness(106%)";
+          case "paradise": return "saturate(148%) contrast(108%) brightness(106%) sepia(14%)";
+          default: return "none";
         }
       }
 
       function renderFilterAtmosphere(targetCtx, w, h, t) {
         const f = state.filter;
-
         if (f === "lofi") {
           targetCtx.fillStyle = "rgba(255, 214, 165, 0.11)";
           targetCtx.fillRect(0, 0, w, h);
@@ -2400,9 +2231,7 @@
           const shift = Math.sin(t * 1.4) * 0.25;
           const grad = targetCtx.createLinearGradient(0, h * shift, w, h * (1 - shift));
           grad.addColorStop(0, "rgba(255, 77, 141, 0.26)");
-          grad.addColorStop(0.28, "rgba(255, 190, 11, 0.22)");
-          grad.addColorStop(0.55, "rgba(20, 216, 180, 0.24)");
-          grad.addColorStop(0.82, "rgba(56, 189, 248, 0.26)");
+          grad.addColorStop(0.5, "rgba(20, 216, 180, 0.24)");
           grad.addColorStop(1, "rgba(168, 85, 247, 0.28)");
           targetCtx.save();
           targetCtx.globalCompositeOperation = "screen";
@@ -2410,54 +2239,21 @@
           targetCtx.fillRect(0, 0, w, h);
           targetCtx.restore();
         } else if (f === "forest") {
-          const beam = targetCtx.createRadialGradient(w * 0.2, h * 0.12, 10, w * 0.3, h * 0.2, w * 0.9);
-          beam.addColorStop(0, "rgba(254, 249, 195, 0.32)");
-          beam.addColorStop(0.5, "rgba(16, 185, 129, 0.16)");
-          beam.addColorStop(1, "rgba(6, 78, 59, 0.24)");
-          targetCtx.fillStyle = beam;
-          targetCtx.fillRect(0, 0, w, h);
-
           targetCtx.save();
-          particles.forEach((p) => {
+          particles.slice(0, 24).forEach((p) => {
             const px = ((p.x + Math.sin(t * 0.9 + p.phase) * 0.06 + 1) % 1) * w;
             const py = ((p.y - t * p.speedY + 10) % 1) * h;
             const alpha = 0.35 + 0.55 * Math.abs(Math.sin(t * 2.5 + p.phase));
             targetCtx.fillStyle = `rgba(217, 249, 157, ${alpha.toFixed(2)})`;
             targetCtx.beginPath();
-            targetCtx.arc(px, py, p.r * 1.4, 0, Math.PI * 2);
+            targetCtx.arc(px, py, p.r * 1.5, 0, Math.PI * 2);
             targetCtx.fill();
           });
           targetCtx.restore();
         } else if (f === "oldmovie") {
-          const flicker = 0.06 * Math.sin(t * 37) + 0.04 * Math.cos(t * 53);
+          const flicker = 0.05 * Math.sin(t * 37);
           targetCtx.fillStyle = flicker > 0 ? `rgba(255,248,220,${flicker})` : `rgba(0,0,0,${-flicker})`;
           targetCtx.fillRect(0, 0, w, h);
-
-          targetCtx.strokeStyle = "rgba(255, 255, 255, 0.22)";
-          targetCtx.lineWidth = 1.5;
-          for (let s = 0; s < 3; s++) {
-            const sx = ((Math.sin(t * (11 + s * 5) + s) * 0.5 + 0.5) * w);
-            targetCtx.beginPath();
-            targetCtx.moveTo(sx, 0);
-            targetCtx.lineTo(sx + Math.sin(t * 20) * 4, h);
-            targetCtx.stroke();
-          }
-
-          const vig = targetCtx.createRadialGradient(w / 2, h / 2, w * 0.28, w / 2, h / 2, h * 0.65);
-          vig.addColorStop(0, "rgba(0,0,0,0)");
-          vig.addColorStop(1, "rgba(0,0,0,0.62)");
-          targetCtx.fillStyle = vig;
-          targetCtx.fillRect(0, 0, w, h);
-        } else if (f === "neon") {
-          const nGrad = targetCtx.createLinearGradient(0, 0, w, h);
-          nGrad.addColorStop(0, "rgba(236, 72, 153, 0.26)");
-          nGrad.addColorStop(0.5, "rgba(124, 92, 255, 0.08)");
-          nGrad.addColorStop(1, "rgba(6, 182, 212, 0.28)");
-          targetCtx.save();
-          targetCtx.globalCompositeOperation = "screen";
-          targetCtx.fillStyle = nGrad;
-          targetCtx.fillRect(0, 0, w, h);
-          targetCtx.restore();
         } else if (f === "disco") {
           targetCtx.save();
           targetCtx.globalCompositeOperation = "screen";
@@ -2472,3 +2268,824 @@
             targetCtx.fillStyle = spot;
             targetCtx.fillRect(0, 0, w, h);
           }
+          targetCtx.restore();
+        }
+      }
+
+      function renderFloatingEffects(targetCtx, w, h, t) {
+        if (!state.floatingEffects.length) return;
+        const count = state.floatingDensity === "subtle" ? 12 : state.floatingDensity === "dreamy" ? 38 : 24;
+        const glyphMap = { hearts: "💖", stars: "✨", moons: "🌙", snowflakes: "❄️", butterflies: "🦋", petals: "🌸", bubbles: "🫧", glitter: "🌟" };
+
+        targetCtx.save();
+        for (let i = 0; i < count; i++) {
+          const fx = state.floatingEffects[i % state.floatingEffects.length];
+          const p = particles[i % particles.length];
+          const px = ((p.x + Math.sin(t * 0.8 + p.phase) * 0.06 + 1) % 1) * w;
+          const py = ((p.y - t * (p.speedY * 1.4) + 10) % 1) * h;
+          targetCtx.globalAlpha = 0.45 + 0.42 * Math.abs(Math.sin(t * 2 + p.phase));
+          targetCtx.font = `${Math.round(w * 0.044)}px sans-serif`;
+          targetCtx.textAlign = "center";
+          targetCtx.fillText(glyphMap[fx] || "✨", px, py);
+        }
+        targetCtx.restore();
+      }
+
+      function renderFrameOverlay(targetCtx, w, h, t) {
+        const fr = state.frame;
+        if (fr === "none") return;
+        const pad = Math.round(w * 0.045);
+        targetCtx.save();
+
+        if (fr === "thinline" || fr === "doubleline" || fr === "stitch") {
+          targetCtx.strokeStyle = "rgba(255,255,255,0.88)";
+          targetCtx.lineWidth = Math.max(2, w * 0.004);
+          if (fr === "stitch") targetCtx.setLineDash([14, 10]);
+          targetCtx.strokeRect(pad, pad, w - pad * 2, h - pad * 2);
+          if (fr === "doubleline") {
+            targetCtx.strokeRect(pad * 1.45, pad * 1.45, w - pad * 2.9, h - pad * 2.9);
+          }
+        } else if (fr === "handhearts") {
+          targetCtx.strokeStyle = "rgba(255, 240, 248, 0.92)";
+          targetCtx.lineWidth = Math.max(3, w * 0.005);
+          for (const scale of [1, 0.94]) {
+            targetCtx.save();
+            targetCtx.translate(w / 2, h / 2);
+            targetCtx.scale(scale, scale);
+            targetCtx.translate(-w / 2, -h / 2);
+            targetCtx.beginPath();
+            targetCtx.moveTo(w * 0.5, h * 0.92);
+            targetCtx.bezierCurveTo(w * 0.02, h * 0.62, w * 0.04, h * 0.06, w * 0.5, h * 0.22);
+            targetCtx.bezierCurveTo(w * 0.96, h * 0.06, w * 0.98, h * 0.62, w * 0.5, h * 0.92);
+            targetCtx.stroke();
+            targetCtx.restore();
+          }
+        } else if (fr === "handwave" || fr === "handcloud") {
+          targetCtx.strokeStyle = "rgba(255,255,255,0.9)";
+          targetCtx.lineWidth = Math.max(3, w * 0.005);
+          targetCtx.beginPath();
+          targetCtx.roundRect(pad, pad, w - pad * 2, h - pad * 2, w * 0.12);
+          targetCtx.stroke();
+          targetCtx.beginPath();
+          targetCtx.roundRect(pad * 1.4, pad * 1.4, w - pad * 2.8, h - pad * 2.8, w * 0.1);
+          targetCtx.stroke();
+        } else if (fr === "arch") {
+          targetCtx.strokeStyle = "#fde68a";
+          targetCtx.lineWidth = Math.max(4, w * 0.007);
+          targetCtx.beginPath();
+          targetCtx.moveTo(pad, h - pad);
+          targetCtx.lineTo(pad, h * 0.35);
+          targetCtx.arc(w / 2, h * 0.35, w / 2 - pad, Math.PI, 0, false);
+          targetCtx.lineTo(w - pad, h - pad);
+          targetCtx.closePath();
+          targetCtx.stroke();
+        } else if (fr === "brackets") {
+          targetCtx.strokeStyle = "#ffffff";
+          targetCtx.lineWidth = Math.max(4, w * 0.006);
+          const len = w * 0.09;
+          [[pad, pad, 1, 1], [w - pad, pad, -1, 1], [pad, h - pad, 1, -1], [w - pad, h - pad, -1, -1]].forEach(([x, y, dx, dy]) => {
+            targetCtx.beginPath();
+            targetCtx.moveTo(x + dx * len, y);
+            targetCtx.lineTo(x, y);
+            targetCtx.lineTo(x, y + dy * len);
+            targetCtx.stroke();
+          });
+        } else if (fr === "auraglow" || fr === "artdeco") {
+          const g = targetCtx.createLinearGradient(0, 0, w, h);
+          if (fr === "artdeco") {
+            g.addColorStop(0, "#fef08a");
+            g.addColorStop(0.5, "#d97706");
+            g.addColorStop(1, "#fef08a");
+          } else {
+            g.addColorStop(0, "#ff4d8d");
+            g.addColorStop(0.5, "#7c5cff");
+            g.addColorStop(1, "#14d8b4");
+          }
+          targetCtx.strokeStyle = g;
+          targetCtx.lineWidth = Math.max(5, w * 0.009);
+          targetCtx.strokeRect(pad, pad, w - pad * 2, h - pad * 2);
+        } else if (fr === "polaroid") {
+          targetCtx.fillStyle = "#ffffff";
+          targetCtx.fillRect(0, 0, w, pad * 1.2);
+          targetCtx.fillRect(0, 0, pad * 1.2, h);
+          targetCtx.fillRect(w - pad * 1.2, 0, pad * 1.2, h);
+          targetCtx.fillRect(0, h - h * 0.16, w, h * 0.16);
+        } else if (fr === "filmstrip") {
+          targetCtx.fillStyle = "#090b10";
+          targetCtx.fillRect(0, 0, pad * 1.3, h);
+          targetCtx.fillRect(w - pad * 1.3, 0, pad * 1.3, h);
+          targetCtx.fillStyle = "#ffffff";
+          const step = h / 12;
+          const offset = (t * 60) % step;
+          for (let y = -step + offset; y < h; y += step) {
+            targetCtx.fillRect(pad * 0.35, y, pad * 0.55, step * 0.45);
+            targetCtx.fillRect(w - pad * 0.9, y, pad * 0.55, step * 0.45);
+          }
+        } else if (fr === "cinema") {
+          const barH = h * 0.1;
+          targetCtx.fillStyle = "#000000";
+          targetCtx.fillRect(0, 0, w, barH);
+          targetCtx.fillRect(0, h - barH, w, barH);
+        } else if (fr === "vhs") {
+          targetCtx.fillStyle = "#ef4444";
+          targetCtx.beginPath();
+          targetCtx.arc(pad * 1.6, pad * 1.6, 8, 0, Math.PI * 2);
+          targetCtx.fill();
+          targetCtx.fillStyle = "#ffffff";
+          targetCtx.font = `700 ${Math.round(w * 0.032)}px "Space Mono", monospace`;
+          targetCtx.fillText("REC 1998", pad * 2.2, pad * 1.75);
+        }
+        targetCtx.restore();
+      }
+
+      function renderFrameAtTime(targetCtx, w, h, t) {
+        targetCtx.clearRect(0, 0, w, h);
+        targetCtx.fillStyle = "#090b10";
+        targetCtx.fillRect(0, 0, w, h);
+
+        const count = state.photos.length;
+        if (count > 0) {
+          const slideDur = state.duration / count;
+          const rawIdx = Math.floor(t / slideDur) % count;
+          const nextIdx = (rawIdx + 1) % count;
+          const localT = (t % slideDur) / slideDur;
+          const transWindow = 0.24;
+
+          const curPhoto = state.photos[rawIdx];
+          const kb = curPhoto.kenBurns;
+          let zoom = 1;
+          let panX = 0;
+          let panY = 0;
+          if (state.motionMode === "gentle") {
+            zoom = kb.sScale + (kb.eScale - kb.sScale) * localT;
+            panX = kb.sx + (kb.ex - kb.sx) * localT;
+            panY = kb.sy + (kb.ey - kb.sy) * localT;
+          } else if (state.motionMode === "beat") {
+            zoom = 1.04 + 0.12 * Math.abs(Math.sin(t * Math.PI * 2));
+          }
+
+          targetCtx.save();
+          targetCtx.filter = getFilterCSS(state.filter);
+          if (localT > 1 - transWindow && count > 1) {
+            const p = (localT - (1 - transWindow)) / transWindow;
+            renderSlideTransition(targetCtx, curPhoto.img, state.photos[nextIdx].img, w, h, p, zoom, panX, panY);
+          } else {
+            drawImageCover(targetCtx, curPhoto.img, 0, 0, w, h, zoom, panX, panY);
+          }
+          targetCtx.restore();
+        }
+
+        renderFilterAtmosphere(targetCtx, w, h, t);
+        renderFloatingEffects(targetCtx, w, h, t);
+        renderFrameOverlay(targetCtx, w, h, t);
+
+        // Render Handwriting & Emoji Stamps
+        state.stamps.forEach((st) => {
+          targetCtx.save();
+          targetCtx.translate(st.x * w, st.y * h);
+          targetCtx.rotate((st.rotation * Math.PI) / 180);
+          const stampPx = Math.round(w * 0.14 * st.scale);
+          if (st.kind === "sketch") {
+            drawHandwritingDoodle(targetCtx, st.sketchType, stampPx, st.inkColor || "#ffffff");
+          } else {
+            targetCtx.font = `${stampPx}px sans-serif`;
+            targetCtx.textAlign = "center";
+            targetCtx.textBaseline = "middle";
+            targetCtx.fillText(st.emoji, 0, 0);
+          }
+          targetCtx.restore();
+        });
+
+        // Render Multi-Line Text Layers
+        state.textLayers.forEach((layer) => {
+          if (!layer.text) return;
+          targetCtx.save();
+          const fontSize = Math.round((layer.size / 720) * w);
+          const fontMap = {
+            sans: '"Inter", sans-serif',
+            serif: '"Playfair Display", Georgia, serif',
+            script: '"Caveat", cursive',
+            impact: '"Cinzel", sans-serif',
+            retro: '"Space Mono", monospace',
+            neon: '"Orbitron", sans-serif'
+          };
+          targetCtx.font = `800 ${fontSize}px ${fontMap[layer.font] || fontMap.sans}`;
+          targetCtx.textAlign = "center";
+          targetCtx.textBaseline = "middle";
+          const tx = layer.x * w;
+          const ty = layer.y * h;
+          const metrics = targetCtx.measureText(layer.text);
+
+          if (layer.style === "pill" || layer.style === "glass" || layer.style === "badge") {
+            const pw = metrics.width + fontSize * 0.95;
+            const ph = fontSize * 1.48;
+            targetCtx.fillStyle = layer.style === "pill" ? "rgba(11, 13, 18, 0.74)" : layer.style === "glass" ? "rgba(255, 255, 255, 0.2)" : "#7c5cff";
+            targetCtx.beginPath();
+            targetCtx.roundRect(tx - pw / 2, ty - ph / 2, pw, ph, layer.style === "badge" ? 12 : ph / 2);
+            targetCtx.fill();
+          }
+
+          if (layer.color && layer.color.startsWith("grad_")) {
+            const grad = targetCtx.createLinearGradient(tx - metrics.width / 2, ty, tx + metrics.width / 2, ty);
+            if (layer.color === "grad_gold") {
+              grad.addColorStop(0, "#fef08a");
+              grad.addColorStop(0.5, "#eab308");
+              grad.addColorStop(1, "#fef9c3");
+            } else if (layer.color === "grad_sunset") {
+              grad.addColorStop(0, "#ff4d8d");
+              grad.addColorStop(0.5, "#ff9e2c");
+              grad.addColorStop(1, "#fde047");
+            } else {
+              grad.addColorStop(0, "#f9a8d4");
+              grad.addColorStop(0.5, "#c4b5fd");
+              grad.addColorStop(1, "#67e8f9");
+            }
+            targetCtx.fillStyle = grad;
+          } else {
+            targetCtx.fillStyle = layer.color || "#ffffff";
+          }
+
+          if (layer.style === "outline") {
+            targetCtx.strokeStyle = "#090b10";
+            targetCtx.lineWidth = Math.max(3, fontSize * 0.12);
+            targetCtx.strokeText(layer.text, tx, ty);
+          }
+
+          targetCtx.shadowColor = layer.style === "neon" ? (layer.color || "#22d3ee") : "rgba(0,0,0,0.65)";
+          targetCtx.shadowBlur = layer.style === "neon" ? 22 : 10;
+          targetCtx.fillText(layer.text, tx, ty);
+          targetCtx.restore();
+        });
+      }
+
+      function updateDurationUI() {
+        const perSlide = (state.duration / Math.max(1, state.photos.length)).toFixed(1);
+        document.getElementById("durationSummary").textContent = `${state.duration}s total (${perSlide}s / photo)`;
+        document.getElementById("exportDurTag").textContent = `${state.duration}s`;
+      }
+
+      function animationLoop(ts) {
+        if (!state.lastFrameTimestamp) state.lastFrameTimestamp = ts;
+        const dt = (ts - state.lastFrameTimestamp) / 1000;
+        state.lastFrameTimestamp = ts;
+
+        if (state.isPlaying && !state.isExporting) {
+          state.currentTime = (state.currentTime + dt) % state.duration;
+          timelineScrubber.value = Math.round((state.currentTime / state.duration) * 1000);
+        }
+        timeReadout.textContent = `${state.currentTime.toFixed(1)}s / ${state.duration.toFixed(1)}s`;
+        renderFrameAtTime(ctx, canvas.width, canvas.height, state.currentTime);
+        requestAnimationFrame(animationLoop);
+      }
+
+      /* =========================================================================
+         6. MULTI-LAYER TEXT & UI BUILDERS
+         ========================================================================= */
+      function renderTextLayerStrip() {
+        const strip = document.getElementById("textLayerStrip");
+        strip.innerHTML = "";
+        state.textLayers.forEach((layer, idx) => {
+          const pill = document.createElement("button");
+          pill.type = "button";
+          pill.className = "layer-pill" + (layer.id === state.activeTextId ? " active" : "");
+          pill.innerHTML = `<span>Line ${idx + 1}: ${layer.text || "(Empty)"}</span>`;
+          pill.onclick = () => {
+            state.activeTextId = layer.id;
+            syncTextInputsToActiveLayer();
+            renderTextLayerStrip();
+          };
+          strip.appendChild(pill);
+        });
+      }
+
+      function syncTextInputsToActiveLayer() {
+        const layer = getActiveTextLayer();
+        if (!layer) return;
+        document.getElementById("captionInput").value = layer.text;
+        document.getElementById("fontSelect").value = layer.font;
+        document.getElementById("textStyleSelect").value = layer.style;
+        document.getElementById("textSizeSlider").value = layer.size;
+      }
+
+      function renderFilteredPhrases() {
+        const pList = document.getElementById("phrasePresetList");
+        const q = (state.phraseSearch || "").trim().toLowerCase();
+        const filtered = PHRASE_PRESETS.filter((p) => {
+          const catOk = state.phraseCategory === "all" || p.cat === state.phraseCategory;
+          const textOk = !q || p.text.toLowerCase().includes(q);
+          return catOk && textOk;
+        });
+        document.getElementById("phraseCountBadge").textContent = `${filtered.length} presets`;
+        pList.innerHTML = "";
+        filtered.forEach((p) => {
+          const chip = document.createElement("button");
+          chip.type = "button";
+          chip.className = "phrase-chip" + (p.cat === "date" ? " date-chip" : "");
+          chip.textContent = p.text;
+          chip.onclick = () => {
+            const layer = getActiveTextLayer();
+            if (layer) layer.text = p.text;
+            document.getElementById("captionInput").value = p.text;
+            renderTextLayerStrip();
+          };
+          pList.appendChild(chip);
+        });
+      }
+
+      function buildControlGrids() {
+        // Transitions
+        const tGrid = document.getElementById("transitionGrid");
+        TRANSITIONS.forEach((tr) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "choice-card" + (state.transition === tr.id ? " selected" : "");
+          card.innerHTML = `<div class="choice-title">${tr.name}</div><div class="choice-desc">${tr.desc}</div>`;
+          card.onclick = () => {
+            state.transition = tr.id;
+            tGrid.querySelectorAll(".choice-card").forEach((c) => c.classList.remove("selected"));
+            card.classList.add("selected");
+          };
+          tGrid.appendChild(card);
+        });
+
+        // Templates
+        const tplGrid = document.getElementById("templateGrid");
+        TEMPLATES.forEach((tpl) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "choice-card";
+          card.innerHTML = `<div class="choice-title">${tpl.name}</div><div class="choice-desc">${tpl.desc}</div>`;
+          card.onclick = () => {
+            state.filter = tpl.filter;
+            state.frame = tpl.frame;
+            state.floatingEffects = [...tpl.floating];
+            state.transition = tpl.transition;
+            const activeLayer = getActiveTextLayer();
+            if (activeLayer) {
+              activeLayer.text = tpl.text;
+              activeLayer.font = tpl.font;
+              activeLayer.color = tpl.textColor;
+              activeLayer.style = tpl.textStyle;
+              syncTextInputsToActiveLayer();
+              renderTextLayerStrip();
+            }
+            showToast(`Applied "${tpl.name}" ✨`);
+          };
+          tplGrid.appendChild(card);
+        });
+
+        // Filters
+        const fGrid = document.getElementById("filterGrid");
+        FILTERS.forEach((fl) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "choice-card" + (state.filter === fl.id ? " selected" : "");
+          card.innerHTML = `<div class="swatch-bar" style="background:${fl.swatch}"></div><div class="choice-title">${fl.name}</div><div class="choice-desc">${fl.desc}</div>`;
+          card.onclick = () => {
+            state.filter = fl.id;
+            fGrid.querySelectorAll(".choice-card").forEach((c) => c.classList.remove("selected"));
+            card.classList.add("selected");
+          };
+          fGrid.appendChild(card);
+        });
+
+        // Floating FX
+        const fxGrid = document.getElementById("floatingFxGrid");
+        FLOATING_EFFECTS.forEach((fx) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "choice-card" + (state.floatingEffects.includes(fx.id) ? " selected" : "");
+          card.innerHTML = `<div class="choice-title">${fx.name}</div><div class="choice-desc">${fx.desc}</div>`;
+          card.onclick = () => {
+            const idx = state.floatingEffects.indexOf(fx.id);
+            if (idx >= 0) {
+              state.floatingEffects.splice(idx, 1);
+              card.classList.remove("selected");
+            } else {
+              state.floatingEffects.push(fx.id);
+              card.classList.add("selected");
+            }
+          };
+          fxGrid.appendChild(card);
+        });
+
+        // Frames
+        const frGrid = document.getElementById("frameGrid");
+        FRAMES.forEach((fr) => {
+          const card = document.createElement("button");
+          card.type = "button";
+          card.className = "choice-card" + (state.frame === fr.id ? " selected" : "");
+          card.innerHTML = `<div class="choice-title">${fr.name}</div><div class="choice-desc">${fr.desc}</div>`;
+          card.onclick = () => {
+            state.frame = fr.id;
+            frGrid.querySelectorAll(".choice-card").forEach((c) => c.classList.remove("selected"));
+            card.classList.add("selected");
+          };
+          frGrid.appendChild(card);
+        });
+
+        // Handwriting Doodle Stamps
+        const hwPal = document.getElementById("handwritingStampPalette");
+        HANDWRITING_STAMPS.forEach((hw) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "sketch-stamp-btn";
+          const miniC = document.createElement("canvas");
+          miniC.width = 48;
+          miniC.height = 48;
+          const mctx = miniC.getContext("2d");
+          mctx.translate(24, 24);
+          drawHandwritingDoodle(mctx, hw.id, 38, "#ffffff");
+          btn.appendChild(miniC);
+          const lbl = document.createElement("span");
+          lbl.textContent = hw.label;
+          btn.appendChild(lbl);
+          btn.onclick = () => {
+            const newStamp = { id: Date.now() + Math.random(), kind: "sketch", sketchType: hw.id, label: hw.label, inkColor: "#ffffff", x: 0.5, y: 0.44, scale: 1.15, rotation: 0 };
+            state.stamps.push(newStamp);
+            state.selectedStampId = newStamp.id;
+            document.getElementById("selectedStampCard").style.display = "flex";
+            document.getElementById("sketchColorGroup").style.display = "flex";
+            document.getElementById("selectedStampEmoji").textContent = hw.label;
+          };
+          hwPal.appendChild(btn);
+        });
+
+        // Sketch Ink Colors
+        const inkRow = document.getElementById("sketchInkColorRow");
+        SKETCH_INK_COLORS.forEach((hex) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "color-dot" + (hex === "#ffffff" ? " active" : "");
+          dot.style.background = hex;
+          dot.onclick = () => {
+            const st = state.stamps.find((s) => s.id === state.selectedStampId);
+            if (st) st.inkColor = hex;
+            inkRow.querySelectorAll(".color-dot").forEach((d) => d.classList.remove("active"));
+            dot.classList.add("active");
+          };
+          inkRow.appendChild(dot);
+        });
+
+        // Emoji Stamps
+        const stampPal = document.getElementById("stampPalette");
+        STAMPS.forEach((em) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "stamp-btn";
+          btn.textContent = em;
+          btn.onclick = () => {
+            const newStamp = { id: Date.now() + Math.random(), kind: "emoji", emoji: em, x: 0.5, y: 0.45, scale: 1, rotation: 0 };
+            state.stamps.push(newStamp);
+            state.selectedStampId = newStamp.id;
+            document.getElementById("selectedStampCard").style.display = "flex";
+            document.getElementById("sketchColorGroup").style.display = "none";
+            document.getElementById("selectedStampEmoji").textContent = em;
+          };
+          stampPal.appendChild(btn);
+        });
+
+        // Text Colors
+        const colorRow = document.getElementById("textColorRow");
+        TEXT_COLORS.forEach((col) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "color-dot" + (col.id === "#ffffff" ? " active" : "");
+          dot.style.background = col.css;
+          dot.onclick = () => {
+            const layer = getActiveTextLayer();
+            if (layer) layer.color = col.id;
+            colorRow.querySelectorAll(".color-dot").forEach((d) => d.classList.remove("active"));
+            dot.classList.add("active");
+          };
+          colorRow.appendChild(dot);
+        });
+
+        // Phrase Categories
+        const catRow = document.getElementById("phraseCategoryRow");
+        PHRASE_CATEGORIES.forEach((cat) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "pill-btn" + (cat.id === "all" ? " active" : "");
+          btn.textContent = cat.label;
+          btn.onclick = () => {
+            state.phraseCategory = cat.id;
+            catRow.querySelectorAll(".pill-btn").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            renderFilteredPhrases();
+          };
+          catRow.appendChild(btn);
+        });
+
+        renderTextLayerStrip();
+        renderFilteredPhrases();
+      }
+
+      /* =========================================================================
+         7. EVENT LISTENERS & EXPORT
+         ========================================================================= */
+      document.getElementById("tabsNav").addEventListener("click", (e) => {
+        const btn = e.target.closest(".tab-btn");
+        if (!btn) return;
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+        btn.classList.add("active");
+        const panel = document.getElementById("tab-" + btn.dataset.tab);
+        if (panel) panel.classList.add("active");
+      });
+
+      document.getElementById("topExportJumpBtn").onclick = () => {
+        document.querySelector('.tab-btn[data-tab="export"]').click();
+      };
+
+      photoInput.addEventListener("change", (e) => {
+        handleFiles(e.target.files);
+        e.target.value = "";
+      });
+
+      document.getElementById("shufflePhotosBtn").onclick = () => {
+        for (let i = state.photos.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [state.photos[i], state.photos[j]] = [state.photos[j], state.photos[i]];
+        }
+        renderPhotoStrip();
+        showToast("Shuffled photo sequence!");
+      };
+
+      document.getElementById("clearPhotosBtn").onclick = () => {
+        state.photos = [];
+        renderPhotoStrip();
+        updateDurationUI();
+      };
+
+      document.getElementById("loadDemoBtn").onclick = loadDemoAlbum;
+
+      document.getElementById("durationPresets").addEventListener("click", (e) => {
+        const btn = e.target.closest(".pill-btn");
+        if (!btn) return;
+        state.duration = parseInt(btn.dataset.sec, 10);
+        document.getElementById("durationSlider").value = state.duration;
+        document.querySelectorAll("#durationPresets .pill-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        updateDurationUI();
+      });
+
+      document.getElementById("durationSlider").addEventListener("input", (e) => {
+        state.duration = parseInt(e.target.value, 10);
+        updateDurationUI();
+      });
+
+      document.getElementById("motionPresets").addEventListener("click", (e) => {
+        const btn = e.target.closest(".pill-btn");
+        if (!btn) return;
+        state.motionMode = btn.dataset.motion;
+        document.querySelectorAll("#motionPresets .pill-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+
+      document.getElementById("clearFloatingBtn").onclick = () => {
+        state.floatingEffects = [];
+        document.querySelectorAll("#floatingFxGrid .choice-card").forEach((c) => c.classList.remove("selected"));
+      };
+
+      document.getElementById("densityPresets").addEventListener("click", (e) => {
+        const btn = e.target.closest(".pill-btn");
+        if (!btn) return;
+        state.floatingDensity = btn.dataset.density;
+        document.getElementById("densityLabel").textContent = btn.textContent;
+        document.querySelectorAll("#densityPresets .pill-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+      });
+
+      document.getElementById("playPauseBtn").onclick = () => {
+        state.isPlaying = !state.isPlaying;
+        document.getElementById("pauseIcon").style.display = state.isPlaying ? "block" : "none";
+        document.getElementById("playIcon").style.display = state.isPlaying ? "none" : "block";
+      };
+
+      timelineScrubber.addEventListener("input", (e) => {
+        state.currentTime = (parseInt(e.target.value, 10) / 1000) * state.duration;
+      });
+
+      document.getElementById("ratioPills").addEventListener("click", (e) => {
+        const pill = e.target.closest(".ratio-pill");
+        if (!pill) return;
+        state.aspectRatio = pill.dataset.ratio;
+        document.querySelectorAll(".ratio-pill").forEach((p) => p.classList.remove("active"));
+        pill.classList.add("active");
+        resizePreviewCanvas();
+      });
+
+      // Multi-Line Text Layers
+      document.getElementById("addTextLayerBtn").onclick = () => {
+        if (state.textLayers.length >= 5) {
+          showToast("Maximum 5 text lines per video");
+          return;
+        }
+        const newId = Date.now();
+        state.textLayers.push({
+          id: newId,
+          text: "New Caption ✨",
+          font: "script",
+          size: 46,
+          color: "#fde047",
+          style: "shadow",
+          x: 0.5,
+          y: 0.22 + state.textLayers.length * 0.1
+        });
+        state.activeTextId = newId;
+        syncTextInputsToActiveLayer();
+        renderTextLayerStrip();
+      };
+
+      document.getElementById("delTextLayerBtn").onclick = () => {
+        if (state.textLayers.length <= 1) {
+          const layer = getActiveTextLayer();
+          if (layer) layer.text = "";
+          syncTextInputsToActiveLayer();
+          renderTextLayerStrip();
+          return;
+        }
+        state.textLayers = state.textLayers.filter((l) => l.id !== state.activeTextId);
+        state.activeTextId = state.textLayers[0].id;
+        syncTextInputsToActiveLayer();
+        renderTextLayerStrip();
+      };
+
+      document.getElementById("captionInput").addEventListener("input", (e) => {
+        const layer = getActiveTextLayer();
+        if (layer) layer.text = e.target.value;
+        renderTextLayerStrip();
+      });
+      document.getElementById("fontSelect").addEventListener("change", (e) => {
+        const layer = getActiveTextLayer();
+        if (layer) layer.font = e.target.value;
+      });
+      document.getElementById("textStyleSelect").addEventListener("change", (e) => {
+        const layer = getActiveTextLayer();
+        if (layer) layer.style = e.target.value;
+      });
+      document.getElementById("textSizeSlider").addEventListener("input", (e) => {
+        const layer = getActiveTextLayer();
+        if (layer) layer.size = parseInt(e.target.value, 10);
+      });
+      document.getElementById("centerTextBtn").onclick = () => {
+        const layer = getActiveTextLayer();
+        if (layer) { layer.x = 0.5; layer.y = 0.83; }
+      };
+      document.getElementById("phraseSearchInput").addEventListener("input", (e) => {
+        state.phraseSearch = e.target.value;
+        renderFilteredPhrases();
+      });
+
+      // Stamp Collapse & Controls
+      document.getElementById("toggleHwStampsHeader").onclick = (e) => {
+        if (e.target.closest("#clearStampsBtn")) return;
+        const body = document.getElementById("hwStampsBody");
+        const open = body.style.display !== "none";
+        body.style.display = open ? "none" : "flex";
+        document.getElementById("hwCollapseArrow").textContent = open ? "▶" : "▼";
+      };
+
+      document.getElementById("toggleEmojiStampsHeader").onclick = () => {
+        const body = document.getElementById("emojiStampsBody");
+        const open = body.style.display !== "none";
+        body.style.display = open ? "none" : "block";
+        document.getElementById("emojiCollapseArrow").textContent = open ? "▶" : "▼";
+        document.getElementById("emojiCollapseHint").textContent = open ? "Tap to show" : "Tap to hide";
+      };
+
+      document.getElementById("clearStampsBtn").onclick = () => {
+        state.stamps = [];
+        state.selectedStampId = null;
+        document.getElementById("selectedStampCard").style.display = "none";
+      };
+      document.getElementById("deleteSelectedStampBtn").onclick = () => {
+        state.stamps = state.stamps.filter((s) => s.id !== state.selectedStampId);
+        state.selectedStampId = null;
+        document.getElementById("selectedStampCard").style.display = "none";
+      };
+      document.getElementById("stampScaleSlider").addEventListener("input", (e) => {
+        const st = state.stamps.find((s) => s.id === state.selectedStampId);
+        if (st) st.scale = parseFloat(e.target.value);
+      });
+      document.getElementById("stampRotateSlider").addEventListener("input", (e) => {
+        const st = state.stamps.find((s) => s.id === state.selectedStampId);
+        if (st) st.rotation = parseInt(e.target.value, 10);
+      });
+
+      // Direct Canvas Dragging for Text Layers & Stamps
+      let dragTarget = null;
+      canvas.addEventListener("pointerdown", (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const nx = (e.clientX - rect.left) / rect.width;
+        const ny = (e.clientY - rect.top) / rect.height;
+
+        for (let i = state.stamps.length - 1; i >= 0; i--) {
+          const st = state.stamps[i];
+          if (Math.hypot(st.x - nx, st.y - ny) < 0.11) {
+            state.selectedStampId = st.id;
+            dragTarget = st;
+            document.getElementById("selectedStampCard").style.display = "flex";
+            document.getElementById("sketchColorGroup").style.display = st.kind === "sketch" ? "flex" : "none";
+            document.getElementById("selectedStampEmoji").textContent = st.kind === "sketch" ? st.label : st.emoji;
+            return;
+          }
+        }
+        for (let i = state.textLayers.length - 1; i >= 0; i--) {
+          const layer = state.textLayers[i];
+          if (Math.abs(layer.y - ny) < 0.09) {
+            state.activeTextId = layer.id;
+            dragTarget = layer;
+            syncTextInputsToActiveLayer();
+            renderTextLayerStrip();
+            return;
+          }
+        }
+      });
+
+      window.addEventListener("pointermove", (e) => {
+        if (!dragTarget) return;
+        const rect = canvas.getBoundingClientRect();
+        dragTarget.x = Math.max(0.08, Math.min(0.92, (e.clientX - rect.left) / rect.width));
+        dragTarget.y = Math.max(0.08, Math.min(0.94, (e.clientY - rect.top) / rect.height));
+      });
+
+      window.addEventListener("pointerup", () => { dragTarget = null; });
+
+      // Video Export via MediaRecorder
+      document.getElementById("renderVideoBtn").onclick = async () => {
+        if (state.isExporting) return;
+        state.isExporting = true;
+        const progressBox = document.getElementById("exportProgressBox");
+        const resultBox = document.getElementById("exportResultBox");
+        const fill = document.getElementById("exportProgressFill");
+        const pct = document.getElementById("exportPercentText");
+        progressBox.style.display = "flex";
+        resultBox.style.display = "none";
+
+        try {
+          const hTarget = parseInt(document.getElementById("qualitySelect").value, 10);
+          const dims = getCanvasLogicalDimensions(hTarget);
+          const expCanvas = document.createElement("canvas");
+          expCanvas.width = dims.w;
+          expCanvas.height = dims.h;
+          const expCtx = expCanvas.getContext("2d");
+
+          const stream = expCanvas.captureStream(30);
+          const mime = MediaRecorder.isTypeSupported("video/mp4") ? "video/mp4" : "video/webm";
+          const recorder = new MediaRecorder(stream, { mimeType: mime, videoBitsPerSecond: 5500000 });
+          const chunks = [];
+          recorder.ondataavailable = (ev) => { if (ev.data.size > 0) chunks.push(ev.data); };
+
+          const donePromise = new Promise((resolve) => {
+            recorder.onstop = () => resolve(new Blob(chunks, { type: mime }));
+          });
+
+          recorder.start();
+          const totalFrames = state.duration * 30;
+          for (let f = 0; f <= totalFrames; f++) {
+            renderFrameAtTime(expCtx, dims.w, dims.h, f / 30);
+            const p = Math.round((f / totalFrames) * 100);
+            fill.style.width = p + "%";
+            pct.textContent = p + "%";
+            await new Promise((r) => setTimeout(r, 16));
+          }
+          recorder.stop();
+          const blob = await donePromise;
+          state.lastExportBlob = blob;
+
+          const url = URL.createObjectURL(blob);
+          const dlLink = document.getElementById("downloadVideoLink");
+          dlLink.href = url;
+          dlLink.download = mime.includes("mp4") ? "ReelCraft_Short.mp4" : "ReelCraft_Short.webm";
+          resultBox.style.display = "flex";
+          showToast("Video rendered! Ready to save to Photo Album.");
+        } catch (err) {
+          showToast("Export error: " + (err.message || "Try 720p"));
+        } finally {
+          state.isExporting = false;
+        }
+      };
+
+      document.getElementById("shareToAlbumBtn").onclick = async () => {
+        if (!state.lastExportBlob) return;
+        const ext = state.lastExportBlob.type.includes("mp4") ? "mp4" : "webm";
+        const file = new File([state.lastExportBlob], `ReelCraft_Short.${ext}`, { type: state.lastExportBlob.type });
+        if (navigator.canShare && navigator.canShare({ files: [file] })) {
+          try { await navigator.share({ files: [file], title: "ReelCraft Studio Video" }); } catch (_) {}
+        } else {
+          document.getElementById("downloadVideoLink").click();
+        }
+      };
+
+      // Boot App
+      window.addEventListener("resize", resizePreviewCanvas);
+      buildControlGrids();
+      resizePreviewCanvas();
+      loadDemoAlbum();
+      requestAnimationFrame(animationLoop);
+    })();
+  </script>
+</body>
+</html>
