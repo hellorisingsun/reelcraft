@@ -1349,15 +1349,15 @@
         if (errorEl) errorEl.textContent = "";
 
         if (!rawKey) {
-          if (errorEl) errorEl.textContent = "Please paste or type your License Key.";
+          if (errorEl) errorEl.textContent = "Please paste or type your ReelCraft Studio License Key.";
           return;
         }
-        if (rawKey.startsWith("RIPPLE")) {
-          if (errorEl) errorEl.textContent = "This key is for Minimal Ripple Screen. Please enter your ReelCraft Studio key.";
+        if (/^(RIPPLE|MRS)[-_]/i.test(rawKey)) {
+          if (errorEl) errorEl.textContent = "That key is not valid for ReelCraft Studio. Please enter your ReelCraft Studio License Key.";
           return;
         }
         if (rawKey.length < 6) {
-          if (errorEl) errorEl.textContent = "Key looks too short. Copy the full License Key from your receipt.";
+          if (errorEl) errorEl.textContent = "Key looks too short. Copy the full License Key from your ReelCraft Studio receipt.";
           return;
         }
 
@@ -1379,7 +1379,7 @@
 
         try {
           const existing = localStorage.getItem(STORE_CONFIG.storageKey);
-          if (existing && !existing.startsWith("RIPPLE")) {
+          if (existing && !/^(RIPPLE|MRS)[-_]/i.test(existing)) {
             if (gate) gate.classList.add("unlocked");
             if (statusBadge) statusBadge.textContent = "Licensed";
           }
